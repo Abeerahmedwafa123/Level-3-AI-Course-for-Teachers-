@@ -1,0 +1,905 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-en="Build · Style · Drive — the three layers of any app | Edulixa 360" data-ar="ابنِ · نسّق · شغّل — الطبقات الثلاث لأي تطبيق | Edulixa 360">Build · Style · Drive — the three layers of any app | Edulixa 360</title>
+<link rel="stylesheet" href="../assets/edulixa.css">
+<script>
+/* Mark the page before it paints when it is shown inside a session page,
+   so the compact layout is the first thing drawn, not a correction. */
+try { if (window.self !== window.top) document.documentElement.className += ' is-framed'; }
+catch (e) { document.documentElement.className += ' is-framed'; }
+</script>
+<style>
+body{padding-bottom:40px}
+.app-top{background:var(--bg-2); border-bottom:1px solid var(--line-soft); padding:16px 0}
+.app-top-in{max-width:1120px; margin-inline:auto; padding-inline:24px; display:flex;
+  align-items:center; justify-content:space-between; gap:18px; flex-wrap:wrap}
+.app-top img{width:132px}
+.score{display:flex; flex-direction:column; align-items:center; gap:2px; padding:10px 22px;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md)}
+.score em{font-family:var(--mono); font-size:11px; font-style:normal; font-weight:500;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--brand-lift)}
+html[dir="rtl"] .score em{font-family:var(--ar); letter-spacing:0; font-size:14px; font-weight:700}
+.score strong{font-family:var(--display); font-size:30px; color:var(--ink); line-height:1}
+.levels{display:flex; gap:6px; padding:6px; background:var(--surface); border:1px solid var(--line);
+  border-radius:var(--r-pill)}
+.levels button{cursor:pointer; border:0; background:transparent; color:var(--muted);
+  font-family:inherit; font-size:15px; font-weight:700; padding:10px 18px; border-radius:var(--r-pill);
+  transition:all var(--t-fast) var(--ease)}
+.levels button:hover{color:var(--ink)}
+.levels button[aria-selected="true"]{background:var(--brand-lift); color:var(--on-accent)}
+.shell{max-width:1120px; margin-inline:auto; padding:34px 24px 0}
+.shell h1{margin:0 0 12px; font-size:clamp(30px,4.6vw,46px)}
+.shell .lede{margin:0 0 8px; color:var(--ink-2); font-size:19px; max-width:66ch; line-height:1.62}
+.pane[hidden]{display:none}
+.lab{margin-top:26px}
+#page-frame{height:520px}
+.codepane.is-tall .codelines{max-height:520px}
+/* the browser chrome, .twin and the code pane now live in assets/edulixa.css */
+
+/* ---- one control bar: the stages, the stage name and the copy button together,
+        so nothing has to be reached by scrolling away from the page itself ---- */
+.lab-bar{display:grid; grid-template-columns:minmax(0,1.45fr) minmax(0,1fr); gap:18px;
+  align-items:center; margin-bottom:16px}
+.lab-bar .stage-tabs{margin-bottom:0}
+.bar-side{display:flex; flex-direction:column; gap:10px; align-items:flex-start}
+.bar-head{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.bar-btns{display:flex; gap:9px; flex-wrap:wrap}
+.bar-btns .btn{padding:10px 16px; font-size:15px}
+.lab-under{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:18px; align-items:start; margin-top:18px}
+.lab-under .code-why,.lab-under .lab-caption{margin:0}
+.lab-under .lab-caption h3{font-size:25px}
+@media (max-width:900px){
+  .lab-bar{grid-template-columns:1fr}
+  .lab-under{grid-template-columns:1fr}
+}
+
+/* ---- Embedded in a session page: every pixel goes to the lab ---- */
+html.is-framed body{padding-bottom:0}
+html.is-framed .skip,
+html.is-framed .app-top img,
+html.is-framed .app-top [data-lang-toggle],
+html.is-framed .foot,
+html.is-framed .pane > h1,
+html.is-framed .pane > .lede,
+html.is-framed .pane > .callout,
+html.is-framed .pane > .hint{display:none}
+html.is-framed .app-top{padding:11px 0}
+html.is-framed .app-top-in{max-width:none; padding-inline:20px}
+html.is-framed .score{padding:6px 16px}
+html.is-framed .score strong{font-size:22px}
+html.is-framed .shell{max-width:none; padding:18px 20px 0}
+html.is-framed .lab{margin-top:0}
+html.is-framed .lab-under .code-why{min-height:0}
+html.is-framed #page-frame{height:470px}
+html.is-framed .codepane.is-tall .codelines{max-height:470px}
+/* sort game */
+.tray{display:flex; flex-wrap:wrap; gap:10px; margin:22px 0 0; min-height:56px}
+.piece{cursor:pointer; padding:11px 15px; border-radius:var(--r); border:1px solid var(--line);
+  background:var(--surface); color:var(--ink-2); font-family:inherit; font-size:16px; font-weight:600;
+  text-align:start; transition:all var(--t-fast) var(--ease)}
+.piece:hover{border-color:var(--brand-lift); color:var(--ink)}
+.piece[aria-pressed="true"]{border-color:var(--accent); background:var(--surface-2); color:var(--ink);
+  box-shadow:0 0 0 4px oklch(0.520 0.185 31 / .24)}
+.piece.is-placed{cursor:default; opacity:.9; border-color:var(--brand-lift)}
+.piece.is-placed:hover{border-color:var(--brand-lift)}
+.piece code{font-family:var(--mono); font-size:14px; color:inherit; direction:ltr}
+.bins{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:22px 0 0}
+@media (max-width:800px){.bins{grid-template-columns:1fr}}
+.bin{display:flex; flex-direction:column; gap:12px; padding:18px; min-height:210px;
+  border:1.5px dashed var(--line); border-radius:var(--r-md); background:var(--bg-2);
+  transition:all var(--t-fast) var(--ease)}
+.bin.is-ready{border-color:var(--brand-lift); background:var(--surface)}
+.bin > header{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.bin h4{margin:0; font-size:17px; font-weight:800; color:var(--ink)}
+.bin-drop{cursor:pointer; border:0; background:transparent; padding:0; font:inherit; text-align:start;
+  color:var(--muted); font-size:15px}
+.bin.is-ready .bin-drop{color:var(--brand-lift); font-weight:700}
+.bin-items{display:flex; flex-direction:column; gap:9px}
+.verdict{margin:20px 0 0; padding:16px 20px; border-radius:var(--r);
+  background:var(--surface); border-inline-start:4px solid var(--line); min-height:24px}
+.verdict.is-ok{border-inline-start-color:var(--signal)}
+.verdict.is-no{border-inline-start-color:var(--accent)}
+.verdict p{margin:0; font-size:17px; line-height:1.6}
+.verdict b{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#lab-main" data-en="Skip to the lab" data-ar="تخطَّ إلى المعمل">Skip to the lab</a>
+
+<header class="app-top">
+  <div class="app-top-in">
+    <img src="../assets/logo-reversed.png" alt="Edulixa 360">
+    <div class="levels" role="tablist" data-en-label="Choose a level" data-ar-label="اختر مستوى">
+      <button type="button" role="tab" id="tab-car" aria-selected="true" aria-controls="pane-car" data-level="car" data-en="1 · The car" data-ar="1 · السيارة">1 · The car</button>
+      <button type="button" role="tab" id="tab-page" aria-selected="false" aria-controls="pane-page" data-level="page" data-en="2 · A real page" data-ar="2 · صفحة حقيقية">2 · A real page</button>
+      <button type="button" role="tab" id="tab-sort" aria-selected="false" aria-controls="pane-sort" data-level="sort" data-en="3 · Sort the layers" data-ar="3 · رتّب الطبقات">3 · Sort the layers</button>
+    </div>
+    <div class="score">
+      <em data-en="Points" data-ar="النقاط">Points</em>
+      <strong id="points">0</strong>
+    </div>
+    <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+  </div>
+</header>
+
+<main id="lab-main" class="shell">
+
+<!-- ============================ LEVEL 1 · THE CAR ============================ -->
+<section class="pane" id="pane-car" role="tabpanel" aria-labelledby="tab-car">
+  <h1 class="display" data-en="One car, built in three layers." data-ar="سيارة واحدة، مبنية على ثلاث طبقات.">One car, built in three layers.</h1>
+  <p class="lede" data-en="Press each stage in order. The car does not change into a different car — the same car gains a new layer each time. That is exactly what happens inside every app your students open." data-ar="اضغط كل مرحلة بالترتيب. السيارة لا تتحول إلى سيارة أخرى — بل تكتسب طبقة جديدة في كل مرة. وهذا بالضبط ما يحدث داخل كل تطبيق يفتحه طلابك.">Press each stage in order. The car does not change into a different car — the same car gains a new layer each time. That is exactly what happens inside every app your students open.</p>
+
+  <div class="lab" data-car-lab data-stage="1"></div>
+
+  <div class="callout" style="margin-top:26px">
+    <p><b data-en="Say this to your class: " data-ar="قل هذا لصفك: ">Say this to your class: </b><span data-en="HTML puts the parts on the page, CSS decides how they look, JavaScript decides what they do. Remove HTML and there is nothing. Remove CSS and it is ugly but it works. Remove JavaScript and it is beautiful but nothing happens." data-ar="HTML يضع الأجزاء على الصفحة، و CSS يحدد شكلها، و JavaScript يحدد ما تفعله. احذف HTML فلا يبقى شيء. احذف CSS فيصبح قبيحًا لكنه يعمل. احذف JavaScript فيصبح جميلًا لكن لا يحدث شيء.">HTML puts the parts on the page, CSS decides how they look, JavaScript decides what they do. Remove HTML and there is nothing. Remove CSS and it is ugly but it works. Remove JavaScript and it is beautiful but nothing happens.</span></p>
+  </div>
+</section>
+
+<!-- ======================= LEVEL 2 · A REAL PAGE ======================= -->
+<section class="pane" id="pane-page" role="tabpanel" aria-labelledby="tab-page" hidden>
+  <h1 class="display" data-en="The same three layers on a real activity." data-ar="الطبقات الثلاث نفسها على نشاط حقيقي.">The same three layers on a real activity.</h1>
+  <p class="lede" data-en="On the left is a live page, not a picture — press things in it. On the right is the code that produced it. Move through the three stages and watch the new lines arrive, marked as you go." data-ar="على اليسار صفحة حقيقية تعمل، وليست صورة — اضغط ما فيها. وعلى اليمين الكود الذي أنتجها. تنقّل بين المراحل الثلاث وشاهد الأسطر الجديدة تصل، معلَّمة أثناء تنقلك.">On the left is a live page, not a picture — press things in it. On the right is the code that produced it. Move through the three stages and watch the new lines arrive, marked as you go.</p>
+
+  <div class="lab" id="page-lab" data-stage="1">
+    <div class="lab-bar">
+    <div class="stage-tabs" role="tablist" data-en-label="Page stages" data-ar-label="مراحل الصفحة">
+      <button class="stage-tab" type="button" role="tab" aria-selected="true" data-page-stage="1">
+        <b data-en="Stage 1 · HTML" data-ar="المرحلة 1 · HTML">Stage 1 · HTML</b>
+        <span data-en="The content only" data-ar="المحتوى فقط">The content only</span>
+      </button>
+      <button class="stage-tab" type="button" role="tab" aria-selected="false" data-page-stage="2">
+        <b data-en="Stage 2 · CSS" data-ar="المرحلة 2 · CSS">Stage 2 · CSS</b>
+        <span data-en="Real colours and effects" data-ar="ألوان وتأثيرات حقيقية">Real colours and effects</span>
+      </button>
+      <button class="stage-tab" type="button" role="tab" aria-selected="false" data-page-stage="3">
+        <b data-en="Stage 3 · JavaScript" data-ar="المرحلة 3 · JavaScript">Stage 3 · JavaScript</b>
+        <span data-en="Six things that work" data-ar="ستة أشياء تعمل">Six things that work</span>
+      </button>
+    </div>
+
+      <div class="bar-side">
+        <div class="bar-head">
+          <span class="lab-title" data-role="head"></span>
+          <span class="lamps" aria-hidden="true"><i></i><i></i><i></i></span>
+        </div>
+        <div class="bar-btns">
+          <button class="btn btn-outline" type="button" id="page-back" data-en="Previous" data-ar="السابقة">Previous</button>
+          <button class="btn btn-primary" type="button" id="page-next" data-en="Next stage" data-ar="المرحلة التالية">Next stage</button>
+          <button class="btn btn-ghost" type="button" id="copy-source" data-en="Copy this code" data-ar="انسخ هذا الكود">Copy this code</button>
+        </div>
+        <span class="copied" id="page-copied" aria-live="polite"></span>
+      </div>
+    </div>
+
+    <div class="twin">
+      <div class="browser">
+        <div class="browser-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="browser-url">index.html</span>
+        </div>
+        <iframe id="page-frame" title="Live preview of the activity" sandbox="allow-scripts"></iframe>
+      </div>
+      <div class="codepane is-tall">
+        <div class="codepane-head">
+          <span data-en="index.html — select any part" data-ar="index.html — اختر أي جزء">index.html — select any part</span>
+        </div>
+        <div class="codelines" id="page-code"></div>
+      </div>
+    </div>
+
+    <div class="lab-under">
+      <div class="code-why" id="code-why" aria-live="polite">
+        <p class="code-why-hint" data-en="Nothing selected yet. Select a block of code — the explanation appears here and the part it controls is outlined in the live page." data-ar="لم تختر شيئًا بعد. اختر كتلة كود — فيظهر الشرح هنا ويُحاط الجزء الذي تتحكم فيه بإطار في الصفحة الحيّة.">Nothing selected yet. Select a block of code — the explanation appears here and the part it controls is outlined in the live page.</p>
+        <div class="code-why-body" hidden>
+          <div class="code-why-head">
+            <span class="layer-tag" data-role="why-tag"></span>
+            <b data-role="why-label"></b>
+          </div>
+          <p data-role="why-text"></p>
+        </div>
+      </div>
+
+      <div class="lab-caption">
+        <div class="lab-name">
+          <h3 data-role="name"></h3>
+          <span class="layer-tag" data-role="tag"></span>
+        </div>
+        <p data-role="note"></p>
+      </div>
+    </div>
+
+    <p class="code-legend">
+      <span class="lg lg-html" data-en="HTML" data-ar="HTML">HTML</span>
+      <span class="lg lg-css" data-en="CSS" data-ar="CSS">CSS</span>
+      <span class="lg lg-js" data-en="JavaScript" data-ar="JavaScript">JavaScript</span>
+      <span class="lg lg-new" data-en="+ new in this stage" data-ar="+ جديد في هذه المرحلة">+ new in this stage</span>
+      <span data-en="Select any block of code to see what it does and where it acts." data-ar="اختر أي كتلة كود لترى ما تفعله وأين تعمل.">Select any block of code to see what it does and where it acts.</span>
+    </p>
+  </div>
+
+  <div class="hint" style="margin-top:26px">
+    <p style="margin:0"><b data-en="Take it further: " data-ar="خطوة إضافية: ">Take it further: </b><span data-en="press “Copy this code” at stage 3, open the Edulixa HTML Viewer, paste it, and run it. That is the whole publishing route of this level, practised on an activity you did not have to write." data-ar="اضغط «انسخ هذا الكود» في المرحلة 3، وافتح عارض Edulixa، والصقه، ثم شغّله. هذا هو مسار النشر الكامل في هذا المستوى، مُتدرَّبًا عليه بنشاط لم تكتبه بنفسك.">press “Copy this code” at stage 3, open the Edulixa HTML Viewer, paste it, and run it. That is the whole publishing route of this level, practised on an activity you did not have to write.</span></p>
+  </div>
+</section>
+
+<!-- ======================= LEVEL 3 · SORT THE LAYERS ======================= -->
+<section class="pane" id="pane-sort" role="tabpanel" aria-labelledby="tab-sort" hidden>
+  <h1 class="display" data-en="Which layer does each job belong to?" data-ar="إلى أي طبقة تنتمي كل مهمة؟">Which layer does each job belong to?</h1>
+  <p class="lede" data-en="Choose a card, then choose a layer. Every answer comes back with a reason, right or wrong, and a wrong card returns to the tray so you can try again." data-ar="اختر بطاقة، ثم اختر طبقة. كل إجابة تأتي بسبب، صحيحة كانت أو خاطئة، والبطاقة الخاطئة تعود إلى الصف لتحاول مرة أخرى.">Choose a card, then choose a layer. Every answer comes back with a reason, right or wrong, and a wrong card returns to the tray so you can try again.</p>
+
+  <div class="lab">
+    <div class="lab-head">
+      <span class="lab-title" data-en="Twelve jobs · three layers" data-ar="اثنتا عشرة مهمة · ثلاث طبقات">Twelve jobs · three layers</span>
+      <span class="lab-title" id="sort-progress">0 / 12</span>
+    </div>
+
+    <div class="tray" id="tray">
+      <button class="piece" type="button" aria-pressed="false" data-layer="html" data-why-en="A heading is a part of the page, so it is written in HTML." data-why-ar="العنوان جزء من الصفحة، لذلك يُكتب في HTML." data-en="The lesson title at the top" data-ar="عنوان الدرس في الأعلى">The lesson title at the top</button>
+      <button class="piece" type="button" aria-pressed="false" data-layer="css" data-why-en="A colour is appearance, and appearance is CSS." data-why-ar="اللون مظهر، والمظهر هو CSS." data-en="The colour of the answer button" data-ar="لون زر الإجابة">The colour of the answer button</button>
+      <button class="piece" type="button" aria-pressed="false" data-layer="js" data-why-en="Adding up a score is a calculation, and calculations are JavaScript." data-why-ar="جمع الدرجات عملية حسابية، والعمليات الحسابية هي JavaScript." data-en="Adding up the student's score" data-ar="جمع درجات الطالب">Adding up the student's score</button>
+      <button class="piece" type="button" aria-pressed="false" data-layer="html" data-why-en="The button itself has to exist on the page before anything can style it or make it work — that is HTML." data-why-ar="يجب أن يوجد الزر نفسه على الصفحة قبل أن ينسّقه أحد أو يشغّله — وهذا HTML." data-en="The “Check my answer” button existing" data-ar="وجود زر «تحقق من إجابتي»">The “Check my answer” button existing</button>
+      <button class="piece" type="button" aria-pressed="false" data-layer="css" data-why-en="Rounded corners are shape and appearance, so CSS owns them." data-why-ar="الحواف الدائرية شكل ومظهر، لذلك تملكها CSS." data-en="The rounded corners on every card" data-ar="الحواف الدائرية لكل بطاقة">The rounded corners on every card</button>
+      <button class="piece" type="button" aria-pressed="false" data-layer="js" data-why-en="Reacting to a click is behaviour, and behaviour is JavaScript." data-why-ar="الاستجابة للنقر سلوك، والسلوك هو JavaScript." data-en="Showing “Correct!” after a click" data-ar="إظهار «صحيح!» بعد النقر">Showing “Correct!” after a click</button>
+      <button class="piece" type="button" aria-pressed="false" data-layer="html" data-why-en="A list of words is content, and content lives in HTML." data-why-ar="قائمة الكلمات محتوى، والمحتوى يعيش في HTML." data-en="The list of vocabulary words" data-ar="قائمة المفردات">The list of vocabulary words</button>
+      <button class="piece" type="button" aria-pressed="false" data-layer="css" data-why-en="Which font, and how large, is a design decision — CSS." data-why-ar="أي خط وبأي حجم قرار تصميمي — CSS." data-en="The font and the size of the text" data-ar="نوع الخط وحجم النص">The font and the size of the text</button>
+      <button class="piece" type="button" aria-pressed="false" data-layer="js" data-why-en="A timer counts down over time, which needs logic — JavaScript." data-why-ar="المؤقت يعدّ تنازليًا مع الوقت، وهذا يحتاج منطقًا — JavaScript." data-en="The countdown timer running" data-ar="عمل المؤقت التنازلي">The countdown timer running</button>
+      <button class="piece" type="button" aria-pressed="false" data-layer="html" data-why-en="The input box is a part of the page, so HTML creates it." data-why-ar="مربع الإدخال جزء من الصفحة، لذلك يُنشئه HTML." data-en="The box where the student types a name" data-ar="المربع الذي يكتب فيه الطالب اسمه">The box where the student types a name</button>
+      <button class="piece" type="button" aria-pressed="false" data-layer="css" data-why-en="Spacing is layout, and layout is CSS." data-why-ar="المسافات تنسيق، والتنسيق هو CSS." data-en="The spacing between two questions" data-ar="المسافة بين سؤالين">The spacing between two questions</button>
+      <button class="piece" type="button" aria-pressed="false" data-layer="js" data-why-en="Keeping the answers after a refresh means storing them, and storing is JavaScript." data-why-ar="الاحتفاظ بالإجابات بعد إعادة التحميل يعني تخزينها، والتخزين هو JavaScript." data-en="Keeping the answers after a refresh" data-ar="الاحتفاظ بالإجابات بعد إعادة التحميل">Keeping the answers after a refresh</button>
+    </div>
+
+    <div class="bins">
+      <div class="bin" data-bin="html">
+        <header>
+          <h4 data-en="HTML" data-ar="HTML">HTML</h4>
+          <span class="layer-tag is-html" data-en="The frame" data-ar="الهيكل">The frame</span>
+        </header>
+        <button class="bin-drop" type="button" data-bin-drop="html" data-en="Put the chosen card here" data-ar="ضع البطاقة المختارة هنا">Put the chosen card here</button>
+        <div class="bin-items"></div>
+      </div>
+      <div class="bin" data-bin="css">
+        <header>
+          <h4 data-en="CSS" data-ar="CSS">CSS</h4>
+          <span class="layer-tag is-css" data-en="The paint" data-ar="الطلاء">The paint</span>
+        </header>
+        <button class="bin-drop" type="button" data-bin-drop="css" data-en="Put the chosen card here" data-ar="ضع البطاقة المختارة هنا">Put the chosen card here</button>
+        <div class="bin-items"></div>
+      </div>
+      <div class="bin" data-bin="js">
+        <header>
+          <h4 data-en="JavaScript" data-ar="JavaScript">JavaScript</h4>
+          <span class="layer-tag is-js" data-en="The engine" data-ar="المحرك">The engine</span>
+        </header>
+        <button class="bin-drop" type="button" data-bin-drop="js" data-en="Put the chosen card here" data-ar="ضع البطاقة المختارة هنا">Put the chosen card here</button>
+        <div class="bin-items"></div>
+      </div>
+    </div>
+
+    <div class="verdict" id="verdict" aria-live="polite">
+      <p data-en="Choose a card from the row above, then choose the layer it belongs to." data-ar="اختر بطاقة من الصف أعلاه، ثم اختر الطبقة التي تنتمي إليها.">Choose a card from the row above, then choose the layer it belongs to.</p>
+    </div>
+
+    <div class="lab-actions">
+      <button class="btn btn-ghost" type="button" id="sort-reset" data-en="Start again" data-ar="ابدأ من جديد">Start again</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot" style="margin-top:56px">
+  <div class="foot-in">
+    <img src="../assets/logo-reversed.png" alt="Edulixa 360">
+    <p data-en="Build · Style · Drive — Session 1, AI Masterclass for Teachers, Level 3." data-ar="ابنِ · نسّق · شغّل — المحاضرة 1، الماستر كلاس للمعلمين بالذكاء الاصطناعي، المستوى الثالث.">Build · Style · Drive — Session 1, AI Masterclass for Teachers, Level 3.</p>
+    <a class="btn btn-ghost" href="../session1.html" target="_top"><span data-en="Back to Session 1" data-ar="العودة إلى المحاضرة 1">Back to Session 1</span></a>
+  </div>
+</footer>
+
+<script src="../assets/edulixa.js"></script>
+<script>
+(function(){
+  'use strict';
+  var AR = function(){ return document.documentElement.getAttribute('dir') === 'rtl'; };
+  var t  = function(el, en, ar){ el.setAttribute('data-en', en); el.setAttribute('data-ar', ar);
+                                 el.textContent = AR() ? ar : en; };
+
+  /* ---------------- points ---------------- */
+  var pts = 0, pointsEl = document.getElementById('points');
+  /* stage 1 of each level is where the teacher lands, so it is not scored */
+  var seen = { page1:1 };
+  function award(key, n){
+    if (seen[key]) return;
+    seen[key] = 1; pts += n; pointsEl.textContent = String(pts);
+  }
+  /* the shared car lab reports each stage it reaches through this hook */
+  window.EdulixaScore = award;
+
+  /* ---------------- level tabs ---------------- */
+  var panes = { car:'pane-car', page:'pane-page', sort:'pane-sort' };
+  function showLevel(key, scroll){
+    if (!panes[key]) return;
+    document.querySelectorAll('[data-level]').forEach(function(b){
+      b.setAttribute('aria-selected', String(b.getAttribute('data-level') === key));
+    });
+    Object.keys(panes).forEach(function(k){
+      document.getElementById(panes[k]).hidden = (k !== key);
+    });
+    if (scroll) window.scrollTo({ top:0, behavior:'smooth' });
+  }
+  document.querySelectorAll('[data-level]').forEach(function(btn){
+    btn.addEventListener('click', function(){ showLevel(btn.getAttribute('data-level'), true); });
+  });
+  /* A page that already shows the car above the embedded lab asks for a level
+     with the address: app-build-style-drive.html#page opens on the real page,
+     so the car is not demonstrated twice on one screen. */
+  var wanted = (location.hash || '').replace('#','');
+  if (panes[wanted]) showLevel(wanted, false);
+
+  /* =========================================================
+     LEVEL 2 — a real activity, in three stages
+
+     The document is described as an ordered list of CHUNKS. Each chunk knows
+     which stage it arrives at, which layer it belongs to, what it does in
+     plain language, and which elements of the live page it governs. That one
+     model drives three things at once: the assembled file, the clickable code
+     panel with the new lines marked, and the outline drawn in the preview.
+     ========================================================= */
+  var CHUNKS = [
+    /* ---- the head ---- */
+    { stage:1, layer:'html', sel:'', label:['The file itself','الملف نفسه'],
+      why:['Every page opens the same way: the doctype tells the browser this is modern HTML, and the head holds information about the page rather than content a learner sees.',
+           'كل صفحة تُفتح بالطريقة نفسها: سطر doctype يخبر المتصفح أن هذا HTML حديث، والـ head يحمل معلومات عن الصفحة لا محتوى يراه المتعلم.'],
+      lines:['<!doctype html>','<html>','<head>','  <meta charset="utf-8">','  <title>The Water Cycle — quick check</title>'] },
+
+    /* ---- stage 2 · the whole design layer, in one block ---- */
+    { stage:2, layer:'css', sel:'', label:['Where the CSS lives','حيث يعيش CSS'],
+      why:['Everything from here to the closing tag is the design layer, and it sits in the head — above the content, because the browser wants to know how things look before it draws them. It can change how any part looks; it can never add a part or make anything happen.',
+           'كل ما بين هنا ووسم الإغلاق هو طبقة التصميم، وهي في الـ head — فوق المحتوى، لأن المتصفح يريد معرفة شكل الأشياء قبل رسمها. تستطيع تغيير شكل أي جزء؛ ولا تستطيع أبدًا إضافة جزء أو جعل شيء يحدث.'],
+      lines:['  <style>'] },
+
+    { stage:2, layer:'css', sel:'body', label:['The page background','خلفية الصفحة'],
+      why:['A gradient across the whole page, a real typeface, and space so nothing touches the edge of a phone. One rule on body, and everything inside it inherits the typeface and the colour.',
+           'تدرّج لوني يغطي الصفحة كاملة، وخط حقيقي، ومسافة تمنع أي شيء من ملامسة حافة الهاتف. قاعدة واحدة على body، وكل ما داخله يورَّث الخط واللون.'],
+      lines:['    body {',
+             '      margin: 0;',
+             '      padding: 16px 14px;',
+             '      font-family: system-ui, sans-serif;',
+             '      color: #12211F;',
+             '      background: linear-gradient(160deg, #E6F0EE, #F6F8F7 60%, #FDEDEA);',
+             '    }'] },
+
+    { stage:2, layer:'css', sel:'.card', label:['The card: shadow, rounded corners, entrance','البطاقة: ظل وحواف دائرية وظهور'],
+      why:['This is the rule teachers notice first. A white surface, a 20-pixel radius, a soft shadow to lift it off the background, and an animation that slides it up as the page opens. Effects like this are CSS alone — no JavaScript is involved.',
+           'هذه هي القاعدة التي يلاحظها المعلمون أولًا. سطح أبيض، وانحناء 20 بكسل، وظل ناعم يرفعها عن الخلفية، وحركة تُصعدها عند فتح الصفحة. تأثيرات كهذه من CSS وحده — ولا دخل لـ JavaScript فيها.'],
+      lines:['    .card {',
+             '      max-width: 440px;',
+             '      margin: 0 auto;',
+             '      padding: 20px;',
+             '      background: #FFFFFF;',
+             '      border-radius: 20px;',
+             '      box-shadow: 0 18px 40px rgba(15, 105, 93, .16);',
+             '      animation: riseIn .6s ease both;',
+             '    }',
+             '    @keyframes riseIn {',
+             '      from { opacity: 0; transform: translateY(18px); }',
+             '      to   { opacity: 1; transform: translateY(0); }',
+             '    }'] },
+
+    { stage:2, layer:'css', sel:'.eyebrow, h1', label:['Brand colour on the heading','لون الهوية على العنوان'],
+      why:['The green is the Edulixa brand colour, written once as a hex value. The small label above it is spaced out and set in capitals — the same trick every professional page uses to make a label read as a label.',
+           'الأخضر هو لون هوية Edulixa، مكتوب مرة واحدة كقيمة hex. والوسم الصغير فوقه مباعد الحروف وبأحرف كبيرة — وهي الحيلة نفسها التي تستخدمها كل صفحة احترافية ليُقرأ الوسم كوسم.'],
+      lines:['    .eyebrow {',
+             '      margin: 0;',
+             '      color: #0F695D;',
+             '      font-size: 12px;',
+             '      font-weight: 700;',
+             '      letter-spacing: .14em;',
+             '      text-transform: uppercase;',
+             '    }',
+             '    h1 { margin: 5px 0 3px; font-size: 26px; color: #0A4A41; }',
+             '    .lede { margin: 0 0 13px; color: #4A5A57; }'] },
+
+    { stage:2, layer:'css', sel:'#name', label:['The input, and the ring when you focus it','المربع، والحلقة عند التركيز عليه'],
+      why:['A border, a radius, and a focus ring that appears when the box is selected. Select the box in the live page to see it. That ring is not decoration — it is how a keyboard user knows where they are, and accessibility standards require it.',
+           'إطار، وانحناء، وحلقة تركيز تظهر عند اختيار المربع. اختر المربع في الصفحة الحيّة لتراها. وهذه الحلقة ليست زخرفة — بل هي ما يعرف به مستخدم لوحة المفاتيح موضعه، ومعايير إمكانية الوصول تفرضها.'],
+      lines:['    label { display: block; font-size: 13px; font-weight: 700; }',
+             '    input {',
+             '      width: 100%;',
+             '      box-sizing: border-box;',
+             '      margin: 6px 0 4px;',
+             '      padding: 11px 14px;',
+             '      border: 1.5px solid #D5E0DD;',
+             '      border-radius: 12px;',
+             '      font-size: 15px;',
+             '      transition: border-color .2s, box-shadow .2s;',
+             '    }',
+             '    input:focus {',
+             '      outline: none;',
+             '      border-color: #0F695D;',
+             '      box-shadow: 0 0 0 4px rgba(15, 105, 93, .18);',
+             '    }',
+             '    #greeting { margin: 0 0 12px; color: #0F695D; font-weight: 700; }'] },
+
+    { stage:2, layer:'css', sel:'.opt', label:['The options: hover, lift and press','الخيارات: تمرير ورفع وضغط'],
+      why:['Hover lifts the option and deepens its shadow; pressing pushes it back down. The transition line is what makes both smooth instead of sudden. Hover an option in the live page and watch it — that is CSS reacting, with no logic behind it at all.',
+           'التمرير يرفع الخيار ويعمّق ظله؛ والضغط يعيده إلى أسفل. وسطر transition هو ما يجعل الحركتين سلسلتين لا مفاجئتين. مرّر على خيار في الصفحة الحيّة وراقبه — فذلك CSS يستجيب، بلا أي منطق خلفه.'],
+      lines:['    #options { display: grid; gap: 8px; margin-bottom: 10px; }',
+             '    .opt {',
+             '      padding: 11px 14px;',
+             '      text-align: left;',
+             '      background: #F6F8F7;',
+             '      color: #12211F;',
+             '      border: 1.5px solid #D5E0DD;',
+             '      border-radius: 12px;',
+             '      font-size: 15px;',
+             '      font-weight: 600;',
+             '      cursor: pointer;',
+             '      transition: transform .18s, box-shadow .18s, background .18s;',
+             '    }',
+             '    .opt:hover {',
+             '      background: #FFFFFF;',
+             '      border-color: #0F695D;',
+             '      transform: translateY(-2px);',
+             '      box-shadow: 0 8px 18px rgba(15, 105, 93, .18);',
+             '    }',
+             '    .opt:active { transform: translateY(0); }',
+             '    .opt.right { background: #E6F0EE; border-color: #1B7F4B; }',
+             '    .opt.wrong { background: #FDEDEA; border-color: #B3261E; }',
+             '    #feedback { margin: 0 0 12px; font-weight: 700; min-height: 20px; }',
+             '    #feedback.ok { color: #1B7F4B; }',
+             '    #feedback.no { color: #B3261E; }'] },
+
+    { stage:2, layer:'css', sel:'.bar', label:['The progress bar, and why it glides','شريط التقدم، ولماذا ينزلق'],
+      why:['A grey track with a green-to-orange gradient inside it. The width starts at zero, and the transition on width is what makes it glide instead of jumping when JavaScript changes it in stage 3. The movement is CSS; the decision to move is JavaScript.',
+           'مسار رمادي بداخله تدرّج من الأخضر إلى البرتقالي. يبدأ العرض من صفر، وسطر transition على العرض هو ما يجعله ينزلق لا يقفز عندما يغيّره JavaScript في المرحلة 3. الحركة من CSS؛ وقرار الحركة من JavaScript.'],
+      lines:['    .bar {',
+             '      height: 10px;',
+             '      background: #E9EEED;',
+             '      border-radius: 999px;',
+             '      overflow: hidden;',
+             '    }',
+             '    #fill {',
+             '      display: block;',
+             '      width: 0%;',
+             '      height: 100%;',
+             '      background: linear-gradient(90deg, #0F695D, #EE3A23);',
+             '      transition: width .5s ease;',
+             '    }',
+             '    .meta { margin: 8px 0 12px; font-size: 13px; color: #4A5A57; }'] },
+
+    { stage:2, layer:'css', sel:'#explain', label:['The main button, and the explanation box','الزر الرئيسي، وصندوق الشرح'],
+      why:['Brand green, white text, no border, generous padding, a rounded edge, then a darker green on hover. A few short lines are the whole difference between a browser default button and something that looks made on purpose.',
+           'أخضر الهوية، ونص أبيض، وبلا إطار، وحشو سخي، وحافة دائرية، ثم أخضر أغمق عند التمرير. أسطر قصيرة قليلة هي كل الفرق بين زر افتراضي من المتصفح وشيء يبدو مصنوعًا بقصد.'],
+      lines:['    #explain {',
+             '      background: #0F695D;',
+             '      color: #FFFFFF;',
+             '      border: 0;',
+             '      padding: 12px 20px;',
+             '      border-radius: 12px;',
+             '      font-size: 15px;',
+             '      font-weight: 700;',
+             '      cursor: pointer;',
+             '      transition: background .2s;',
+             '    }',
+             '    #explain:hover { background: #0A4A41; }',
+             '    #why {',
+             '      margin: 12px 0 0;',
+             '      padding: 13px 15px;',
+             '      background: #E6F0EE;',
+             '      border-left: 4px solid #0F695D;',
+             '      border-radius: 0 12px 12px 0;',
+             '      font-size: 14px;',
+             '    }'] },
+
+    { stage:2, layer:'css', sel:'', label:['Closing the design layer','إغلاق طبقة التصميم'],
+      why:['The design layer ends here. Everything below this line is content again — and notice that not one word of the content had to change for the page to look completely different.',
+           'تنتهي طبقة التصميم هنا. وكل ما تحت هذا السطر محتوى من جديد — ولاحظ أنه لم يلزم تغيير كلمة واحدة من المحتوى حتى تبدو الصفحة مختلفة تمامًا.'],
+      lines:['  </style>'] },
+
+    /* ---- stage 1 · the content ---- */
+    { stage:1, layer:'html', sel:'.card', label:['The card that holds the activity','البطاقة التي تحمل النشاط'],
+      why:['A div is a box with no meaning of its own — it exists so the design layer has something to put a shadow and a rounded edge on. At stage 1 it is completely invisible.',
+           'الـ div صندوق بلا معنى خاص به — وُجد ليكون لطبقة التصميم شيء تضع عليه ظلًّا وحافة دائرية. وفي المرحلة 1 لا يُرى إطلاقًا.'],
+      lines:['</head>','<body>','','  <div class="card">'] },
+
+    { stage:1, layer:'html', sel:'.eyebrow, h1, .lede', label:['The title and the question','العنوان والسؤال'],
+      why:['A heading, a small label above it, and the question itself. This is the whole of the teaching content — the words a learner reads exist only here, in HTML.',
+           'عنوان، ووسم صغير فوقه، والسؤال نفسه. هذا هو كل المحتوى التعليمي — فالكلمات التي يقرؤها المتعلم لا توجد إلا هنا، في HTML.'],
+      lines:['    <p class="eyebrow">Edulixa 360 · Science</p>',
+             '    <h1>The Water Cycle</h1>',
+             '    <p class="lede">Which stage turns water into vapour?</p>'] },
+
+    { stage:1, layer:'html', sel:'#name, label', label:['The box for the learner’s name','مربع اسم المتعلم'],
+      why:['An input with a label tied to it. It accepts typing straight away, because typing into a box is something the browser does by itself — but nothing happens with what is typed until stage 3.',
+           'مربع إدخال مع وسم مرتبط به. يقبل الكتابة فورًا، لأن الكتابة في مربع شيء يفعله المتصفح بنفسه — لكن لا يحدث شيء بما يُكتب حتى المرحلة 3.'],
+      lines:['    <label for="name">Your first name</label>',
+             '    <input id="name" placeholder="Type your name">',
+             '    <p id="greeting"></p>'] },
+
+    { stage:1, layer:'html', sel:'.opt', label:['The three answer options','الخيارات الثلاثة'],
+      why:['Three real buttons. The right answer is already marked in the code with data-ok="yes" — a note attached to the element that only JavaScript will ever read. Press one now and nothing happens.',
+           'ثلاثة أزرار حقيقية. والإجابة الصحيحة معلَّمة بالفعل في الكود بـ data-ok="yes" — وهي ملاحظة ملتصقة بالعنصر لن يقرأها إلا JavaScript. اضغط أحدها الآن ولن يحدث شيء.'],
+      lines:['    <div id="options">',
+             '      <button class="opt" data-ok="no">Condensation</button>',
+             '      <button class="opt" data-ok="yes">Evaporation</button>',
+             '      <button class="opt" data-ok="no">Collection</button>',
+             '    </div>',
+             '    <p id="feedback"></p>'] },
+
+    { stage:1, layer:'html', sel:'.bar, .meta', label:['The progress bar and the counters','شريط التقدم والعدّادات'],
+      why:['An empty bar and two numbers sitting at zero and thirty. Nothing here counts or fills by itself — HTML can only put the shapes and the starting numbers on the page.',
+           'شريط فارغ ورقمان عند صفر وثلاثين. ولا شيء هنا يعدّ أو يمتلئ من تلقاء نفسه — فـ HTML لا يستطيع إلا وضع الأشكال والأرقام الأولى على الصفحة.'],
+      lines:['    <div class="bar"><span id="fill"></span></div>',
+             '    <p class="meta">Score <b id="score">0</b> · Time left <b id="clock">30</b>s</p>'] },
+
+    { stage:1, layer:'html', sel:'#explain, #why', label:['The explanation, and the button for it','الشرح، والزر الخاص به'],
+      why:['The explanation is written on the page from the start, with the word hidden on it. Hidden is not deleted — the text is in the file, and one line of JavaScript will be able to reveal it.',
+           'الشرح مكتوب على الصفحة من البداية، وعليه كلمة hidden. والمخفي ليس محذوفًا — فالنص موجود في الملف، وسطر واحد من JavaScript سيستطيع كشفه.'],
+      lines:['    <button id="explain">Show the explanation</button>',
+             '    <p id="why" hidden>The sun heats the water, it becomes',
+             '      vapour, and it rises. That is evaporation.</p>',
+             '  </div>',''] },
+
+    /* ---- stage 3 · the behaviour, in one block at the end ---- */
+    { stage:3, layer:'js', sel:'', label:['Where the JavaScript lives','حيث يعيش JavaScript'],
+      why:['Everything from here to the closing tag is the logic layer, and it sits at the bottom — after the content, so that every element it talks about already exists. It is the only layer that can respond to a person, count, measure time, or change what is on screen.',
+           'كل ما بين هنا ووسم الإغلاق هو طبقة المنطق، وهي في الأسفل — بعد المحتوى، حتى يكون كل عنصر تتحدث عنه موجودًا بالفعل. وهي الطبقة الوحيدة القادرة على الاستجابة لشخص، أو العدّ، أو قياس الوقت، أو تغيير ما على الشاشة.'],
+      lines:['  <script>'] },
+
+    { stage:3, layer:'js', sel:'#greeting', label:['1 · Greet the learner by name','1 · رحّب بالمتعلم باسمه'],
+      why:['As soon as a letter is typed, the page writes a greeting back. The input event fires on every keystroke — this is the shortest possible proof that a page can answer a person. Type your name in the live page now.',
+           'بمجرد كتابة حرف، تكتب الصفحة ترحيبًا. حدث input يُطلق مع كل ضغطة مفتاح — وهذا أقصر إثبات ممكن على أن الصفحة تستطيع الرد على شخص. اكتب اسمك في الصفحة الحيّة الآن.'],
+      lines:['    var nameBox = document.getElementById("name");',
+             '    nameBox.addEventListener("input", function () {',
+             '      var v = nameBox.value.trim();',
+             '      document.getElementById("greeting").textContent =',
+             '        v ? "Good luck, " + v + "." : "";',
+             '    });'] },
+
+    { stage:3, layer:'js', sel:'.opt, #feedback', label:['2 · Check the answer, and say why','2 · تحقق من الإجابة، وقل السبب'],
+      why:['One listener covers all three options. It reads the data-ok note that HTML attached, adds a green or red class, and writes a sentence explaining the answer instead of a bare tick. Feedback with a reason is the difference between a quiz and a lesson.',
+           'مستمع واحد يغطي الخيارات الثلاثة. يقرأ ملاحظة data-ok التي ألصقها HTML، ويضيف صنفًا أخضر أو أحمر، ويكتب جملة تشرح الإجابة بدلًا من علامة صح مجردة. والتغذية الراجعة المصحوبة بسبب هي الفرق بين اختبار ودرس.'],
+      lines:['    var fb = document.getElementById("feedback");',
+             '    document.querySelectorAll(".opt").forEach(function (b) {',
+             '      b.addEventListener("click", function () {',
+             '        var right = b.dataset.ok === "yes";',
+             '        b.classList.add(right ? "right" : "wrong");',
+             '        fb.className = right ? "ok" : "no";',
+             '        fb.textContent = right',
+             '          ? "Correct — heat turns liquid water into vapour."',
+             '          : "Not that one — that stage happens later, on the way down.";',
+             '        if (right) award();',
+             '        start();',
+             '      });',
+             '    });'] },
+
+    { stage:3, layer:'js', sel:'#score, .bar', label:['3 and 4 · Keep the score, fill the bar','3 و 4 · احفظ الدرجة، واملأ الشريط'],
+      why:['A number is held in memory, raised by one, written back to the page, and turned into a width for the bar. The bar slides rather than jumps because CSS was told to animate width back in stage 2 — two layers doing one job between them.',
+           'رقم محفوظ في الذاكرة، يُزاد بواحد، ويُكتب على الصفحة، ويُحوَّل إلى عرض للشريط. والشريط ينزلق ولا يقفز لأن CSS أُمر بتحريك العرض في المرحلة 2 — طبقتان تؤديان عملًا واحدًا بينهما.'],
+      lines:['    var score = 0;',
+             '    function award() {',
+             '      score = score + 1;',
+             '      document.getElementById("score").textContent = score;',
+             '      document.getElementById("fill").style.width =',
+             '        Math.min(score * 50, 100) + "%";',
+             '    }'] },
+
+    { stage:3, layer:'js', sel:'#clock', label:['5 · Run a countdown','5 · شغّل مؤقتًا تنازليًا'],
+      why:['setInterval runs the same instruction once every second. The timer only starts on the first answer, and it stops itself at zero. A page that measures time is a page that can hold a real classroom task.',
+           'الدالة setInterval تنفّذ التعليمة نفسها مرة كل ثانية. ولا يبدأ المؤقت إلا مع أول إجابة، ويوقف نفسه عند الصفر. والصفحة التي تقيس الوقت هي صفحة تستطيع أن تحمل مهمة صفية حقيقية.'],
+      lines:['    var secondsLeft = 30, ticking = null;',
+             '    function start() {',
+             '      if (ticking) return;',
+             '      ticking = setInterval(function () {',
+             '        secondsLeft = secondsLeft - 1;',
+             '        document.getElementById("clock").textContent = secondsLeft;',
+             '        if (secondsLeft <= 0) clearInterval(ticking);',
+             '      }, 1000);',
+             '    }'] },
+
+    { stage:3, layer:'js', sel:'#explain, #why', label:['6 · Show and hide the explanation','6 · اعرض الشرح وأخفِه'],
+      why:['The text was in the page all along. This flips its hidden state and renames the button to match. Show-and-hide is the most reused pattern in every teaching app you will build after this — hints, model answers, next steps.',
+           'كان النص في الصفحة من البداية. وهذا يقلب حالة إخفائه ويعيد تسمية الزر ليطابقها. والعرض والإخفاء هو النمط الأكثر تكرارًا في كل تطبيق تعليمي ستبنيه بعد هذا — التلميحات والإجابات النموذجية والخطوات التالية.'],
+      lines:['    var why = document.getElementById("why");',
+             '    var btn = document.getElementById("explain");',
+             '    btn.addEventListener("click", function () {',
+             '      why.hidden = !why.hidden;',
+             '      btn.textContent = why.hidden',
+             '        ? "Show the explanation"',
+             '        : "Hide the explanation";',
+             '    });',
+             '  <\/script>'] },
+
+    { stage:1, layer:'html', sel:'', label:['Closing the file','إغلاق الملف'],
+      why:['Every tag that was opened is closed, in the reverse order. If the AI ever hands you a file that stops before these two lines, it was cut off — ask it to continue from the last line without repeating anything.',
+           'كل وسم فُتح يُغلق، بالترتيب المعاكس. وإذا سلّمك الذكاء الاصطناعي ملفًا يتوقف قبل هذين السطرين، فقد قُطع — اطلب منه المتابعة من آخر سطر دون إعادة أي شيء.'],
+      lines:['</body>','</html>'] }
+  ];
+
+  /* the preview gets one extra script the teacher never sees: it outlines
+     whatever the selected block of code governs. */
+  var HILITE =
+    '<script>(function(){var s=document.createElement("style");' +
+    's.textContent="[data-hl]{outline:3px solid #EE3A23!important;outline-offset:4px!important;border-radius:8px}";' +
+    'document.head.appendChild(s);' +
+    'window.addEventListener("message",function(e){var d=e.data||{};' +
+    'if(!("previewHighlight" in d))return;' +
+    'document.querySelectorAll("[data-hl]").forEach(function(n){n.removeAttribute("data-hl")});' +
+    'if(!d.previewHighlight)return;' +
+    'try{document.querySelectorAll(d.previewHighlight).forEach(function(n){n.setAttribute("data-hl","1")})}catch(x){}' +
+    '});})();<\/script>';
+
+  function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function pageDoc(stage, withHilite) {
+    var out = [];
+    CHUNKS.forEach(function (c) {
+      if (c.stage <= stage) out.push(c.lines.join('\n'));
+    });
+    var doc = out.join('\n');
+    if (withHilite) {
+      doc = /<\/body>/i.test(doc) ? doc.replace(/<\/body>/i, HILITE + '</body>') : doc + HILITE;
+    }
+    return doc;
+  }
+
+  var pageLab   = document.getElementById('page-lab');
+  var pq        = function (r) { return pageLab.querySelector('[data-role="' + r + '"]'); };
+  var pageHead  = pq('head');
+  var pageName  = pq('name');
+  var pageNote  = pq('note');
+  var pageTag   = pq('tag');
+  var pageCode  = document.getElementById('page-code');
+  var frame     = document.getElementById('page-frame');
+  var whyBox    = document.getElementById('code-why');
+  var whyHint   = whyBox.querySelector('.code-why-hint');
+  var whyBody   = whyBox.querySelector('.code-why-body');
+  var whyTag    = pq('why-tag');
+  var whyLabel  = pq('why-label');
+  var whyText   = pq('why-text');
+  var pageBack  = document.getElementById('page-back');
+  var pageNext  = document.getElementById('page-next');
+  var pageStage = 1;
+  var picked    = null;
+
+  var PAGE = {
+    1:{ head:['Stage 1 · Content','المرحلة 1 · المحتوى'],
+        name:['Content, and nothing else','محتوى، ولا شيء غيره'],
+        tag:'HTML', tagClass:'is-html',
+        note:['Every word, every option, every number is already here, in the browser’s own default font, stacked down one edge. The three options are real buttons and the input really accepts typing — but pressing an option does nothing, because nothing has told it what to do.',
+              'كل كلمة وكل خيار وكل رقم موجود هنا بالفعل، بخط المتصفح الافتراضي، مرصوصًا على حافة واحدة. والخيارات الثلاثة أزرار حقيقية والمربع يقبل الكتابة فعلًا — لكن الضغط على خيار لا يفعل شيئًا، لأن لا شيء أخبره بما يفعل.'] },
+    2:{ head:['Stage 2 · Design','المرحلة 2 · التصميم'],
+        name:['Real colours, and real effects','ألوان حقيقية، وتأثيرات حقيقية'],
+        tag:'CSS', tagClass:'is-css',
+        note:['Not one word of content changed. Nine blocks of CSS arrived and the page now has a gradient background, a card with a soft shadow that slides up as it opens, brand green on the heading, a focus ring on the input, options that lift when you hover them, and a progress bar with a green-to-orange fill. Hover an option in the live page — that reaction is CSS, with no logic behind it.',
+              'لم تتغير كلمة واحدة من المحتوى. وصلت تسع كتل من CSS، وأصبح للصفحة خلفية متدرجة، وبطاقة بظل ناعم تصعد عند فتحها، وأخضر الهوية على العنوان، وحلقة تركيز على المربع، وخيارات ترتفع عند التمرير عليها، وشريط تقدم بتدرّج من الأخضر إلى البرتقالي. مرّر على خيار في الصفحة الحيّة — فتلك الاستجابة من CSS، بلا أي منطق خلفها.'] },
+    3:{ head:['Stage 3 · Behaviour','المرحلة 3 · السلوك'],
+        name:['Six things that finally work','ستة أشياء تعمل أخيرًا'],
+        tag:'JS', tagClass:'is-js',
+        note:['Type your name, then press an option. Six functions arrived at once: the page greets you, marks the option green or red, explains why in a full sentence, adds to the score, fills the progress bar, starts a countdown, and shows or hides the explanation. Same content, same design — the whole difference is one script block.',
+              'اكتب اسمك، ثم اضغط خيارًا. وصلت ست دوال في وقت واحد: الصفحة ترحّب بك، وتلوّن الخيار أخضر أو أحمر، وتشرح السبب في جملة كاملة، وتضيف إلى الدرجة، وتملأ شريط التقدم، وتبدأ العدّ التنازلي، وتعرض الشرح أو تخفيه. المحتوى نفسه، والتصميم نفسه — والفرق كله كتلة سكربت واحدة.'] }
+  };
+
+  function highlight(sel) {
+    try { frame.contentWindow.postMessage({ previewHighlight: sel || '' }, '*'); } catch (e) {}
+  }
+
+  function pick(i) {
+    picked = i;
+    pageCode.querySelectorAll('.chunk').forEach(function (el) {
+      el.classList.toggle('is-picked', Number(el.getAttribute('data-i')) === i);
+      el.setAttribute('aria-pressed', String(Number(el.getAttribute('data-i')) === i));
+    });
+    var el = pageCode.querySelector('.chunk[data-i="' + i + '"]');
+    if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest' });
+    var c = CHUNKS[i];
+    whyHint.hidden = true;
+    whyBody.hidden = false;
+    whyTag.textContent = c.layer === 'html' ? 'HTML' : (c.layer === 'css' ? 'CSS' : 'JS');
+    whyTag.className = 'layer-tag is-' + c.layer;
+    t(whyLabel, c.label[0], c.label[1]);
+    t(whyText, c.why[0], c.why[1]);
+    highlight(c.sel);
+  }
+  function clearPick() {
+    picked = null;
+    whyHint.hidden = false;
+    whyBody.hidden = true;
+    pageCode.querySelectorAll('.chunk').forEach(function (el) {
+      el.classList.remove('is-picked');
+      el.setAttribute('aria-pressed', 'false');
+    });
+    highlight('');
+  }
+
+  function renderCode() {
+    pageCode.innerHTML = '';
+    CHUNKS.forEach(function (c, i) {
+      if (c.stage > pageStage) return;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chunk lay-' + c.layer + (c.stage === pageStage ? ' is-new' : '');
+      b.setAttribute('data-i', String(i));
+      b.setAttribute('aria-pressed', 'false');
+      b.innerHTML = c.lines.map(function (l) {
+        return '<span class="cl"><i aria-hidden="true"></i><code>' + (esc(l) || '&nbsp;') + '</code></span>';
+      }).join('');
+      b.addEventListener('click', function () {
+        if (picked === i) clearPick(); else pick(i);
+      });
+      pageCode.appendChild(b);
+    });
+  }
+
+  function renderPage() {
+    var d = PAGE[pageStage];
+    pageLab.setAttribute('data-stage', String(pageStage));
+    t(pageHead, d.head[0], d.head[1]);
+    t(pageName, d.name[0], d.name[1]);
+    t(pageNote, d.note[0], d.note[1]);
+    pageTag.textContent = d.tag;
+    pageTag.className = 'layer-tag ' + d.tagClass;
+    renderCode();
+    clearPick();
+    var firstNew = pageCode.querySelector('.chunk.is-new');
+    if (firstNew) pageCode.scrollTop = Math.max(0, firstNew.offsetTop - pageCode.offsetTop - 12);
+    frame.setAttribute('srcdoc', pageDoc(pageStage, true));
+    pageLab.querySelectorAll('[data-page-stage]').forEach(function (b) {
+      b.setAttribute('aria-selected', String(Number(b.getAttribute('data-page-stage')) === pageStage));
+    });
+    pageBack.disabled = pageStage === 1;
+    pageNext.disabled = pageStage === 3;
+    award('page' + pageStage, 10);
+  }
+
+  pageLab.querySelectorAll('[data-page-stage]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      pageStage = Number(b.getAttribute('data-page-stage'));
+      renderPage();
+    });
+  });
+  pageBack.addEventListener('click', function () { if (pageStage > 1) { pageStage--; renderPage(); } });
+  pageNext.addEventListener('click', function () { if (pageStage < 3) { pageStage++; renderPage(); } });
+
+  document.getElementById('copy-source').addEventListener('click', function () {
+    var text = pageDoc(pageStage, false);
+    var note = document.getElementById('page-copied');
+    var done = function () {
+      note.textContent = AR() ? '✓ تم نسخ الكود' : '✓ Code copied';
+      setTimeout(function () { note.textContent = ''; }, 2400);
+    };
+    var legacy = function () {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-1000px;left:0;opacity:0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta); done();
+    };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, legacy);
+    else legacy();
+  });
+
+  /* =========================================================
+     LEVEL 3 — sort the layers
+     ========================================================= */
+  var tray     = document.getElementById('tray');
+  var verdict  = document.getElementById('verdict');
+  var progress = document.getElementById('sort-progress');
+  var chosen   = null;
+  var placed   = 0;
+  var LABEL    = { html:['HTML','HTML'], css:['CSS','CSS'], js:['JavaScript','JavaScript'] };
+
+  function say(kind, en, ar){
+    verdict.className = 'verdict' + (kind ? ' is-' + kind : '');
+    var p = verdict.querySelector('p');
+    t(p, en, ar);
+  }
+  function setChosen(piece){
+    tray.querySelectorAll('.piece').forEach(function(p){ p.setAttribute('aria-pressed','false'); });
+    document.querySelectorAll('.bin').forEach(function(b){ b.classList.remove('is-ready'); });
+    chosen = piece;
+    if (!piece) return;
+    piece.setAttribute('aria-pressed','true');
+    document.querySelectorAll('.bin').forEach(function(b){ b.classList.add('is-ready'); });
+    say('', 'Now choose the layer this job belongs to.', 'الآن اختر الطبقة التي تنتمي إليها هذه المهمة.');
+  }
+  tray.addEventListener('click', function(e){
+    var piece = e.target.closest('.piece');
+    if (!piece || piece.classList.contains('is-placed')) return;
+    setChosen(chosen === piece ? null : piece);
+  });
+  document.querySelectorAll('[data-bin-drop]').forEach(function(drop){
+    drop.addEventListener('click', function(){
+      var bin = drop.getAttribute('data-bin-drop');
+      if (!chosen){
+        say('', 'Choose a card from the row above first.', 'اختر بطاقة من الصف أعلاه أولًا.');
+        return;
+      }
+      var right = chosen.getAttribute('data-layer');
+      var whyEn = chosen.getAttribute('data-why-en');
+      var whyAr = chosen.getAttribute('data-why-ar');
+      if (bin === right){
+        var host = drop.parentNode.querySelector('.bin-items');
+        chosen.classList.add('is-placed');
+        chosen.setAttribute('aria-pressed','false');
+        chosen.disabled = true;
+        host.appendChild(chosen);
+        placed++;
+        progress.textContent = placed + ' / 12';
+        award('sort' + placed, 10);
+        say('ok', 'Correct. ' + whyEn, 'صحيح. ' + whyAr);
+        setChosen(null);
+        if (placed === 12){
+          say('ok', 'All twelve sorted. You can now explain the three layers to a class without a single line of code.',
+                    'رُتّبت الاثنتا عشرة كلها. يمكنك الآن شرح الطبقات الثلاث لصف كامل دون سطر كود واحد.');
+        }
+      } else {
+        say('no', 'Not that layer. ' + whyEn, 'ليست هذه الطبقة. ' + whyAr);
+        setChosen(null);
+      }
+    });
+  });
+  document.getElementById('sort-reset').addEventListener('click', function(){
+    document.querySelectorAll('.bin-items .piece').forEach(function(p){
+      p.classList.remove('is-placed'); p.disabled = false; tray.appendChild(p);
+    });
+    placed = 0; progress.textContent = '0 / 12'; setChosen(null);
+    say('', 'Choose a card from the row above, then choose the layer it belongs to.',
+            'اختر بطاقة من الصف أعلاه، ثم اختر الطبقة التي تنتمي إليها.');
+  });
+
+  /* first paint, and repaint the generated strings on a language flip */
+  renderPage();
+  window.addEventListener('edulixa:lang', renderPage);
+})();
+</script>
+<script src="../assets/car-lab.js"></script>
+<script>
+/* ----------------------------------------------------------------
+   When the lab is shown inside a session page, it reports its own
+   height so the session page can show all of it. Without this the
+   teacher scrolls inside the lab and inside the page at once.
+   The height is measured from the content, never from the window,
+   so making the frame taller cannot make the lab ask for more.
+   ---------------------------------------------------------------- */
+(function () {
+  'use strict';
+  if (window.self === window.top) return;
+  var last = 0;
+  function measure() {
+    var low = 0;
+    [].slice.call(document.body.children).forEach(function (el) {
+      if (!el.getClientRects().length) return;
+      var r = el.getBoundingClientRect();
+      low = Math.max(low, r.bottom + window.scrollY);
+    });
+    return Math.ceil(low + 22);
+  }
+  function post() {
+    var h = measure();
+    if (!h || Math.abs(h - last) < 6) return;
+    last = h;
+    try { parent.postMessage({ edulixaLabHeight: h }, '*'); } catch (e) {}
+  }
+  var soon = function () { setTimeout(post, 80); setTimeout(post, 420); setTimeout(post, 900); };
+  window.addEventListener('load', soon);
+  window.addEventListener('resize', post);
+  window.addEventListener('edulixa:lang', soon);
+  document.addEventListener('click', soon);
+  document.addEventListener('transitionend', post);
+  if (window.ResizeObserver) {
+    try { new ResizeObserver(post).observe(document.querySelector('.shell')); } catch (e) {}
+  }
+  soon();
+})();
+</script>
+</body>
+</html>

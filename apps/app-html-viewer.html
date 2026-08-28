@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-en="Edulixa HTML Viewer — run the app the AI built you" data-ar="عارض Edulixa لملفات HTML — شغّل التطبيق الذي بناه لك الذكاء الاصطناعي">Edulixa HTML Viewer — run the app the AI built you</title>
+<link rel="stylesheet" href="../assets/edulixa.css">
+<style>
+body{padding-bottom:48px}
+.app-top{background:var(--bg-2); border-bottom:1px solid var(--line-soft); padding:16px 0}
+.app-top-in{max-width:1240px; margin-inline:auto; padding-inline:24px; display:flex;
+  align-items:center; justify-content:space-between; gap:18px; flex-wrap:wrap}
+.app-top img{width:132px}
+.shell{max-width:1240px; margin-inline:auto; padding:32px 24px 0}
+.shell h1{margin:0 0 12px; font-size:clamp(30px,4.6vw,46px)}
+.shell .lede{margin:0 0 8px; color:var(--ink-2); font-size:19px; max-width:70ch; line-height:1.62}
+.rig{display:grid; grid-template-columns:minmax(0,0.92fr) minmax(0,1.08fr); gap:20px;
+  align-items:start; margin-top:26px}
+@media (max-width:980px){.rig{grid-template-columns:1fr}}
+#paste{min-height:520px; max-height:70vh}
+.run-bar{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:16px 0 0}
+.stat{font-family:var(--mono); font-size:13px; color:var(--muted)}
+html[dir="rtl"] .stat{font-family:var(--ar); font-size:15px}
+.stat.is-warn{color:var(--accent-text); font-weight:700}
+.stat.is-ok{color:var(--signal); font-weight:700}
+#run-wrap .browser iframe{height:620px; background:#fff}
+#run-wrap .browser:fullscreen{display:flex; flex-direction:column}
+#run-wrap .browser:fullscreen iframe{flex:1; height:auto}
+.empty{display:grid; place-items:center; gap:14px; height:620px; padding:30px;
+  text-align:center; color:var(--muted)}
+.empty[hidden]{display:none}
+.run-note{margin:0; padding:12px 18px; background:var(--surface); color:var(--accent-text);
+  border-bottom:1px solid var(--accent-dim); font-size:15.5px; font-weight:700}
+.run-note[hidden]{display:none}   /* an explicit display beats the browser's own [hidden] rule */
+.empty svg{width:56px; height:56px; color:var(--line)}
+.empty p{margin:0; max-width:38ch; font-size:17px; line-height:1.6}
+.checks-lite{list-style:none; margin:18px 0 0; padding:0; display:grid; gap:8px}
+.checks-lite li{display:flex; align-items:flex-start; gap:11px; font-size:16.5px; line-height:1.55}
+.checks-lite li:before{content:""; flex:0 0 auto; width:18px; height:18px; margin-top:3px;
+  border-radius:50%; border:2px solid var(--line)}
+.checks-lite li.is-done:before{background:var(--signal); border-color:var(--signal);
+  box-shadow:inset 0 0 0 2px var(--bg)}
+.checks-lite li.is-bad:before{background:var(--accent); border-color:var(--accent);
+  box-shadow:inset 0 0 0 2px var(--bg)}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#viewer-main" data-en="Skip to the viewer" data-ar="تخطَّ إلى العارض">Skip to the viewer</a>
+
+<header class="app-top">
+  <div class="app-top-in">
+    <img src="../assets/logo-reversed.png" alt="Edulixa 360">
+    <span class="brand-tag" data-en="Edulixa HTML Viewer" data-ar="عارض Edulixa لملفات HTML">Edulixa HTML Viewer</span>
+    <div class="topbar-actions">
+      <a class="btn btn-ghost" href="../session1.html" target="_top"><svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="Back to Session 1" data-ar="العودة إلى المحاضرة 1">Back to Session 1</span></a>
+      <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+    </div>
+  </div>
+</header>
+
+<main id="viewer-main" class="shell">
+  <h1 class="display" data-en="Paste the code. It runs by itself." data-ar="الصق الكود. يعمل من تلقاء نفسه.">Paste the code. It runs by itself.</h1>
+  <p class="lede" data-en="This viewer runs the single HTML file that ChatGPT or Gemini hands you, so you can see your activity working before any student does. It runs on your own computer with no internet connection, nothing is uploaded anywhere, and the file never leaves this machine unless you download it yourself." data-ar="يشغّل هذا العارض ملف HTML الواحد الذي يسلّمه لك ChatGPT أو Gemini، لترى نشاطك يعمل قبل أن يراه أي طالب. يعمل على حاسوبك بلا اتصال بالإنترنت، ولا يُرفع شيء إلى أي مكان، ولا يخرج الملف من هذا الجهاز إلا إذا نزّلته بنفسك.">This viewer runs the single HTML file that ChatGPT or Gemini hands you, so you can see your activity working before any student does. It runs on your own computer with no internet connection, nothing is uploaded anywhere, and the file never leaves this machine unless you download it yourself.</p>
+
+  <div class="rig">
+    <div>
+      <div class="editor-wrap">
+        <div class="editor-bar">
+          <span data-en="Paste your code here" data-ar="الصق كودك هنا">Paste your code here</span>
+          <span class="stat" id="stat-count"></span>
+        </div>
+        <textarea class="editor" id="paste" dir="ltr" spellcheck="false"
+          data-en-ph="Paste the whole file the AI gave you, from the doctype line to the closing html tag. It runs a moment after you stop."
+          data-ar-ph="الصق الملف كاملًا كما أعطاه لك الذكاء الاصطناعي، من سطر doctype إلى وسم إغلاق html. سيعمل بعد لحظة من توقفك."
+          data-en-label="Paste the HTML file here" data-ar-label="الصق ملف HTML هنا"></textarea>
+      </div>
+
+      <div class="run-bar">
+        <button class="btn btn-accent" type="button" id="run" data-en="Run it again" data-ar="شغّله مرة أخرى">Run it again</button>
+        <button class="btn btn-ghost" type="button" id="load-file" data-en="Open a file instead" data-ar="افتح ملفًا بدلًا من ذلك">Open a file instead</button>
+        <input type="file" id="file" accept=".html,.htm,text/html" hidden>
+        <button class="btn btn-ghost" type="button" id="clear" data-en="Clear" data-ar="امسح">Clear</button>
+      </div>
+
+      <h3 style="margin:26px 0 0; font-family:var(--mono); font-size:13px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--brand-lift)" data-en="Before you run it" data-ar="قبل أن تشغّله">Before you run it</h3>
+      <ul class="checks-lite" id="checks">
+        <li data-check="doctype" data-en="The file starts with a doctype line" data-ar="الملف يبدأ بسطر doctype">The file starts with a doctype line</li>
+        <li data-check="close" data-en="The file ends with a closing html tag" data-ar="الملف ينتهي بوسم إغلاق html">The file ends with a closing html tag</li>
+        <li data-check="title" data-en="It has a title" data-ar="له عنوان">It has a title</li>
+        <li data-check="script" data-en="It carries its own logic, so buttons can work" data-ar="يحمل منطقه الخاص، فتستطيع الأزرار أن تعمل">It carries its own logic, so buttons can work</li>
+        <li data-check="offline" data-en="It calls nothing from the internet, so it opens offline" data-ar="لا يطلب شيئًا من الإنترنت، فيُفتح بلا اتصال">It calls nothing from the internet, so it opens offline</li>
+        <li data-check="content" data-en="The page has something to show" data-ar="الصفحة فيها ما يُعرض">The page has something to show</li>
+      </ul>
+      <p class="stat" id="verdict" style="margin-top:16px"></p>
+    </div>
+
+    <div id="run-wrap">
+      <div class="browser" id="frame-box">
+        <div class="browser-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="browser-url">index.html</span>
+          <button class="btn btn-ghost" type="button" id="full" style="padding:7px 14px; font-size:14px" data-en="Full screen" data-ar="شاشة كاملة">Full screen</button>
+        </div>
+        <div class="empty" id="empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v14H4zM4 9h16M8 13h8M8 16h5"/></svg>
+          <p data-en="Your activity will appear here. Paste the code on the left — it runs by itself a moment after you stop." data-ar="سيظهر نشاطك هنا. الصق الكود على اليسار — وسيعمل من تلقاء نفسه بعد لحظة من توقفك.">Your activity will appear here. Paste the code on the left — it runs by itself a moment after you stop.</p>
+        </div>
+        <p class="run-note" id="run-note" hidden data-en="This page ran correctly and it is blank — its body has nothing in it to display." data-ar="عملت هذه الصفحة بشكل صحيح وهي فارغة — فليس في الـ body ما يُعرض.">This page ran correctly and it is blank — its body has nothing in it to display.</p>
+        <iframe id="stage" title="Your activity" sandbox="allow-scripts allow-forms allow-modals allow-popups" hidden></iframe>
+      </div>
+
+      <div class="viewer-actions">
+        <button class="btn btn-primary" type="button" id="download" disabled data-en="Download as index.html" data-ar="نزّله كملف index.html">Download as index.html</button>
+        <button class="btn btn-outline" type="button" id="newtab" disabled data-en="Open in a new tab" data-ar="افتحه في تبويب جديد">Open in a new tab</button>
+        <span class="copied" id="said" aria-live="polite"></span>
+      </div>
+
+      <div class="hint" style="margin-top:22px">
+        <p style="margin:0"><b data-en="While you test: " data-ar="أثناء الاختبار: ">While you test: </b><span data-en="answer your own activity once from start to finish, and deliberately get one question wrong. If the feedback on the wrong answer does not explain anything, the activity is not ready for a class yet — go back to the conversation and ask for a reason on every wrong answer." data-ar="أجب عن نشاطك مرة واحدة من البداية إلى النهاية، وأخطئ في سؤال متعمدًا. فإذا لم تشرح التغذية الراجعة على الإجابة الخاطئة شيئًا، فالنشاط غير جاهز لصف بعد — ارجع إلى المحادثة واطلب سببًا مع كل إجابة خاطئة.">answer your own activity once from start to finish, and deliberately get one question wrong. If the feedback on the wrong answer does not explain anything, the activity is not ready for a class yet — go back to the conversation and ask for a reason on every wrong answer.</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:30px">
+    <p><b data-en="Why the file must be one piece: " data-ar="لماذا يجب أن يكون الملف قطعة واحدة: ">Why the file must be one piece: </b><span data-en="this viewer runs exactly what you paste and nothing else. If the AI split your app into separate style and script files, or linked to a library on the internet, the parts it cannot find will simply be missing — which is the whole reason the master prompt insists on one offline index.html." data-ar="يشغّل هذا العارض ما تلصقه بالضبط ولا شيء غيره. فإذا قسّم الذكاء الاصطناعي تطبيقك إلى ملفات تنسيق وسكربت منفصلة، أو ربطه بمكتبة على الإنترنت، فستكون الأجزاء التي لا يجدها ناقصة ببساطة — وهذا هو كل السبب في إصرار البرومبت الرئيسي على ملف index.html واحد يعمل بلا إنترنت.">this viewer runs exactly what you paste and nothing else. If the AI split your app into separate style and script files, or linked to a library on the internet, the parts it cannot find will simply be missing — which is the whole reason the master prompt insists on one offline index.html.</span></p>
+  </div>
+</main>
+
+<footer class="foot" style="margin-top:52px">
+  <div class="foot-in">
+    <img src="../assets/logo-reversed.png" alt="Edulixa 360">
+    <p data-en="Edulixa HTML Viewer — Session 1, AI Masterclass for Teachers, Level 3." data-ar="عارض Edulixa لملفات HTML — المحاضرة 1، الماستر كلاس للمعلمين بالذكاء الاصطناعي، المستوى الثالث.">Edulixa HTML Viewer — Session 1, AI Masterclass for Teachers, Level 3.</p>
+    <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+  </div>
+</footer>
+
+<script src="../assets/edulixa.js"></script>
+<script>
+(function () {
+  'use strict';
+  var STORE = 'edulixa-l3-viewer';
+  var AR = function () { return document.documentElement.getAttribute('dir') === 'rtl'; };
+  function say(el, en, ar) {
+    if (!en && !ar) {              /* nothing to show: leave no empty pair behind */
+      el.removeAttribute('data-en');
+      el.removeAttribute('data-ar');
+      el.textContent = '';
+      return;
+    }
+    el.setAttribute('data-en', en); el.setAttribute('data-ar', ar);
+    el.textContent = AR() ? ar : en;
+  }
+
+  var paste    = document.getElementById('paste');
+  var stage    = document.getElementById('stage');
+  var empty    = document.getElementById('empty');
+  var frameBox = document.getElementById('frame-box');
+  var count    = document.getElementById('stat-count');
+  var verdict  = document.getElementById('verdict');
+  var note     = document.getElementById('run-note');
+  var dl       = document.getElementById('download');
+  var nt       = document.getElementById('newtab');
+  var said     = document.getElementById('said');
+  var running  = '';
+  var blobUrl  = null;
+
+  /* ---- the five checks, run on whatever is in the box ---- */
+  var CHECKS = {
+    doctype: function (c) { return /^\s*<!doctype html/i.test(c); },
+    close:   function (c) { return /<\/html\s*>\s*$/i.test(c.trim()); },
+    title:   function (c) { return /<title[^>]*>\s*\S/i.test(c); },
+    script:  function (c) { var m = c.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
+                            return !!m && m[1].trim().length > 10; },
+    offline: function (c) { return !/(src|href)\s*=\s*["']https?:/i.test(c); },
+    /* A file can be perfectly valid and still render a blank white page, which
+       is the single most confusing thing that can happen here. Strip the
+       comments, the style block and the script block out of the body and see
+       whether anything a learner could look at is left. */
+    content: function (c) {
+      var m = c.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+      var inner = (m ? m[1] : c)
+        .replace(/<!--[\s\S]*?-->/g, '')
+        .replace(/<script[\s\S]*?<\/script>/gi, '')
+        .replace(/<style[\s\S]*?<\/style>/gi, '');
+      var hasTag = /<(h[1-6]|p|div|span|ul|ol|li|button|input|textarea|select|img|svg|canvas|table|section|article|header|footer|main|form|label|a|video|audio|iframe)[\s>]/i.test(inner);
+      var hasText = inner.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim().length > 0;
+      return hasTag || hasText;
+    }
+  };
+
+  function review() {
+    var c = paste.value;
+    var done = 0, total = 0;
+    document.querySelectorAll('#checks li').forEach(function (li) {
+      var k = li.getAttribute('data-check');
+      total++;
+      var ok = c.trim() ? CHECKS[k](c) : false;
+      li.classList.toggle('is-done', ok);
+      li.classList.toggle('is-bad', !!c.trim() && !ok);
+      if (ok) done++;
+    });
+    var chars = c.length;
+    say(count, chars ? chars.toLocaleString('en') + ' characters' : 'empty',
+                chars ? chars.toLocaleString('ar-EG') + ' حرفًا' : 'فارغ');
+    if (!c.trim()) { verdict.className = 'stat'; say(verdict, '', ''); return; }
+    if (!CHECKS.content(c)) {
+      verdict.className = 'stat is-warn';
+      say(verdict, 'This file is valid and it will show a blank white page — there is nothing inside the body except a comment. Add the content, or paste the finished file rather than the empty starting one.',
+                   'هذا الملف سليم وسيعرض صفحة بيضاء فارغة — فلا يوجد داخل الـ body إلا تعليق. أضف المحتوى، أو الصق الملف النهائي بدلًا من الملف الفارغ الأولي.');
+      return;
+    }
+    if (done === total) {
+      verdict.className = 'stat is-ok';
+      say(verdict, '✓ This looks like a complete, offline, single-file app.',
+                   '✓ يبدو هذا تطبيقًا كاملًا في ملف واحد يعمل بلا إنترنت.');
+    } else if (!CHECKS.close(c)) {
+      verdict.className = 'stat is-warn';
+      say(verdict, 'The file has no closing html tag — the answer was probably cut off. Go back and say: continue from the last line without repeating anything.',
+                   'لا يوجد وسم إغلاق html — الأرجح أن الإجابة قُطعت. ارجع وقل: تابع من آخر سطر دون إعادة أي شيء.');
+    } else if (!CHECKS.offline(c)) {
+      verdict.className = 'stat is-warn';
+      say(verdict, 'This file calls something from the internet, so it will not open offline. Ask for everything inside one file with no external links.',
+                   'يطلب هذا الملف شيئًا من الإنترنت، فلن يُفتح بلا اتصال. اطلب كل شيء داخل ملف واحد بلا روابط خارجية.');
+    } else {
+      verdict.className = 'stat is-warn';
+      say(verdict, 'It will still run — but read the unticked line above before you give it to a class.',
+                   'سيعمل مع ذلك — لكن اقرأ السطر غير المعلَّم أعلاه قبل أن تعطيه لصف.');
+    }
+  }
+
+  function run() {
+    var c = paste.value;
+    if (!c.trim()) {
+      say(said, 'Paste some code first.', 'الصق كودًا أولًا.');
+      setTimeout(function () { said.textContent = ''; }, 2400);
+      return;
+    }
+    running = c;
+    stage.setAttribute('srcdoc', c);
+    stage.hidden = false;
+    empty.hidden = true;
+    note.hidden = CHECKS.content(c);
+    dl.disabled = false;
+    nt.disabled = false;
+    try { localStorage.setItem(STORE, c); } catch (e) {}
+  }
+
+  document.getElementById('run').addEventListener('click', run);
+
+  /* Pasting is the whole point of this tool, so it runs by itself a moment
+     after the typing stops. Nobody should have to find a button to see
+     whether the file the AI just gave them works. */
+  var runTimer = null;
+  paste.addEventListener('input', function () {
+    review();
+    try { localStorage.setItem(STORE, paste.value); } catch (e) {}
+    clearTimeout(runTimer);
+    if (paste.value.trim()) runTimer = setTimeout(run, 700);
+  });
+
+  document.getElementById('clear').addEventListener('click', function () {
+    paste.value = '';
+    running = '';
+    stage.hidden = true;
+    stage.removeAttribute('srcdoc');
+    empty.hidden = false;
+    note.hidden = true;
+    dl.disabled = true;
+    nt.disabled = true;
+    review();
+    try { localStorage.removeItem(STORE); } catch (e) {}
+  });
+
+  /* open a .html file the AI gave you as a download */
+  var file = document.getElementById('file');
+  document.getElementById('load-file').addEventListener('click', function () { file.click(); });
+  file.addEventListener('change', function () {
+    var f = file.files && file.files[0];
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function () { paste.value = String(r.result || ''); review(); run(); };
+    r.readAsText(f);
+  });
+
+  /* full screen on the preview, so a class can see it */
+  var full = document.getElementById('full');
+  function paintFull() {
+    var on = document.fullscreenElement === frameBox;
+    say(full, on ? 'Leave full screen' : 'Full screen', on ? 'إنهاء الشاشة الكاملة' : 'شاشة كاملة');
+  }
+  full.addEventListener('click', function () {
+    try {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else if (frameBox.requestFullscreen) frameBox.requestFullscreen();
+    } catch (e) {}
+  });
+  document.addEventListener('fullscreenchange', paintFull);
+
+  /* hand the file over */
+  function makeBlob() {
+    if (blobUrl) URL.revokeObjectURL(blobUrl);
+    blobUrl = URL.createObjectURL(new Blob([running || paste.value], { type: 'text/html' }));
+    return blobUrl;
+  }
+  dl.addEventListener('click', function () {
+    var a = document.createElement('a');
+    a.href = makeBlob();
+    a.download = 'index.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    say(said, '✓ Saved as index.html', '✓ حُفظ باسم index.html');
+    setTimeout(function () { said.textContent = ''; }, 2800);
+  });
+  nt.addEventListener('click', function () {
+    window.open(makeBlob(), '_blank', 'noopener');
+  });
+
+  /* bring back whatever was here last time */
+  try {
+    var saved = localStorage.getItem(STORE);
+    if (saved) { paste.value = saved; run(); }
+  } catch (e) {}
+
+  review();
+  paintFull();
+  window.addEventListener('edulixa:lang', function () { review(); paintFull(); });
+})();
+</script>
+</body>
+</html>

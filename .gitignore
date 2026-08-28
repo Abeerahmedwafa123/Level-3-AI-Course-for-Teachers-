@@ -1,0 +1,16 @@
+﻿# never let a credential near this repository
+*.key
+*.pem
+*.env
+.env*
+**/keys/
+*token*.txt
+*Token*.txt
+*api*key*
+*API*Key*
+
+# local noise
+.DS_Store
+Thumbs.db
+desktop.ini
+node_modules/

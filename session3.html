@@ -1,0 +1,1854 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-en="Session 3 · Build your teacher website · Level 3 · Edulixa 360" data-ar="المحاضرة 3 · ابنِ موقعك التعليمي · المستوى الثالث · Edulixa 360">Session 3 · Build your teacher website</title>
+<link rel="stylesheet" href="assets/edulixa.css">
+<style>
+/* ============================================================
+   Session 3 · examples, not explanations.
+   Every block below is a working component the teacher operates.
+   Captions are one line. Nothing here is a picture of a component.
+   ============================================================ */
+
+/* edulixa.css has `.block p {font-size;color}` at (0,1,1), which beats a bare
+   single-class rule aimed at a <p>. Every such selector below carries a
+   `.block` prefix so it actually wins. */
+.block .cap{margin:10px 0 0;font-size:15px;line-height:1.5;color:var(--muted)}
+.block .cap b{color:var(--ink);font-weight:700}
+.block > .lead{margin:14px 0 0;font-size:17.5px;line-height:1.6;max-width:62ch}
+.block h3{margin-top:34px}
+.stack{display:grid;gap:14px;margin:22px 0 0}
+
+/* ---------- a labelled example frame ---------- */
+.ex{margin:22px 0 0;border:1px solid var(--line);border-radius:var(--r-md);
+  background:var(--bg-2);overflow:hidden}
+.ex-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:12px 16px;
+  background:var(--surface);border-bottom:1px solid var(--line)}
+.ex-head b{font-size:15.5px;color:var(--ink)}
+.ex-head span{font-size:14.5px;color:var(--muted)}
+.ex-body{padding:20px}
+.ex-body.is-flush{padding:0}
+
+/* ---------- the real miniature website ---------- */
+.mini{--m-ink:#F3EFE6;--m-bg:#0B1A19;--m-main:#0F695D;--m-shout:#5FD6C0;--m-soft:#12302C;
+  background:var(--m-bg);color:var(--m-ink);font-size:13px;line-height:1.5}
+.mini button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;
+  text-align:start;display:block;width:100%;padding:0}
+.m-part{position:relative;border:2px solid transparent;border-radius:10px;
+  transition:border-color var(--t-fast),box-shadow var(--t) var(--out)}
+.m-part:hover{border-color:color-mix(in oklab,var(--m-shout) 55%,transparent)}
+.m-part.is-on{border-color:var(--accent);box-shadow:0 0 0 4px oklch(0.520 0.185 31 / .22)}
+.m-num{position:absolute;top:-11px;inset-inline-start:12px;z-index:2;min-width:22px;height:22px;
+  padding:0 6px;display:grid;place-items:center;border-radius:7px;background:var(--accent);
+  color:#fff;font-size:12px;font-weight:700;line-height:1;opacity:0;
+  transition:opacity var(--t-fast)}
+.m-part.is-on .m-num{opacity:1}
+.m-nav{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:12px 16px;
+  background:color-mix(in oklab,var(--m-ink) 7%,transparent)}
+.m-logo{font-weight:800;letter-spacing:.01em}
+.m-links{display:flex;gap:14px;flex-wrap:wrap;margin-inline-start:auto;font-size:12.5px}
+.m-links i{font-style:normal;opacity:.72}
+.m-links i:first-child{opacity:1;color:var(--m-shout);font-weight:700}
+.m-hero{display:grid;grid-template-columns:1.2fr 1fr;gap:18px;align-items:center;padding:22px 16px}
+.m-hero h4{margin:0 0 8px;font-size:21px;line-height:1.25;font-weight:800;color:var(--m-ink)}
+.m-hero p{margin:0 0 14px;font-size:13px;opacity:.85;line-height:1.55}
+.m-hero img{border-radius:10px;aspect-ratio:4/3;object-fit:cover;width:100%}
+.m-cta{display:inline-block;padding:9px 16px;border-radius:99px;background:var(--m-shout);
+  color:var(--m-bg);font-size:12.5px;font-weight:800;width:auto}
+.m-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:6px 16px 22px}
+.m-card{padding:13px;border-radius:10px;background:var(--m-soft);
+  border:1px solid color-mix(in oklab,var(--m-ink) 12%,transparent)}
+.m-card b{display:block;margin-bottom:5px;font-size:13px;color:var(--m-ink)}
+.m-card span{font-size:12px;opacity:.8;line-height:1.45}
+.m-gal{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 16px 22px}
+.m-gal img{border-radius:8px;aspect-ratio:1;object-fit:cover;width:100%}
+.m-btns{display:flex;gap:10px;flex-wrap:wrap;padding:0 16px 22px}
+.m-btn2{display:inline-block;padding:9px 16px;border-radius:99px;font-size:12.5px;font-weight:800;
+  width:auto;border:1.5px solid color-mix(in oklab,var(--m-ink) 42%,transparent)}
+.m-foot{display:flex;gap:16px;flex-wrap:wrap;padding:14px 16px;font-size:12px;
+  background:color-mix(in oklab,var(--m-ink) 7%,transparent);opacity:.9}
+.m-foot span:last-child{margin-inline-start:auto}
+.mini-note{padding:17px 20px;border-top:1px solid var(--line);background:var(--surface)}
+.mini-note b{color:var(--ink)}
+.mini-note p{margin:0;font-size:16px;line-height:1.6}
+.mini-note p+p{margin-top:8px}
+.picker{display:flex;gap:8px;flex-wrap:wrap;padding:14px 16px 0}
+.pick{font:inherit;font-size:14.5px;font-weight:700;cursor:pointer;min-height:44px;
+  padding:10px 15px;border-radius:10px;background:var(--surface);color:var(--ink-2);
+  border:1px solid var(--line);transition:all var(--t-fast) var(--ease)}
+.pick:hover{border-color:var(--brand-lift);color:var(--ink)}
+.pick.is-on{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ---------- tab strip ---------- */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;padding:14px 16px 0}
+.tab{font:inherit;cursor:pointer;min-height:44px;padding:10px 16px;border-radius:10px;
+  background:var(--surface);color:var(--ink-2);border:1px solid var(--line);text-align:start;
+  transition:all var(--t-fast) var(--ease)}
+.tab b{display:block;font-size:14.5px;color:var(--ink)}
+.tab small{display:block;font-size:12.5px;color:var(--muted);margin-top:1px}
+html[dir="rtl"] .tab small{font-size:13.5px}
+.tab:hover{border-color:var(--brand-lift)}
+.tab.is-on{border-color:var(--accent);background:var(--surface-2)}
+.tab.is-on b{color:var(--accent-text)}
+
+/* ---------- the three navigation bars, all three visible at once ----------
+   Each card exaggerates the ONE thing that differs, because the point of the
+   block is the comparison: a capsule that touches no edge, a bar glued to the
+   top that does not move, and two separate boxes with a gap. */
+.navset{display:grid;gap:16px;margin:22px 0 0}
+.navcard{border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;
+  background:var(--bg-2)}
+.navcard-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:12px 16px;
+  background:var(--surface);border-bottom:1px solid var(--line)}
+.navcard-head b{font-size:15.5px;color:var(--ink)}
+.navcard-head span{font-size:14.5px;font-weight:700;color:var(--accent-text)}
+.block .navcard-foot{margin:0;padding:13px 16px;border-top:1px solid var(--line);
+  font-size:15px;line-height:1.55;color:var(--ink-2)}
+.block .navcard-foot .field{font-size:13px;padding:5px 10px;margin-inline-start:4px}
+
+/* the page the bar sits on: a dashed edge makes "touches the edge or not" visible */
+.navframe{position:relative;min-height:212px;overflow:hidden;
+  background:linear-gradient(165deg,oklch(0.285 0.040 185),oklch(0.180 0.024 185));
+  outline:1px dashed oklch(1 0 0 / .20);outline-offset:-6px}
+.navframe.is-scroll{height:212px;min-height:0;overflow-y:auto;scrollbar-width:thin}
+.navframe.is-scroll:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.nv-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.nv-logo{font-family:var(--sans);font-weight:800;font-size:15.5px;color:var(--ink);
+  white-space:nowrap}
+html[dir="rtl"] .nv-logo{font-family:var(--ar)}
+.nv-links{display:flex;gap:4px;flex-wrap:wrap;margin-inline-start:auto}
+.nv-links a{padding:8px 13px;border-radius:99px;font-size:14px;font-weight:700;
+  color:var(--ink-2);text-decoration:none;transition:all var(--t-fast) var(--ease)}
+.nv-links a:hover{background:oklch(1 0 0 / .14);color:var(--ink)}
+.nv-links a.is-here{background:var(--accent);color:#fff}
+.nv-page{display:grid;gap:9px;padding:22px 22px 22px}
+.nv-page i{display:block;height:10px;border-radius:99px;background:oklch(1 0 0 / .13)}
+.nv-page i:nth-child(1){width:60%;height:19px;background:oklch(1 0 0 / .24)}
+.nv-page i:nth-child(3){width:82%}
+.nv-page i:nth-child(4){width:47%}
+.nv-page i:nth-child(6){width:70%}
+.nv-page.is-long i:nth-child(7){width:88%}
+.nv-page.is-long i:nth-child(9){width:54%}
+.nv-page.is-long i:nth-child(12){width:76%}
+
+/* 1. FLOATING PILL: a capsule that touches nothing */
+.nv-pill .nv-bar{margin:20px auto 0;max-width:500px;padding:11px 17px;border-radius:99px;
+  background:oklch(1 0 0 / .15);border:1px solid oklch(1 0 0 / .34);
+  box-shadow:0 12px 28px rgba(0,0,0,.42);backdrop-filter:blur(10px)}
+.nv-pill .nv-page{padding-top:20px}
+
+/* 2. STICKY GLASS: flush to the top edge, full width, and it does not move */
+.nv-sticky .nv-bar{position:sticky;top:0;z-index:2;padding:13px 20px;
+  background:oklch(0.205 0.026 185 / .84);border-bottom:1px solid oklch(1 0 0 / .26);
+  backdrop-filter:blur(12px)}
+.nv-hint{position:absolute;inset-block-end:10px;inset-inline-end:12px;padding:5px 11px;
+  border-radius:99px;background:var(--accent);color:#fff;font-size:12.5px;font-weight:700;
+  pointer-events:none;animation:nvbob 1.8s var(--ease) infinite}
+@keyframes nvbob{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
+.nv-sticky.is-scrolled .nv-hint{opacity:0;transition:opacity var(--t)}
+
+/* 3. SPLIT HEADER: two separate boxes with a gap between them */
+.nv-split .nv-bar{margin:20px 20px 0;gap:14px}
+.nv-split .nv-logo{padding:12px 19px;border-radius:12px;background:oklch(1 0 0 / .15);
+  border:1px solid oklch(1 0 0 / .34)}
+.nv-split .nv-links{padding:7px 10px;border-radius:12px;background:oklch(1 0 0 / .15);
+  border:1px solid oklch(1 0 0 / .34)}
+.nv-split .nv-page{padding-top:20px}
+
+@media (prefers-reduced-motion:reduce){.nv-hint{animation:none}}
+
+/* ---------- a real sitemap ---------- */
+.sitemap{display:grid;gap:10px;margin:22px 0 0}
+.sm-row{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:baseline;
+  padding:14px 16px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
+.sm-row>div{min-width:0}
+.sm-row b{display:block;font-size:16px;color:var(--ink)}
+.sm-row span{display:block;margin-top:3px;font-size:15px;line-height:1.5;color:var(--muted)}
+.sm-file{font-family:var(--mono);font-size:12.5px;color:var(--brand-lift);padding:5px 9px;
+  border-radius:7px;background:var(--bg);border:1px solid var(--line-soft);direction:ltr;
+  white-space:nowrap}
+.sm-row.is-home{border-color:var(--brand-lift)}
+
+/* ---------- the six colour themes ---------- */
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px 16px 0}
+.sw{font:inherit;cursor:pointer;display:flex;align-items:center;gap:11px;min-height:44px;
+  padding:10px 13px;border-radius:10px;background:var(--surface);border:1px solid var(--line);
+  text-align:start;transition:all var(--t-fast) var(--ease)}
+.sw:hover{border-color:var(--brand-lift)}
+.sw.is-on{border-color:var(--accent);background:var(--surface-2)}
+.sw .dots{display:flex;flex:0 0 auto}
+.sw .dots i{display:block;width:14px;height:24px;border:1px solid oklch(0 0 0 / .35)}
+.sw .dots i:first-child{border-radius:6px 0 0 6px}
+.sw .dots i:last-child{border-radius:0 6px 6px 0}
+html[dir="rtl"] .sw .dots i:first-child{border-radius:0 6px 6px 0}
+html[dir="rtl"] .sw .dots i:last-child{border-radius:6px 0 0 6px}
+.sw span{font-size:14.5px;font-weight:700;color:var(--ink-2);line-height:1.3}
+.sw.is-on span{color:var(--ink)}
+.hexrow{display:flex;gap:8px;flex-wrap:wrap;padding:14px 16px 0}
+.hexchip{display:inline-flex;align-items:center;gap:8px;padding:6px 11px;border-radius:99px;
+  background:var(--bg);border:1px solid var(--line)}
+.hexchip i{display:block;width:14px;height:14px;border-radius:4px;background:var(--sw);
+  border:1px solid oklch(0 0 0 / .35)}
+.hexchip code{font-family:var(--mono);font-size:12.5px;color:var(--ink-2)}
+
+/* ---------- panel styles ---------- */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:14px}
+.pgrid>*{min-width:0}
+.pdemo{padding:18px;border-radius:var(--r-md);transition:transform var(--t) var(--ease),
+  box-shadow var(--t) var(--out),border-color var(--t-fast),background var(--t-fast)}
+.pdemo h4{margin:0 0 6px;font-size:16.5px;font-weight:800;color:var(--ink)}
+html[dir="rtl"] .pdemo h4{font-family:var(--ar)}
+.pdemo p{margin:0;font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+.pdemo .lvl{display:inline-block;margin:0 0 9px;padding:3px 9px;border-radius:6px;
+  font-size:12.5px;font-weight:700;background:var(--surface-2);color:var(--brand-lift)}
+.pdemo.is-flat{background:var(--surface-2)}
+.pdemo.is-flat:hover{background:oklch(0.300 0.030 185)}
+.pdemo.is-outline{background:transparent;border:1.5px solid var(--line)}
+.pdemo.is-outline:hover{border-color:var(--brand-lift)}
+.pdemo.is-lift{background:var(--surface);border:1px solid var(--line);
+  box-shadow:0 1px 4px rgba(0,0,0,.24)}
+.pdemo.is-lift:hover{transform:translateY(-3px);box-shadow:0 8px 14px rgba(0,0,0,.32);
+  border-color:var(--brand-lift)}
+.pdemo.is-glass{border:1px solid oklch(1 0 0 / .24);backdrop-filter:blur(11px);
+  background:oklch(1 0 0 / .12)}
+.pdemo.is-glass h4,.pdemo.is-glass p{color:#fff}
+.pdemo.is-glass .lvl{background:oklch(1 0 0 / .22);color:#fff}
+.glassbed{padding:16px;border-radius:var(--r-md);
+  background:linear-gradient(135deg,oklch(0.420 0.100 185),oklch(0.360 0.130 31))}
+.bento{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+.bento>*{min-width:0}
+.bento .pdemo{background:var(--surface);border:1px solid var(--line)}
+.bento .pdemo:first-child{grid-row:span 2}
+
+/* ---------- collapsible panel: native <details>, no JS ---------- */
+.acc{display:grid;gap:9px}
+.acc details{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);
+  overflow:hidden}
+.acc details[open]{border-color:var(--brand-lift);background:var(--surface-2)}
+.acc summary{display:flex;align-items:center;gap:12px;min-height:52px;padding:14px 16px;
+  cursor:pointer;font-size:16px;font-weight:700;color:var(--ink);list-style:none;
+  transition:background var(--t-fast)}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary::marker{content:""}
+.acc summary:hover{background:var(--surface-2)}
+.acc summary .chev{margin-inline-start:auto;flex:0 0 auto;width:20px;height:20px;
+  color:var(--brand-lift);transition:transform var(--t) var(--ease)}
+.acc details[open] summary .chev{transform:rotate(180deg)}
+.acc .acc-body{padding:0 16px 16px;font-size:15.5px;line-height:1.62;color:var(--ink-2)}
+.acc .acc-body p{margin:0}
+.acc .acc-body p+p{margin-top:9px}
+
+/* ---------- tabbed panel ---------- */
+.tp{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface)}
+.tp-strip{display:flex;gap:2px;flex-wrap:wrap;padding:8px 8px 0;background:var(--bg-2)}
+.tp-strip button{font:inherit;font-size:14.5px;font-weight:700;cursor:pointer;min-height:44px;
+  padding:11px 16px;border:0;border-radius:9px 9px 0 0;background:transparent;color:var(--muted);
+  transition:all var(--t-fast) var(--ease)}
+.tp-strip button:hover{color:var(--ink)}
+.tp-strip button[aria-selected="true"]{background:var(--surface);color:var(--ink)}
+.tp-pane{padding:18px;font-size:15.5px;line-height:1.62;color:var(--ink-2)}
+.tp-pane[hidden]{display:none}
+.tp-pane p{margin:0}
+.tp-pane p+p{margin-top:9px}
+
+/* ---------- the four galleries ---------- */
+.gal-item{margin:0;border-radius:10px;overflow:hidden;background:var(--surface);
+  border:1px solid var(--line)}
+.gal-item img{width:100%;height:100%;object-fit:cover;display:block}
+[data-style="grid"] .gal-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+[data-style="grid"] .gal-item{aspect-ratio:4/3}
+[data-style="masonry"] .gal-wrap{columns:3;column-gap:12px}
+[data-style="masonry"] .gal-item{break-inside:avoid;margin-bottom:12px}
+[data-style="masonry"] .gal-item:nth-child(2) img,
+[data-style="masonry"] .gal-item:nth-child(5) img{aspect-ratio:3/4}
+[data-style="carousel"] .gal-wrap{display:grid}
+[data-style="carousel"] .gal-item{grid-area:1/1;aspect-ratio:16/9;opacity:0;
+  transition:opacity var(--t) var(--ease);pointer-events:none}
+[data-style="carousel"] .gal-item.is-on{opacity:1;pointer-events:auto}
+[data-style="enlarge"] .gal-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+[data-style="enlarge"] .gal-item{aspect-ratio:4/3;cursor:zoom-in;position:relative}
+[data-style="enlarge"] .gal-item:after{content:"+";position:absolute;inset-block-end:8px;
+  inset-inline-end:8px;width:28px;height:28px;display:grid;place-items:center;border-radius:8px;
+  background:oklch(0.165 0.020 185 / .84);color:#fff;font-size:19px;font-weight:700;line-height:1;
+  border:1px solid oklch(1 0 0 / .28)}
+[data-style="enlarge"] .gal-item:hover{border-color:var(--accent)}
+.galbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0 0}
+.gal-count{font-family:var(--mono);font-size:13px;color:var(--ink-2)}
+html[dir="rtl"] .gal-count{font-family:var(--ar);font-size:15px}
+.galbar [hidden]{display:none}
+
+/* ---------- the six buttons ---------- */
+.btnset{display:flex;gap:12px;flex-wrap:wrap}
+.bdemo{font:inherit;font-weight:700;font-size:15px;cursor:pointer;min-height:46px;padding:12px 20px;
+  display:inline-flex;align-items:center;gap:9px;border-radius:12px;border:0;
+  transition:all var(--t-fast) var(--ease)}
+.bdemo:active{transform:translateY(1px) scale(.985)}
+.bdemo.is-solid{background:var(--accent);color:#fff}
+.bdemo.is-solid:hover{filter:brightness(1.1)}
+.bdemo.is-outline{background:transparent;color:var(--brand-lift);border:1.5px solid var(--brand-lift)}
+.bdemo.is-outline:hover{background:var(--surface-2);color:var(--ink)}
+.bdemo.is-ghost{background:transparent;color:var(--ink);text-decoration:underline;
+  text-underline-offset:4px;padding-inline:12px}
+.bdemo.is-pill{background:var(--brand-lift);color:var(--on-accent);border-radius:99px}
+.bdemo.is-pill:hover{filter:brightness(1.08)}
+.bdemo.is-grad{color:#fff;border-radius:99px;
+  background:linear-gradient(100deg,var(--brand-lift),var(--accent))}
+.bdemo.is-grad:hover{filter:brightness(1.08)}
+.bdemo.is-icon{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.bdemo.is-icon:hover{border-color:var(--brand-lift)}
+.bdemo svg{width:18px;height:18px;flex:0 0 auto}
+.btn-out{margin:16px 0 0;padding:14px 17px;border-radius:var(--r);background:var(--surface);
+  border:1px solid var(--line);font-size:15.5px;line-height:1.55;color:var(--ink-2)}
+.btn-out.is-fresh{animation:bpop 420ms var(--out)}
+@keyframes bpop{from{background:var(--surface-2);border-color:var(--brand-lift)}}
+
+/* ---------- what a default Bootstrap card actually looks like ----------
+   An honest approximation of Bootstrap's own defaults (white surface,
+   #dee2e6 hairline, .375rem radius, #0d6efd primary), so the teacher can
+   see the real trade-off instead of being told about it. */
+.bs-card{background:#fff;border:1px solid #dee2e6;border-radius:.375rem;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#212529}
+.bs-body{padding:1rem}
+.bs-title{margin:0 0 .25rem;font-size:1.25rem;font-weight:500;line-height:1.2;color:#212529}
+html[dir="rtl"] .bs-title{font-family:var(--ar)}
+.bs-sub{margin:0 0 .5rem;font-size:.875rem;color:#6c757d}
+.bs-text{margin:0 0 1rem;font-size:1rem;line-height:1.5;color:#212529}
+.bs-btn{display:inline-block;padding:.375rem .75rem;border-radius:.375rem;background:#0d6efd;
+  color:#fff;font-size:1rem;line-height:1.5;font-weight:400}
+
+/* ---------- a real contact form ---------- */
+.formex{display:grid;gap:16px;max-width:430px}
+.fld{display:grid;gap:6px}
+.fld label{font-size:15px;font-weight:700;color:var(--ink)}
+.fld input,.fld textarea{font:inherit;font-size:16px;min-height:46px;padding:11px 13px;
+  border-radius:10px;background:var(--bg);color:var(--ink);border:1.5px solid var(--line)}
+.fld textarea{min-height:92px;resize:vertical}
+.fld input::placeholder,.fld textarea::placeholder{color:var(--muted);opacity:1}
+.fld input:focus,.fld textarea:focus{outline:0;border-color:var(--brand-lift)}
+.fld .help{font-size:14px;color:var(--muted)}
+.fld .err{font-size:14px;font-weight:700;color:var(--accent-text)}
+.fld.is-bad input{border-color:var(--accent)}
+.block .form-said{margin:14px 0 0;font-size:15.5px;line-height:1.55;color:var(--signal);
+  font-weight:700}
+.block .form-said[hidden]{display:none}
+
+/* ---------- SEO: one labelled result, then a real example per item ----------
+   Numbered badges reuse the pattern from the miniature site above, which is
+   the one she read without trouble. Every selector aimed at a <p> carries a
+   .block prefix, or edulixa.css's `.block p` wins on specificity. */
+.serpbox{max-width:560px;padding:18px 20px;border-radius:10px;background:#fff}
+.block .serpbox .s-url{display:flex;align-items:center;gap:8px;margin:0 0 6px;
+  font-size:13.5px;line-height:1.4;color:#3c4043}
+.serpbox .s-url i{display:block;width:24px;height:24px;border-radius:99px;background:#0F695D;
+  flex:0 0 auto}
+.block .serpbox .s-title{margin:0 0 4px;font-size:20px;line-height:1.3;color:#1a0dab;
+  font-weight:400}
+.block .serpbox .s-desc{margin:0;font-size:14px;line-height:1.6;color:#3c4043}
+.s-n{display:inline-grid;place-items:center;min-width:21px;height:21px;padding:0 5px;
+  margin-inline-start:8px;border-radius:6px;background:var(--accent);color:#fff;
+  font-family:var(--sans);font-size:12.5px;font-weight:700;line-height:1;
+  vertical-align:middle;flex:0 0 auto}
+.s-n.is-big{min-width:28px;height:28px;font-size:14px;margin:0;border-radius:8px}
+.serpkey{display:flex;gap:18px;flex-wrap:wrap;margin:16px 0 0;font-size:15px}
+.serpkey > span{display:inline-flex;align-items:center;gap:2px;color:var(--ink-2)}
+.serpkey .s-n{margin-inline-start:0;margin-inline-end:8px}
+
+.seolist{display:grid;gap:12px;margin:22px 0 0}
+.seorow{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;padding:16px 18px;
+  border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
+.seorow h4{margin:0 0 10px;font-size:16.5px;font-weight:800;color:var(--ink)}
+html[dir="rtl"] .seorow h4{font-family:var(--ar)}
+.block .seotry{display:flex;align-items:flex-start;gap:10px;margin:0 0 8px;font-size:15px}
+.seotry .mk{flex:0 0 auto;display:grid;place-items:center;width:22px;height:22px;
+  border-radius:6px;font-size:13px;font-weight:700}
+.seotry.is-no .mk{background:oklch(0.300 0.090 31 / .34);color:var(--accent-text)}
+.seotry.is-yes .mk{background:oklch(0.300 0.060 168 / .40);color:var(--signal)}
+.seotry .chip{padding:8px 12px;border-radius:8px;background:#fff;overflow-wrap:anywhere}
+.seotry .chip.is-title{color:#1a0dab;font-size:16px;line-height:1.35}
+.seotry .chip.is-desc{color:#3c4043;font-size:14px;line-height:1.5}
+.seotry .chip.is-url{color:#0b6b3a;font-family:var(--mono);font-size:14px}
+.seotry.is-no .chip{background:#f1f3f4}
+.block .seowhy{margin:10px 0 0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.seosearch{display:flex;align-items:center;gap:11px;max-width:430px;padding:12px 17px;
+  border-radius:99px;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.28)}
+.seosearch svg{width:19px;height:19px;color:#9aa0a6;flex:0 0 auto}
+.seosearch span{font-size:15.5px;color:#202124;overflow-wrap:anywhere}
+.seoalt{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;align-items:start}
+.seoalt img{width:100%;border-radius:9px;aspect-ratio:4/3;object-fit:cover}
+.altline{display:inline-block;padding:8px 12px;border-radius:8px;background:var(--bg);
+  border:1px solid var(--line);font-size:14.5px;line-height:1.45;color:var(--brand-lift)}
+@media (max-width:600px){
+  .seoalt{grid-template-columns:1fr}
+  .seoalt img{max-width:190px}
+}
+
+/* ---------- a real address bar ---------- */
+.urlbar{display:flex;align-items:stretch;flex-wrap:wrap;gap:2px;font-family:var(--mono);
+  font-size:16px;direction:ltr}
+.urlbar span{padding:12px 3px;color:var(--muted)}
+.urlbar b{padding:12px 10px;border-radius:8px;font-weight:700;background:var(--surface-2);
+  color:var(--ink)}
+.urlbar b.is-name{background:oklch(0.300 0.060 168 / .38);color:var(--signal)}
+.urlbar b.is-end{background:oklch(0.300 0.090 31 / .28);color:var(--accent-text)}
+.urlkeys{display:flex;gap:18px;flex-wrap:wrap;margin:14px 0 0;font-size:15px}
+.urlkeys em{font-style:normal;display:inline-flex;align-items:center;gap:7px;color:var(--ink-2)}
+.urlkeys em i{display:block;width:12px;height:12px;border-radius:4px;flex:0 0 auto}
+.tld-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px;
+  margin:22px 0 0}
+.tld-row>*{min-width:0}
+.tld{padding:15px 17px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
+.tld code{display:block;margin-bottom:6px;font-family:var(--mono);font-size:17px;
+  color:var(--brand-lift);direction:ltr}
+.tld p{margin:0;font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+
+/* ---------- the four words, each with a real example ----------
+   Every rule aimed at a <p> carries a .block prefix, or edulixa.css's
+   `.block p` wins on specificity and this all silently does nothing. */
+.twocol{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}
+/* the gradebook is the point of the SCORM block, so give it the wider half */
+.twocol.is-weighted{grid-template-columns:minmax(0,0.82fr) minmax(0,1.18fr)}
+@media (max-width:700px){.twocol.is-weighted{grid-template-columns:minmax(0,1fr)}}
+.twocol>*{min-width:0}
+
+/* SASS: one named value, three things repaint */
+.sassdemo{--sass:#5FD6C0;display:grid;gap:14px}
+.block .sassline{margin:0;font-family:var(--mono);font-size:16px;direction:ltr;
+  padding:12px 15px;border-radius:9px;background:var(--bg);border:1px solid var(--line)}
+.sassline code{color:var(--ink-2)}
+.sassline b{color:var(--accent-text);font-weight:500}
+.sassline #sass-hex{color:var(--sass);font-weight:700;transition:color var(--t) var(--ease)}
+.sass-sw{display:inline-block;width:13px;height:13px;border-radius:4px;margin-inline-end:6px;
+  background:var(--sass);border:1px solid oklch(0 0 0 / .4);vertical-align:baseline;
+  transition:background var(--t) var(--ease)}
+.sasspicks{display:flex;gap:10px;flex-wrap:wrap}
+.sasspick{width:44px;height:44px;border-radius:10px;cursor:pointer;background:var(--p);
+  border:2px solid transparent;box-shadow:inset 0 0 0 1px oklch(0 0 0 / .35);
+  transition:border-color var(--t-fast),transform var(--t-fast)}
+.sasspick:hover{transform:translateY(-2px)}
+.sasspick.is-on{border-color:var(--ink)}
+.sassout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.sassout>*{min-width:0}
+.sasscard{padding:15px;border-radius:var(--r);background:var(--surface);
+  border:1px solid var(--line);border-top:4px solid var(--sass);
+  transition:border-color var(--t) var(--ease)}
+.sasscard b{display:block;margin-bottom:4px;font-size:16px;color:var(--sass);
+  transition:color var(--t) var(--ease)}
+.sasscard span{font-size:14px;color:var(--muted)}
+
+/* SaaS: two plans */
+.plan{padding:18px;border-radius:var(--r-md);background:var(--bg-2);
+  border:1px solid var(--line)}
+.plan.is-ours{border-color:var(--brand-lift)}
+.block .plan .plan-name{margin:0 0 4px;font-size:15px;font-weight:700;color:var(--muted)}
+.block .plan .plan-price{margin:0 0 14px;font-family:var(--display);font-size:26px;
+  line-height:1.1;color:var(--ink)}
+html[dir="rtl"] .plan .plan-price{font-family:var(--ar);font-weight:700;font-size:22px}
+.plan-list{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.plan-list li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px;
+  font-size:15px;line-height:1.45;color:var(--ink-2)}
+.plan-list li:before{display:grid;place-items:center;width:20px;height:20px;
+  border-radius:6px;font-size:12px;font-weight:700}
+.plan-list li.is-yes:before{content:"✓";background:oklch(0.300 0.060 168 / .40);
+  color:var(--signal)}
+.plan-list li.is-no:before{content:"✕";background:oklch(0.300 0.090 31 / .34);
+  color:var(--accent-text)}
+.block .plan .plan-who{margin:14px 0 0;padding-top:12px;
+  border-top:1px solid var(--line-soft);font-size:14px;color:var(--muted)}
+
+/* SCORM: what comes back to you */
+.deliv{padding:18px;border-radius:var(--r-md);background:var(--bg-2);
+  border:1px solid var(--line);display:flex;flex-direction:column}
+.deliv.is-ours{border-color:var(--brand-lift)}
+.block .deliv .deliv-head{margin:0 0 12px;font-size:16px;font-weight:800;color:var(--ink)}
+.deliv-head span{display:inline-flex;align-items:center;gap:9px}
+.deliv-head:before{content:"";display:inline-block;width:10px;height:10px;border-radius:99px;
+  margin-inline-end:9px;vertical-align:middle}
+.deliv-head.is-no:before{background:var(--accent)}
+.deliv-head.is-yes:before{background:var(--signal)}
+.block .deliv .deliv-what{margin:0 0 14px}
+.deliv-empty{flex:1;display:grid;place-items:center;gap:8px;padding:26px 18px;
+  border-radius:var(--r);background:var(--surface);border:1px dashed var(--line);
+  text-align:center}
+.deliv-dash{font-size:34px;line-height:1;color:var(--line)}
+.block .deliv-empty p{margin:0;font-size:14.5px;line-height:1.5;color:var(--muted)}
+
+.gradebook{width:100%;border-collapse:collapse;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  font-size:14px}
+.gradebook caption{caption-side:top;padding:0 0 9px;text-align:start;font-size:14px;
+  color:var(--muted)}
+.gradebook th{padding:9px 9px;text-align:start;font-size:13px;font-weight:700;
+  color:var(--muted);background:var(--bg-2);border-bottom:1px solid var(--line)}
+.gradebook td{padding:10px 9px;color:var(--ink-2);border-bottom:1px solid var(--line-soft)}
+.gradebook tbody tr:last-child td{border-bottom:0}
+.gb-tag{display:inline-block;padding:3px 9px;border-radius:6px;font-size:12.5px;
+  font-weight:700;white-space:nowrap}
+.gb-tag.is-done{background:oklch(0.300 0.060 168 / .40);color:var(--signal)}
+.gb-tag.is-doing{background:oklch(0.320 0.070 85 / .34);color:oklch(0.860 0.120 85)}
+.gb-tag.is-none{background:var(--surface-2);color:var(--muted)}
+@media (max-width:420px){
+  .gradebook{font-size:13px}
+  .gradebook th,.gradebook td{padding:8px 7px}
+}
+
+/* ---------- the builder ---------- */
+/* The builder is a single-column form, so it does NOT need the full-width
+   step-out that Session 1's side-by-side lab uses. Stepping out pulled its
+   buttons over the sticky rail and made both unreadable. */
+.lab-frame{position:relative;margin:22px 0 0;border:1px solid var(--line);
+  border-radius:var(--r-lg);overflow:hidden;background:var(--bg)}
+.lab-frame iframe{display:block;position:relative;z-index:1;width:100%;height:760px;border:0;
+  background:transparent}
+/* If the builder cannot load, the teacher sees this instead of a black void.
+   The loaded app paints its own opaque background straight over it. */
+.lab-frame:before{content:attr(data-holding);position:absolute;inset:0;z-index:0;
+  display:grid;place-items:center;padding:40px;text-align:center;
+  font-size:16px;line-height:1.6;color:var(--muted)}
+.lab-frame:fullscreen{border-radius:0;border:0;margin:0}
+.lab-frame:fullscreen iframe{height:100vh !important}
+.viewer-actions{margin-top:14px}
+/* four items, so two columns: an auto-fit trio would orphan the fourth */
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;
+  margin:22px 0 0}
+.fields>*{min-width:0}
+.fset{padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.fset h4{margin:0 0 9px;font-size:15.5px;font-weight:800;color:var(--ink)}
+html[dir="rtl"] .fset h4{font-family:var(--ar)}
+.fset ol{margin:0;padding-inline-start:19px;display:grid;gap:4px}
+.fset li{font-size:14.5px;line-height:1.45;color:var(--ink-2)}
+
+/* ---------- notices ---------- */
+.tip{margin:20px 0 0;padding:15px 17px;border-radius:var(--r);background:var(--surface);
+  border:1px solid var(--line);font-size:16px;line-height:1.6}
+.tip b{color:var(--ink)}
+.tip.is-warn{background:oklch(0.300 0.090 31 / .16);border-color:var(--accent-dim)}
+.tip.is-warn b{color:var(--accent-text)}
+.tip p{margin:0}
+.tip p+p{margin-top:8px}
+.field{display:inline-block;max-width:100%;overflow-wrap:anywhere;font-family:var(--mono);
+  font-size:14px;padding:7px 12px;border-radius:8px;background:var(--bg);
+  border:1px solid var(--line);color:var(--brand-lift);direction:ltr}
+
+/* ---------- hosting steps ---------- */
+.hsteps{margin:22px 0 0;padding:0;list-style:none;display:grid;gap:10px;counter-reset:h}
+.hsteps li{counter-increment:h;display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;
+  padding:15px 17px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
+.hsteps li:before{content:counter(h);grid-row:1/span 4;display:grid;place-items:center;
+  width:30px;height:30px;border-radius:9px;background:var(--brand-lift);color:var(--on-accent);
+  font-size:14px;font-weight:800}
+.hsteps b{font-size:16px;color:var(--ink)}
+.hsteps p{margin:4px 0 0;font-size:15px;line-height:1.55;color:var(--ink-2)}
+.hsteps .watchout{margin:8px 0 0;font-size:14.5px;line-height:1.5;color:var(--accent-text)}
+.hsteps .watchout b{color:var(--accent-text)}
+
+/* ---------- tool cards ---------- */
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(252px,1fr));gap:14px;margin:22px 0 0}
+.tools>*{min-width:0}
+.tool{display:flex;flex-direction:column;gap:9px;padding:18px;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r-md)}
+.tool h4{margin:0;font-size:17px;font-weight:800;color:var(--ink)}
+html[dir="rtl"] .tool h4{font-family:var(--ar)}
+.tool p{margin:0;font-size:14.5px;line-height:1.5;color:var(--ink-2);flex:1}
+.tool code{font-family:var(--mono);font-size:12.5px;color:var(--muted);overflow-wrap:anywhere;
+  direction:ltr}
+.tool .btn{align-self:start}
+
+@media (max-width:960px){
+  .lab-frame iframe{height:1000px}
+}
+@media (max-width:820px){
+  .swatches{grid-template-columns:1fr 1fr}
+  .m-hero{grid-template-columns:1fr}
+  .m-cards{grid-template-columns:1fr}
+  [data-style="grid"] .gal-wrap,[data-style="enlarge"] .gal-wrap{grid-template-columns:1fr 1fr}
+  [data-style="masonry"] .gal-wrap{columns:2}
+  .bento{grid-template-columns:1fr}
+  .bento .pdemo:first-child{grid-row:auto}
+}
+@media (max-width:560px){
+  .swatches{grid-template-columns:1fr}
+  .m-gal{grid-template-columns:repeat(2,1fr)}
+  [data-style="grid"] .gal-wrap,[data-style="enlarge"] .gal-wrap{grid-template-columns:1fr}
+  [data-style="masonry"] .gal-wrap{columns:1}
+  .urlbar{font-size:14px}
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main" data-en="Skip to content" data-ar="تخطَّ إلى المحتوى">Skip to content</a>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <img src="assets/logo-reversed.png" alt="Edulixa 360">
+      <span class="brand-tag" data-en="AI Masterclass · Level 3" data-ar="الماستر كلاس · المستوى الثالث">AI Masterclass · Level 3</span>
+    </div>
+    <div class="topbar-actions">
+      <a class="btn btn-ghost" href="index.html"><svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="All sessions" data-ar="كل المحاضرات">All sessions</span></a>
+      <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <a class="backlink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="Back to all sessions" data-ar="العودة إلى كل المحاضرات">Back to all sessions</span></a>
+    <p class="eyebrow" data-en="Session 3 of 5" data-ar="المحاضرة 3 من 5">Session 3 of 5</p>
+    <h1 class="display" data-en="Your teaching, at a link you can hand to anyone." data-ar="عملك التعليمي، على رابط تسلّمه لأي شخص.">Your teaching, at a link you can hand to anyone.</h1>
+    <p class="lede" data-en="Try every part of a website live on this page, then generate your own and publish it free." data-ar="جرّب كل جزء من الموقع حيًّا على هذه الصفحة، ثم ولّد موقعك وانشره مجانًا.">Try every part of a website live on this page, then generate your own and publish it free.</p>
+    <div class="hero-actions">
+      <a class="btn btn-accent" href="#anatomy" data-en="Take a page apart" data-ar="فكّك صفحة">Take a page apart</a>
+      <a class="btn btn-outline" href="#builder" data-en="Open the site builder" data-ar="افتح أداة بناء الموقع">Open the site builder</a>
+    </div>
+    <div class="hero-meta">
+      <span class="chip" data-en="Every example here is live, not a screenshot" data-ar="كل مثال هنا حيّ، وليس صورة">Every example here is live, not a screenshot</span>
+      <span class="chip" data-en="Free hosting on Cloudflare" data-ar="استضافة مجانية على Cloudflare">Free hosting on Cloudflare</span>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+<section class="sec">
+  <div class="wrap">
+    <div class="split">
+
+      <aside class="rail">
+        <h2 data-en="Session at a glance" data-ar="المحاضرة في لمحة">Session at a glance</h2>
+        <p data-en="Select a step to jump to it." data-ar="اختر خطوة للانتقال إليها.">Select a step to jump to it.</p>
+        <ol>
+          <li data-go="objectives" data-en="Objectives" data-ar="الأهداف">Objectives</li>
+          <li data-go="anatomy" data-en="Take a page apart" data-ar="فكّك صفحة">Take a page apart</li>
+          <li data-go="nav" data-en="Choose the navigation bar" data-ar="اختر شريط التنقل">Choose the navigation bar</li>
+          <li data-go="pages" data-en="Decide your pages" data-ar="حدّد صفحاتك">Decide your pages</li>
+          <li data-go="themes" data-en="Pick the colour theme" data-ar="اختر لوحة الألوان">Pick the colour theme</li>
+          <li data-go="panels" data-en="Choose the panels" data-ar="اختر البطاقات">Choose the panels</li>
+          <li data-go="gallery" data-en="Choose the gallery" data-ar="اختر معرض الصور">Choose the gallery</li>
+          <li data-go="buttons" data-en="Choose the buttons" data-ar="اختر الأزرار">Choose the buttons</li>
+          <li data-go="form" data-en="Build the contact form" data-ar="ابنِ استمارة التواصل">Build the contact form</li>
+          <li data-go="seo" data-en="Write what Google shows" data-ar="اكتب ما يعرضه Google">Write what Google shows</li>
+          <li data-go="words" data-en="Four words you will hear" data-ar="أربع كلمات ستسمعها">Four words you will hear</li>
+          <li data-go="builder" data-en="Generate your site" data-ar="ولّد موقعك">Generate your site</li>
+          <li data-go="domain" data-en="Buy your address" data-ar="اشترِ عنوانك">Buy your address</li>
+          <li data-go="hosting" data-en="Publish it free" data-ar="انشره مجانًا">Publish it free</li>
+          <li data-go="tools" data-en="Every tool link" data-ar="كل روابط الأدوات">Every tool link</li>
+        </ol>
+        <a class="btn btn-accent" href="#builder" data-en="Go to the builder" data-ar="اذهب إلى أداة البناء">Go to the builder</a>
+      </aside>
+
+      <div>
+
+        <div class="block" id="objectives">
+          <h2 class="display" data-en="Objectives" data-ar="الأهداف">Objectives</h2>
+          <ol class="objectives">
+            <li>
+              <div class="ob-head">
+                <b data-en="Name the six parts of any web page." data-ar="تسمية الأجزاء الستة لأي صفحة ويب.">Name the six parts of any web page.</b>
+                <span class="dok-chip" data-en="DOK 1 · Recall" data-ar="العمق 1 · تذكر">DOK 1 · Recall</span>
+              </div>
+            </li>
+            <li>
+              <div class="ob-head">
+                <b data-en="Explain SASS, SaaS, Bootstrap and SCORM in one sentence each." data-ar="شرح SASS و SaaS و Bootstrap و SCORM في جملة واحدة لكل منها.">Explain SASS, SaaS, Bootstrap and SCORM in one sentence each.</b>
+                <span class="dok-chip" data-en="DOK 2 · Apply" data-ar="العمق 2 · تطبيق">DOK 2 · Apply</span>
+              </div>
+            </li>
+            <li>
+              <div class="ob-head">
+                <b data-en="Choose a navigation bar, theme, panel, gallery and button, and justify each choice." data-ar="اختيار شريط تنقل ولوحة ألوان وبطاقة ومعرض وزر، وتبرير كل اختيار.">Choose a navigation bar, theme, panel, gallery and button, and justify each choice.</b>
+                <span class="dok-chip" data-en="DOK 3 · Analyse" data-ar="العمق 3 · تحليل">DOK 3 · Analyse</span>
+              </div>
+            </li>
+            <li>
+              <div class="ob-head">
+                <b data-en="Generate a complete website from one filled-in prompt." data-ar="توليد موقع كامل من برومبت واحد مملوء.">Generate a complete website from one filled-in prompt.</b>
+                <span class="dok-chip is-create" data-en="DOK 4 · Create" data-ar="العمق 4 · إنشاء">DOK 4 · Create</span>
+              </div>
+            </li>
+            <li>
+              <div class="ob-head">
+                <b data-en="Publish it at a free public address and hand out the link." data-ar="نشره على عنوان عام مجاني وتوزيع الرابط.">Publish it at a free public address and hand out the link.</b>
+                <span class="dok-chip is-create" data-en="DOK 4 · Create" data-ar="العمق 4 · إنشاء">DOK 4 · Create</span>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="block" id="anatomy">
+          <h2 class="display" data-en="Take a page apart" data-ar="فكّك صفحة">Take a page apart</h2>
+          <p class="lead" data-en="This is a real teacher website, not a diagram. Press any part of it." data-ar="هذا موقع معلّم حقيقي، لا رسمًا توضيحيًا. اضغط أي جزء منه.">This is a real teacher website, not a diagram. Press any part of it.</p>
+
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="A working page, six parts" data-ar="صفحة تعمل، ستة أجزاء">A working page, six parts</b>
+              <span data-en="every page you will ever build has these" data-ar="كل صفحة ستبنيها فيها هذه الأجزاء">every page you will ever build has these</span>
+            </div>
+            <div class="picker" id="part-chips">
+              <button class="pick" type="button" data-part-go="nav" aria-pressed="false" data-en="1 Navigation" data-ar="‎1 التنقل">1 Navigation</button>
+              <button class="pick" type="button" data-part-go="hero" aria-pressed="false" data-en="2 Opening" data-ar="‎2 الافتتاح">2 Opening</button>
+              <button class="pick" type="button" data-part-go="panels" aria-pressed="false" data-en="3 Panels" data-ar="‎3 البطاقات">3 Panels</button>
+              <button class="pick" type="button" data-part-go="gallery" aria-pressed="false" data-en="4 Gallery" data-ar="‎4 معرض الصور">4 Gallery</button>
+              <button class="pick" type="button" data-part-go="buttons" aria-pressed="false" data-en="5 Buttons" data-ar="‎5 الأزرار">5 Buttons</button>
+              <button class="pick" type="button" data-part-go="footer" aria-pressed="false" data-en="6 Footer" data-ar="‎6 التذييل">6 Footer</button>
+            </div>
+            <div class="ex-body">
+              <div class="browser">
+                <div class="browser-bar">
+                  <i class="dot"></i><i class="dot"></i><i class="dot"></i>
+                  <span class="browser-url">abirwafa.pages.dev</span>
+                </div>
+                <div class="mini" id="mini">
+
+                  <button class="m-part" type="button" data-part="nav" aria-pressed="false">
+                    <span class="m-num">1</span>
+                    <span class="m-nav">
+                      <span class="m-logo" data-en="Abir Wafa" data-ar="عبير وفا">Abir Wafa</span>
+                      <span class="m-links">
+                        <i data-en="Home" data-ar="الرئيسية">Home</i>
+                        <i data-en="About" data-ar="عنّي">About</i>
+                        <i data-en="Courses" data-ar="الدورات">Courses</i>
+                        <i data-en="Gallery" data-ar="الصور">Gallery</i>
+                        <i data-en="Contact" data-ar="تواصل">Contact</i>
+                      </span>
+                    </span>
+                  </button>
+
+                  <button class="m-part" type="button" data-part="hero" aria-pressed="false">
+                    <span class="m-num">2</span>
+                    <span class="m-hero">
+                      <span>
+                        <h4 data-en="I train teachers to use AI in the classroom." data-ar="أدرّب المعلمين على استخدام الذكاء الاصطناعي في الصف.">I train teachers to use AI in the classroom.</h4>
+                        <p data-en="Twenty years in classrooms in Egypt and Kuwait. CEFR-aligned, built on what you already teach." data-ar="عشرون عامًا في صفوف مصر والكويت. متوافق مع CEFR، ومبني على ما تدرّسه بالفعل.">Twenty years in classrooms in Egypt and Kuwait. CEFR-aligned, built on what you already teach.</p>
+                        <span class="m-cta" data-en="Book a training day" data-ar="احجز يوم تدريب">Book a training day</span>
+                      </span>
+                      <img src="assets/s3/s3-gal-1.webp" alt="" data-en-label="A class with hands raised at the whiteboard" data-ar-label="صف بأيدٍ مرفوعة عند السبورة">
+                    </span>
+                  </button>
+
+                  <button class="m-part" type="button" data-part="panels" aria-pressed="false">
+                    <span class="m-num">3</span>
+                    <span class="m-cards">
+                      <span class="m-card">
+                        <b data-en="AI for Young Learners" data-ar="الذكاء الاصطناعي للصغار">AI for Young Learners</b>
+                        <span data-en="A1 to A2 · 6 hours · in person" data-ar="من A1 إلى A2 · 6 ساعات · حضوريًا">A1 to A2 · 6 hours · in person</span>
+                      </span>
+                      <span class="m-card">
+                        <b data-en="Writing Better Prompts" data-ar="كتابة برومبتات أفضل">Writing Better Prompts</b>
+                        <span data-en="All levels · 4 hours · online" data-ar="كل المستويات · 4 ساعات · عبر الإنترنت">All levels · 4 hours · online</span>
+                      </span>
+                      <span class="m-card">
+                        <b data-en="Digital Lesson Planning" data-ar="تخطيط الدروس رقميًا">Digital Lesson Planning</b>
+                        <span data-en="CELTA and IB · 8 hours" data-ar="CELTA و IB · 8 ساعات">CELTA and IB · 8 hours</span>
+                      </span>
+                    </span>
+                  </button>
+
+                  <button class="m-part" type="button" data-part="gallery" aria-pressed="false">
+                    <span class="m-num">4</span>
+                    <span class="m-gal">
+                      <img src="assets/s3/s3-gal-2.webp" alt="" data-en-label="Two learners at the science bench" data-ar-label="متعلمان عند منصة العلوم">
+                      <img src="assets/s3/s3-gal-3.webp" alt="" data-en-label="The reading corner" data-ar-label="زاوية القراءة">
+                      <img src="assets/s3/s3-gal-4.webp" alt="" data-en-label="The art table" data-ar-label="طاولة الفنون">
+                      <img src="assets/s3/s3-gal-6.webp" alt="" data-en-label="Graduation day" data-ar-label="يوم التخرج">
+                    </span>
+                  </button>
+
+                  <button class="m-part" type="button" data-part="buttons" aria-pressed="false">
+                    <span class="m-num">5</span>
+                    <span class="m-btns">
+                      <span class="m-cta" data-en="Message me on WhatsApp" data-ar="راسلني على واتساب">Message me on WhatsApp</span>
+                      <span class="m-btn2" data-en="Download the course outline" data-ar="نزّل خطة الدورة">Download the course outline</span>
+                    </span>
+                  </button>
+
+                  <button class="m-part" type="button" data-part="footer" aria-pressed="false">
+                    <span class="m-num">6</span>
+                    <span class="m-foot">
+                      <span>hello@abirwafa.com</span>
+                      <span dir="ltr">+20 100 000 0000</span>
+                      <span data-en="Alexandria, Egypt" data-ar="الإسكندرية، مصر">Alexandria, Egypt</span>
+                      <span>© 2026</span>
+                    </span>
+                  </button>
+
+                </div>
+              </div>
+            </div>
+            <div class="mini-note" id="part-out" aria-live="polite"></div>
+          </div>
+
+          <p class="cap"><b data-en="The order is fixed. " data-ar="الترتيب ثابت. ">The order is fixed. </b><span data-en="A visitor decides in about three seconds, so the opening screen comes second and the footer comes last." data-ar="الزائر يقرر في نحو ثلاث ثوانٍ، لذلك تأتي شاشة الافتتاح ثانيةً ويأتي التذييل أخيرًا.">A visitor decides in about three seconds, so the opening screen comes second and the footer comes last.</span></p>
+        </div>
+
+        <div hidden>
+          <div id="part-nav">
+            <p><b data-en="1 · Navigation bar. " data-ar="‎1 · شريط التنقل. ">1 · Navigation bar. </b><span data-en="The signs above the doors in a school corridor. Same place, same order, on every page." data-ar="اللوحات فوق الأبواب في ممر المدرسة. المكان نفسه والترتيب نفسه في كل صفحة.">The signs above the doors in a school corridor. Same place, same order, on every page.</span></p>
+            <p data-en="Five or six names. Seven and the visitor stops reading." data-ar="خمسة أو ستة أسماء. وسبعة فيتوقف الزائر عن القراءة.">Five or six names. Seven and the visitor stops reading.</p>
+          </div>
+          <div id="part-hero">
+            <p><b data-en="2 · Opening screen. " data-ar="‎2 · شاشة الافتتاح. ">2 · Opening screen. </b><span data-en="The front cover of a book: one big line, one short line, one button." data-ar="غلاف الكتاب: سطر كبير واحد، وسطر قصير واحد، وزر واحد.">The front cover of a book: one big line, one short line, one button.</span></p>
+            <p data-en="The big line says who you are and what you do for the reader. “Welcome to my website” says neither." data-ar="السطر الكبير يقول من أنت وما تقدّمه للقارئ. أما «مرحبًا بكم في موقعي» فلا يقول أيًّا منهما.">The big line says who you are and what you do for the reader. “Welcome to my website” says neither.</p>
+          </div>
+          <div id="part-panels">
+            <p><b data-en="3 · Panels. " data-ar="‎3 · البطاقات. ">3 · Panels. </b><span data-en="Lunch trays: identical shape, one meal each. One panel per course, per resource, per service." data-ar="صواني الطعام: شكل متماثل، ووجبة في كل واحدة. بطاقة لكل دورة، ولكل مادة، ولكل خدمة.">Lunch trays: identical shape, one meal each. One panel per course, per resource, per service.</span></p>
+            <p data-en="Two panels that look different tell the visitor they mean different things." data-ar="البطاقتان المختلفتان في الشكل تخبران الزائر أنهما تعنيان شيئين مختلفين.">Two panels that look different tell the visitor they mean different things.</p>
+          </div>
+          <div id="part-gallery">
+            <p><b data-en="4 · Gallery. " data-ar="‎4 · معرض الصور. ">4 · Gallery. </b><span data-en="The display board in the corridor. This is the part that actually persuades." data-ar="لوحة العرض في الممر. وهذا هو الجزء الذي يقنع فعلًا.">The display board in the corridor. This is the part that actually persuades.</span></p>
+            <p data-en="No learner's face without written permission from the family. When in doubt, photograph the work." data-ar="لا وجه لأي متعلم دون إذن مكتوب من الأسرة. وعند الشك، صوّر العمل.">No learner's face without written permission from the family. When in doubt, photograph the work.</p>
+          </div>
+          <div id="part-buttons">
+            <p><b data-en="5 · Buttons. " data-ar="‎5 · الأزرار. ">5 · Buttons. </b><span data-en="Doorbells. One loud one per screen; everything else is quieter." data-ar="أجراس الأبواب. جرس عالٍ واحد في كل شاشة، وكل ما عداه أهدأ.">Doorbells. One loud one per screen; everything else is quieter.</span></p>
+            <p data-en="Write what will happen: “Book a training day”, not “Click here”." data-ar="اكتب ما سيحدث: «احجز يوم تدريب»، لا «اضغط هنا».">Write what will happen: “Book a training day”, not “Click here”.</p>
+          </div>
+          <div id="part-footer">
+            <p><b data-en="6 · Footer. " data-ar="‎6 · التذييل. ">6 · Footer. </b><span data-en="The note by the front door with the phone number on it. Email, WhatsApp, city, year." data-ar="الورقة عند الباب وعليها رقم الهاتف. البريد، وواتساب، والمدينة، والسنة.">The note by the front door with the phone number on it. Email, WhatsApp, city, year.</span></p>
+            <p data-en="It is on every page, so a private link here is a leak everywhere." data-ar="وهو موجود في كل صفحة، فالرابط الخاص هنا تسريب في كل مكان.">It is on every page, so a private link here is a leak everywhere.</p>
+          </div>
+        </div>
+
+        <div class="block" id="nav">
+          <h2 class="display" data-en="Choose the navigation bar" data-ar="اختر شريط التنقل">Choose the navigation bar</h2>
+          <p class="lead" data-en="All three at once, so you can see the difference. Each one differs in exactly one way." data-ar="الثلاثة معًا، حتى ترى الفرق. وكل واحد يختلف في أمر واحد بالضبط.">All three at once, so you can see the difference. Each one differs in exactly one way.</p>
+
+          <div class="navset">
+
+            <div class="navcard">
+              <div class="navcard-head">
+                <b data-en="1 · Floating pill" data-ar="‎1 · شريط عائم">1 · Floating pill</b>
+                <span data-en="Look: it does not touch any edge." data-ar="انظر: لا يلمس أي حافة.">Look: it does not touch any edge.</span>
+              </div>
+              <div class="navframe nv-pill">
+                <div class="nv-bar">
+                  <span class="nv-logo" data-en="Abir Wafa" data-ar="عبير وفا">Abir Wafa</span>
+                  <span class="nv-links">
+                    <a href="#nav" class="is-here" data-en="Home" data-ar="الرئيسية">Home</a>
+                    <a href="#nav" data-en="Courses" data-ar="الدورات">Courses</a>
+                    <a href="#nav" data-en="Contact" data-ar="تواصل">Contact</a>
+                  </span>
+                </div>
+                <div class="nv-page"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              </div>
+              <p class="navcard-foot"><span data-en="A capsule with space all round it, so the page shows through at the corners. Modern and light, and it only works up to five names." data-ar="كبسولة بمسافة حولها من كل جهة، فتظهر الصفحة من خلفها عند الأركان. حديث وخفيف، ولا يعمل إلا حتى خمسة أسماء.">A capsule with space all round it, so the page shows through at the corners. Modern and light, and it only works up to five names.</span> <span class="field">In the builder: Floating Island Pill</span></p>
+            </div>
+
+            <div class="navcard">
+              <div class="navcard-head">
+                <b data-en="2 · Sticky glass" data-ar="‎2 · زجاجي ثابت">2 · Sticky glass</b>
+                <span data-en="Scroll inside the box: the bar stays." data-ar="مرّر داخل المربع: يبقى الشريط في موضعه.">Scroll inside the box: the bar stays.</span>
+              </div>
+              <div class="navframe nv-sticky is-scroll" tabindex="0" role="group" data-en-label="Scrollable example of a sticky navigation bar" data-ar-label="مثال قابل للتمرير على شريط تنقل ثابت">
+                <div class="nv-bar">
+                  <span class="nv-logo" data-en="Abir Wafa" data-ar="عبير وفا">Abir Wafa</span>
+                  <span class="nv-links">
+                    <a href="#nav" class="is-here" data-en="Home" data-ar="الرئيسية">Home</a>
+                    <a href="#nav" data-en="Courses" data-ar="الدورات">Courses</a>
+                    <a href="#nav" data-en="Contact" data-ar="تواصل">Contact</a>
+                  </span>
+                </div>
+                <div class="nv-page is-long"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <span class="nv-hint" data-en="Scroll here ↓" data-ar="مرّر هنا ↓">Scroll here ↓</span>
+              </div>
+              <p class="navcard-foot"><span data-en="Glued to the top edge, full width, and it does not move while the content slides underneath it. The safest of the three: it is what most sites do, so nobody has to learn it." data-ar="ملتصق بالحافة العليا، بالعرض الكامل، ولا يتحرك بينما ينزلق المحتوى من تحته. وهو الأكثر أمانًا بين الثلاثة: لأنه ما تفعله معظم المواقع، فلا يحتاج أحد إلى تعلّمه.">Glued to the top edge, full width, and it does not move while the content slides underneath it. The safest of the three: it is what most sites do, so nobody has to learn it.</span> <span class="field">In the builder: Sticky Minimal</span></p>
+            </div>
+
+            <div class="navcard">
+              <div class="navcard-head">
+                <b data-en="3 · Split header" data-ar="‎3 · مقسوم">3 · Split header</b>
+                <span data-en="Count the boxes: two, not one." data-ar="عُدّ الصناديق: اثنان، لا واحد.">Count the boxes: two, not one.</span>
+              </div>
+              <div class="navframe nv-split">
+                <div class="nv-bar">
+                  <span class="nv-logo" data-en="Abir Wafa" data-ar="عبير وفا">Abir Wafa</span>
+                  <span class="nv-links">
+                    <a href="#nav" class="is-here" data-en="Home" data-ar="الرئيسية">Home</a>
+                    <a href="#nav" data-en="Courses" data-ar="الدورات">Courses</a>
+                    <a href="#nav" data-en="Contact" data-ar="تواصل">Contact</a>
+                  </span>
+                </div>
+                <div class="nv-page"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              </div>
+              <p class="navcard-foot"><span data-en="The logo sits in its own box on one side and the names in another, with a gap between them. The gap is what makes a real logo look deliberate. If your logo is only your name in text, use one of the other two." data-ar="الشعار في صندوق خاص على أحد الجانبين والأسماء في صندوق آخر، وبينهما فراغ. والفراغ هو ما يجعل الشعار الحقيقي يبدو مقصودًا. فإن كان شعارك اسمك نصًّا فقط، فاستخدم أحد الشكلين الآخرين.">The logo sits in its own box on one side and the names in another, with a gap between them. The gap is what makes a real logo look deliberate. If your logo is only your name in text, use one of the other two.</span> <span class="field">In the builder: Split Header</span></p>
+            </div>
+
+          </div>
+
+          <p class="cap"><b data-en="On a phone all three become the same thing: " data-ar="على الهاتف تصبح الثلاثة شيئًا واحدًا: ">On a phone all three become the same thing: </b><span data-en="a logo and three stacked lines that open the names as a list. Ask for that in your prompt." data-ar="شعار وثلاثة خطوط مرصوصة تفتح الأسماء في قائمة. اطلب ذلك في برومبتك.">a logo and three stacked lines that open the names as a list. Ask for that in your prompt.</span></p>
+          <p class="cap"><b data-en="Whichever you choose: " data-ar="أيًّا اخترت: ">Whichever you choose: </b><span data-en="the same bar on every page, same position, names in the same order, and it shows which page the visitor is on." data-ar="الشريط نفسه في كل صفحة، والموضع نفسه، والأسماء بالترتيب نفسه، ويوضّح الصفحة التي يقف عليها الزائر.">the same bar on every page, same position, names in the same order, and it shows which page the visitor is on.</span></p>
+        </div>
+
+        <div class="block" id="pages">
+          <h2 class="display" data-en="Decide your pages" data-ar="حدّد صفحاتك">Decide your pages</h2>
+          <p class="lead" data-en="Six pages cover almost every teacher. Write this list before anything else." data-ar="ست صفحات تكفي معظم المعلمين. اكتب هذه القائمة قبل أي شيء آخر.">Six pages cover almost every teacher. Write this list before anything else.</p>
+
+          <div class="sitemap">
+            <div class="sm-row is-home">
+              <code class="sm-file">index.html</code>
+              <div>
+                <b data-en="Home" data-ar="الرئيسية">Home</b>
+                <span data-en="One screen. Opening line, three panels, one button. Its only job is a second page." data-ar="شاشة واحدة. جملة افتتاحية، وثلاث بطاقات، وزر واحد. ووظيفتها الوحيدة صفحة ثانية.">One screen. Opening line, three panels, one button. Its only job is a second page.</span>
+              </div>
+            </div>
+            <div class="sm-row">
+              <code class="sm-file">about.html</code>
+              <div>
+                <b data-en="About me" data-ar="عنّي">About me</b>
+                <span data-en="Photograph, qualifications, years, places. Write it as “I”, not as “Dr Abir”." data-ar="صورة، ومؤهلات، وسنوات، وأماكن. واكتبها بصيغة «أنا» لا «الدكتورة عبير».">Photograph, qualifications, years, places. Write it as “I”, not as “Dr Abir”.</span>
+              </div>
+            </div>
+            <div class="sm-row">
+              <code class="sm-file">courses.html</code>
+              <div>
+                <b data-en="Courses" data-ar="الدورات">Courses</b>
+                <span data-en="One panel per course: who it is for, the CEFR level, the hours, what they can do at the end." data-ar="بطاقة لكل دورة: لمن هي، ومستوى CEFR، والساعات، وما يستطيعون فعله في النهاية.">One panel per course: who it is for, the CEFR level, the hours, what they can do at the end.</span>
+              </div>
+            </div>
+            <div class="sm-row">
+              <code class="sm-file">resources.html</code>
+              <div>
+                <b data-en="Resources" data-ar="الموارد">Resources</b>
+                <span data-en="The worksheets and videos they download. The page that brings people back, and the one most likely to leak something private." data-ar="أوراق العمل والفيديوهات التي ينزّلونها. الصفحة التي تُعيد الناس، وأكثر صفحة يُحتمل أن تُسرّب شيئًا خاصًا.">The worksheets and videos they download. The page that brings people back, and the one most likely to leak something private.</span>
+              </div>
+            </div>
+            <div class="sm-row">
+              <code class="sm-file">gallery.html</code>
+              <div>
+                <b data-en="Gallery" data-ar="معرض الصور">Gallery</b>
+                <span data-en="Twelve strong pictures beat sixty ordinary ones. Each openable at full size." data-ar="اثنتا عشرة صورة قوية أفضل من ستين عادية. وكل واحدة قابلة للفتح بحجمها الكامل.">Twelve strong pictures beat sixty ordinary ones. Each openable at full size.</span>
+              </div>
+            </div>
+            <div class="sm-row">
+              <code class="sm-file">contact.html</code>
+              <div>
+                <b data-en="Contact" data-ar="تواصل">Contact</b>
+                <span data-en="Email, a WhatsApp button, three form fields. Say how fast you reply." data-ar="بريد، وزر واتساب، وثلاثة حقول في الاستمارة. واذكر سرعة ردّك.">Email, a WhatsApp button, three form fields. Say how fast you reply.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tip">
+            <p><b data-en="Start with one long page. " data-ar="ابدأ بصفحة واحدة طويلة. ">Start with one long page. </b><span data-en="The names scroll the visitor down instead of loading a new page. Splitting it later is easy; merging five thin pages after you have given out the links is not." data-ar="الأسماء تُنزلق بالزائر إلى الأسفل بدلًا من تحميل صفحة جديدة. وتقسيمها لاحقًا سهل؛ أما دمج خمس صفحات ضعيفة بعد توزيع الروابط فليس كذلك.">The names scroll the visitor down instead of loading a new page. Splitting it later is easy; merging five thin pages after you have given out the links is not.</span></p>
+          </div>
+        </div>
+
+        <div class="block" id="themes">
+          <h2 class="display" data-en="Pick the colour theme" data-ar="اختر لوحة الألوان">Pick the colour theme</h2>
+          <p class="lead" data-en="Three colours: a background, a main colour, and one shout colour for the button you want pressed." data-ar="ثلاثة ألوان: خلفية، ولون رئيسي، ولون نداء واحد للزر الذي تريد أن يُضغط.">Three colours: a background, a main colour, and one shout colour for the button you want pressed.</p>
+
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="Six themes on one page" data-ar="ست لوحات على صفحة واحدة">Six themes on one page</b>
+              <span data-en="nothing changes but the three colours" data-ar="لا يتغير شيء إلا الألوان الثلاثة">nothing changes but the three colours</span>
+            </div>
+            <div class="swatches" id="theme-swatches">
+              <button class="sw is-on" type="button" data-theme="emerald" aria-pressed="true"
+                data-bg="#0B1A19" data-main="#0F695D" data-shout="#5FD6C0" data-ink="#F3EFE6" data-soft="#12302C"
+                data-name-en="Emerald Noir" data-name-ar="الزمرد الليلي">
+                <span class="dots"><i style="background:#0B1A19"></i><i style="background:#0F695D"></i><i style="background:#5FD6C0"></i></span>
+                <span data-en="Emerald Noir" data-ar="الزمرد الليلي">Emerald Noir</span>
+              </button>
+              <button class="sw" type="button" data-theme="indigo" aria-pressed="false"
+                data-bg="#0B0E24" data-main="#3B3BAF" data-shout="#A56BFF" data-ink="#EEF0FF" data-soft="#171B3D"
+                data-name-en="Cosmic Indigo" data-name-ar="النيلي الفضائي">
+                <span class="dots"><i style="background:#0B0E24"></i><i style="background:#3B3BAF"></i><i style="background:#A56BFF"></i></span>
+                <span data-en="Cosmic Indigo" data-ar="النيلي الفضائي">Cosmic Indigo</span>
+              </button>
+              <button class="sw" type="button" data-theme="gold" aria-pressed="false"
+                data-bg="#121110" data-main="#8A6A2A" data-shout="#E9C46A" data-ink="#F6F1E4" data-soft="#221F1A"
+                data-name-en="Obsidian Gold" data-name-ar="السبج الذهبي">
+                <span class="dots"><i style="background:#121110"></i><i style="background:#8A6A2A"></i><i style="background:#E9C46A"></i></span>
+                <span data-en="Obsidian Gold" data-ar="السبج الذهبي">Obsidian Gold</span>
+              </button>
+              <button class="sw" type="button" data-theme="slate" aria-pressed="false"
+                data-bg="#0E1628" data-main="#1E3A8A" data-shout="#7DD3FC" data-ink="#EAF2FF" data-soft="#182541"
+                data-name-en="Midnight Slate" data-name-ar="كحلي منتصف الليل">
+                <span class="dots"><i style="background:#0E1628"></i><i style="background:#1E3A8A"></i><i style="background:#7DD3FC"></i></span>
+                <span data-en="Midnight Slate" data-ar="كحلي منتصف الليل">Midnight Slate</span>
+              </button>
+              <button class="sw" type="button" data-theme="frost" aria-pressed="false"
+                data-bg="#F5F6F7" data-main="#6B7280" data-shout="#111827" data-ink="#14181F" data-soft="#E9ECEF"
+                data-name-en="Pure Frost" data-name-ar="الصقيع النقي">
+                <span class="dots"><i style="background:#F5F6F7"></i><i style="background:#6B7280"></i><i style="background:#111827"></i></span>
+                <span data-en="Pure Frost" data-ar="الصقيع النقي">Pure Frost</span>
+              </button>
+              <button class="sw" type="button" data-theme="ember" aria-pressed="false"
+                data-bg="#1A0F0C" data-main="#B23A16" data-shout="#F2994A" data-ink="#FDF1E7" data-soft="#2A1710"
+                data-name-en="Sunset Ember" data-name-ar="وهج الغروب">
+                <span class="dots"><i style="background:#1A0F0C"></i><i style="background:#B23A16"></i><i style="background:#F2994A"></i></span>
+                <span data-en="Sunset Ember" data-ar="وهج الغروب">Sunset Ember</span>
+              </button>
+            </div>
+            <div class="hexrow" id="theme-hex"></div>
+            <div class="ex-body">
+              <div class="mini" id="theme-demo">
+                <div class="m-nav">
+                  <span class="m-logo" data-en="Abir Wafa" data-ar="عبير وفا">Abir Wafa</span>
+                  <span class="m-links">
+                    <i data-en="Home" data-ar="الرئيسية">Home</i>
+                    <i data-en="Courses" data-ar="الدورات">Courses</i>
+                    <i data-en="Contact" data-ar="تواصل">Contact</i>
+                  </span>
+                </div>
+                <div class="m-hero">
+                  <div>
+                    <h4 data-en="I train teachers to use AI in the classroom." data-ar="أدرّب المعلمين على استخدام الذكاء الاصطناعي في الصف.">I train teachers to use AI in the classroom.</h4>
+                    <p data-en="Twenty years in classrooms in Egypt and Kuwait." data-ar="عشرون عامًا في صفوف مصر والكويت.">Twenty years in classrooms in Egypt and Kuwait.</p>
+                    <span class="m-cta" data-en="Book a training day" data-ar="احجز يوم تدريب">Book a training day</span>
+                  </div>
+                  <img src="assets/s3/s3-gal-5.webp" alt="" data-en-label="Break time in the playground" data-ar-label="وقت الفسحة في الملعب">
+                </div>
+                <div class="m-cards">
+                  <div class="m-card"><b data-en="AI for Young Learners" data-ar="الذكاء الاصطناعي للصغار">AI for Young Learners</b><span data-en="A1 to A2 · 6 hours" data-ar="من A1 إلى A2 · 6 ساعات">A1 to A2 · 6 hours</span></div>
+                  <div class="m-card"><b data-en="Writing Better Prompts" data-ar="كتابة برومبتات أفضل">Writing Better Prompts</b><span data-en="All levels · 4 hours" data-ar="كل المستويات · 4 ساعات">All levels · 4 hours</span></div>
+                  <div class="m-card"><b data-en="Digital Lesson Planning" data-ar="تخطيط الدروس رقميًا">Digital Lesson Planning</b><span data-en="CELTA and IB · 8 hours" data-ar="CELTA و IB · 8 ساعات">CELTA and IB · 8 hours</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="mini-note"><p><b data-en="Showing now: " data-ar="المعروض الآن: ">Showing now: </b><span id="theme-name"></span></p></div>
+          </div>
+
+          <p class="cap"><b data-en="One test settles it. " data-ar="اختبار واحد يحسم الأمر. ">One test settles it. </b><span data-en="Open the page on your phone in the sun. If you shade the screen with your hand, the text is too close in colour to the background." data-ar="افتح الصفحة على هاتفك في الشمس. فإن ظلّلت الشاشة بيدك، فلون النص قريب جدًا من لون الخلفية.">Open the page on your phone in the sun. If you shade the screen with your hand, the text is too close in colour to the background.</span></p>
+          <p class="cap"><b data-en="For a teacher: " data-ar="للمعلم: ">For a teacher: </b><span data-en="Pure Frost if parents are your visitors, Emerald Noir or Midnight Slate if schools are, Sunset Ember for young learners." data-ar="الصقيع النقي إن كان زوارك أولياء أمور، والزمرد الليلي أو كحلي منتصف الليل إن كانوا مدارس، ووهج الغروب للمتعلمين الصغار.">Pure Frost if parents are your visitors, Emerald Noir or Midnight Slate if schools are, Sunset Ember for young learners.</span></p>
+        </div>
+
+        <div class="block" id="panels">
+          <h2 class="display" data-en="Choose the panels" data-ar="اختر البطاقات">Choose the panels</h2>
+          <p class="lead" data-en="A panel is a box holding one thing. Seven kinds below, all working. Open them, hover them, press them." data-ar="البطاقة صندوق يحمل شيئًا واحدًا. سبعة أنواع أدناه، كلها تعمل. افتحها، ومرّر عليها، واضغطها.">A panel is a box holding one thing. Seven kinds below, all working. Open them, hover them, press them.</p>
+
+          <h3 data-en="Collapsible panel" data-ar="بطاقة قابلة للطي">Collapsible panel</h3>
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="Press a question to open it" data-ar="اضغط سؤالًا ليُفتح">Press a question to open it</b>
+              <span data-en="also called an accordion" data-ar="ويُسمى أيضًا accordion">also called an accordion</span>
+            </div>
+            <div class="ex-body">
+              <div class="acc">
+                <details open>
+                  <summary><span data-en="Do I need to know any coding?" data-ar="هل أحتاج معرفة أي برمجة؟">Do I need to know any coding?</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+                  <div class="acc-body"><p data-en="No. You describe the site in your own words and the AI writes the file. You do need to read what comes back, which is what the review checklist is for." data-ar="لا. تصف الموقع بكلماتك والذكاء الاصطناعي يكتب الملف. لكنك تحتاج إلى قراءة ما يعود إليك، وهذا ما وُضعت له قائمة الفحص.">No. You describe the site in your own words and the AI writes the file. You do need to read what comes back, which is what the review checklist is for.</p></div>
+                </details>
+                <details>
+                  <summary><span data-en="How long does the whole session take?" data-ar="كم تستغرق المحاضرة كلها؟">How long does the whole session take?</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+                  <div class="acc-body"><p data-en="About three hours to work through the choices and generate the site, and about ten minutes to publish it." data-ar="نحو ثلاث ساعات للعمل على الخيارات وتوليد الموقع، ونحو عشر دقائق لنشره.">About three hours to work through the choices and generate the site, and about ten minutes to publish it.</p></div>
+                </details>
+                <details>
+                  <summary><span data-en="Does it cost anything?" data-ar="هل يكلّف شيئًا؟">Does it cost anything?</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+                  <div class="acc-body"><p data-en="The site and the hosting are free. Only your own address costs money, and only if you want one." data-ar="الموقع والاستضافة مجانيان. ولا يكلّف إلا عنوانك الخاص، وذلك فقط إن أردته.">The site and the hosting are free. Only your own address costs money, and only if you want one.</p></div>
+                </details>
+              </div>
+            </div>
+          </div>
+          <p class="cap"><b data-en="Use it for " data-ar="استخدمها لِ ">Use it for </b><span data-en="questions parents ask, long course descriptions, and anything most visitors will skip. Open the first one by default so nobody thinks the page is broken." data-ar="الأسئلة التي يطرحها أولياء الأمور، ووصف الدورات الطويل، وكل ما يتخطاه معظم الزوار. واترك الأولى مفتوحة حتى لا يظن أحد أن الصفحة معطلة.">questions parents ask, long course descriptions, and anything most visitors will skip. Open the first one by default so nobody thinks the page is broken.</span></p>
+
+          <h3 data-en="Tabbed panel" data-ar="بطاقة بتبويبات">Tabbed panel</h3>
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="One box, three views" data-ar="صندوق واحد، ثلاث لقطات">One box, three views</b>
+              <span data-en="same space, no scrolling" data-ar="المساحة نفسها، بلا تمرير">same space, no scrolling</span>
+            </div>
+            <div class="ex-body">
+              <div class="tp" id="tp1">
+                <div class="tp-strip" role="tablist">
+                  <button type="button" role="tab" aria-selected="true" data-tp="a" data-en="What you learn" data-ar="ما تتعلمه">What you learn</button>
+                  <button type="button" role="tab" aria-selected="false" data-tp="b" data-en="Who it is for" data-ar="لمن هي">Who it is for</button>
+                  <button type="button" role="tab" aria-selected="false" data-tp="c" data-en="What you need" data-ar="ما تحتاجه">What you need</button>
+                </div>
+                <div class="tp-pane" data-tp-pane="a">
+                  <p data-en="Six live design choices, one generated website, and a public link you can put on a CV." data-ar="ستة خيارات تصميمية حيّة، وموقع واحد مولَّد، ورابط عام يمكنك وضعه في سيرة ذاتية.">Six live design choices, one generated website, and a public link you can put on a CV.</p>
+                </div>
+                <div class="tp-pane" data-tp-pane="b" hidden>
+                  <p data-en="Teachers, trainers and heads of department who have no website yet and no budget for one." data-ar="المعلمون والمدرّبون ورؤساء الأقسام الذين لا موقع لهم بعد ولا ميزانية له.">Teachers, trainers and heads of department who have no website yet and no budget for one.</p>
+                </div>
+                <div class="tp-pane" data-tp-pane="c" hidden>
+                  <p data-en="A browser, a free ChatGPT or Gemini account, and about twelve photographs of your own work." data-ar="متصفح، وحساب مجاني على ChatGPT أو Gemini، ونحو اثنتي عشرة صورة من عملك.">A browser, a free ChatGPT or Gemini account, and about twelve photographs of your own work.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="cap"><b data-en="Use it for " data-ar="استخدمها لِ ">Use it for </b><span data-en="one course seen three ways. Never for six unrelated things: tabs hide everything except the first one." data-ar="دورة واحدة تُرى من ثلاث زوايا. ولا تستخدمها أبدًا لستة أشياء غير مترابطة: فالتبويبات تخفي كل شيء إلا الأول.">one course seen three ways. Never for six unrelated things: tabs hide everything except the first one.</span></p>
+
+          <h3 data-en="Flat, outlined, lifted" data-ar="مسطحة، بإطار، مرتفعة">Flat, outlined, lifted</h3>
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="Point at each one" data-ar="أشِر إلى كل واحدة">Point at each one</b>
+              <span data-en="they behave differently, not just look different" data-ar="سلوكها مختلف، لا مظهرها فقط">they behave differently, not just look different</span>
+            </div>
+            <div class="ex-body">
+              <div class="pgrid">
+                <div class="pdemo is-flat">
+                  <span class="lvl" data-en="Flat" data-ar="مسطحة">Flat</span>
+                  <h4 data-en="AI for Young Learners" data-ar="الذكاء الاصطناعي للصغار">AI for Young Learners</h4>
+                  <p data-en="A1 to A2 · 6 hours. The calmest of the three and the easiest to read. If you cannot decide, use this." data-ar="من A1 إلى A2 · 6 ساعات. أهدأ الثلاث وأسهلها قراءة. فإن لم تستطع الاختيار، فاستخدم هذه.">A1 to A2 · 6 hours. The calmest of the three and the easiest to read. If you cannot decide, use this.</p>
+                </div>
+                <div class="pdemo is-outline">
+                  <span class="lvl" data-en="Outlined" data-ar="بإطار">Outlined</span>
+                  <h4 data-en="Writing Better Prompts" data-ar="كتابة برومبتات أفضل">Writing Better Prompts</h4>
+                  <p data-en="All levels · 4 hours. See-through with one hairline. Right when the page behind it is a photograph." data-ar="كل المستويات · 4 ساعات. شفافة بخط رقيق واحد. وهي الصحيحة عندما تكون الصفحة خلفها صورة.">All levels · 4 hours. See-through with one hairline. Right when the page behind it is a photograph.</p>
+                </div>
+                <div class="pdemo is-lift">
+                  <span class="lvl" data-en="Lifted" data-ar="مرتفعة">Lifted</span>
+                  <h4 data-en="Digital Lesson Planning" data-ar="تخطيط الدروس رقميًا">Digital Lesson Planning</h4>
+                  <p data-en="CELTA and IB · 8 hours. It rises when you point at it, so use it only when the panel really opens something." data-ar="CELTA و IB · 8 ساعات. ترتفع عندما تشير إليها، فاستخدمها فقط إن كانت البطاقة تفتح شيئًا فعلًا.">CELTA and IB · 8 hours. It rises when you point at it, so use it only when the panel really opens something.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 data-en="Glass" data-ar="زجاجية">Glass</h3>
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="Only works on colour" data-ar="لا تعمل إلا على لون">Only works on colour</b>
+              <span data-en="the strip behind it is showing through" data-ar="الشريط خلفها ظاهر من خلالها">the strip behind it is showing through</span>
+            </div>
+            <div class="ex-body">
+              <div class="glassbed">
+                <div class="pdemo is-glass">
+                  <span class="lvl" data-en="Glass" data-ar="زجاجية">Glass</span>
+                  <h4 data-en="Summer intensive" data-ar="المكثف الصيفي">Summer intensive</h4>
+                  <p data-en="Beautiful, and the hardest to keep readable. Never put small text on it, and never use it on a plain background: there is nothing to see through to." data-ar="جميلة، وأصعب البطاقات في الحفاظ على وضوحها. فلا تضع عليها نصًا صغيرًا أبدًا، ولا تستخدمها على خلفية سادة: فلا يوجد ما يُرى من خلالها.">Beautiful, and the hardest to keep readable. Never put small text on it, and never use it on a plain background: there is nothing to see through to.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 data-en="Bento grid" data-ar="شبكة بينتو">Bento grid</h3>
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="A lunchbox with compartments" data-ar="صندوق غداء بحُجيرات">A lunchbox with compartments</b>
+              <span data-en="the big one gets the eye first" data-ar="الكبيرة تلفت العين أولًا">the big one gets the eye first</span>
+            </div>
+            <div class="ex-body">
+              <div class="bento">
+                <div class="pdemo">
+                  <span class="lvl" data-en="Main" data-ar="الرئيسية">Main</span>
+                  <h4 data-en="Whole-school AI training" data-ar="تدريب المدرسة كاملة على الذكاء الاصطناعي">Whole-school AI training</h4>
+                  <p data-en="Two days, up to thirty teachers, on your own curriculum. Put the thing you most want booked in the big compartment." data-ar="يومان، حتى ثلاثين معلمًا، على منهجك أنت. ضع في الحُجيرة الكبيرة ما تريد حجزه أكثر من غيره.">Two days, up to thirty teachers, on your own curriculum. Put the thing you most want booked in the big compartment.</p>
+                </div>
+                <div class="pdemo">
+                  <h4 data-en="One-to-one coaching" data-ar="تدريب فردي">One-to-one coaching</h4>
+                  <p data-en="Ninety minutes, online." data-ar="تسعون دقيقة، عبر الإنترنت.">Ninety minutes, online.</p>
+                </div>
+                <div class="pdemo">
+                  <h4 data-en="Curriculum review" data-ar="مراجعة المنهج">Curriculum review</h4>
+                  <p data-en="CEFR alignment, written report." data-ar="توافق CEFR، وتقرير مكتوب.">CEFR alignment, written report.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="cap"><b data-en="Three items, three compartments. " data-ar="ثلاثة عناصر، ثلاث حُجيرات. ">Three items, three compartments. </b><span data-en="An empty tile in a bento grid means the grid was planned before the content." data-ar="والحُجيرة الفارغة في شبكة بينتو تعني أن الشبكة خُطّطت قبل المحتوى.">An empty tile in a bento grid means the grid was planned before the content.</span></p>
+
+          <div class="tip is-warn">
+            <p><b data-en="Pick one and stop. " data-ar="اختر واحدة وتوقف. ">Pick one and stop. </b><span data-en="The commonest fault on a first website is three panel styles on the same page." data-ar="أشيع خطأ في أول موقع هو ثلاثة أساليب للبطاقات في الصفحة نفسها.">The commonest fault on a first website is three panel styles on the same page.</span></p>
+          </div>
+        </div>
+
+        <div class="block" id="gallery">
+          <h2 class="display" data-en="Choose the gallery" data-ar="اختر معرض الصور">Choose the gallery</h2>
+          <p class="lead" data-en="The same six pictures, hung four ways." data-ar="الصور الست نفسها، معلّقة بأربع طرق.">The same six pictures, hung four ways.</p>
+
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="Live galleries" data-ar="معارض حيّة">Live galleries</b>
+              <span data-en="the arrows and the enlarging both work" data-ar="الأسهم والتكبير يعملان معًا">the arrows and the enlarging both work</span>
+            </div>
+            <div class="tabs" id="gal-tabs">
+              <button class="tab is-on" type="button" data-gal-style="grid" aria-pressed="true">
+                <b data-en="Even grid" data-ar="شبكة متساوية">Even grid</b>
+                <small data-en="Certificates, learners' work" data-ar="الشهادات وأعمال المتعلمين">Certificates, learners' work</small>
+              </button>
+              <button class="tab" type="button" data-gal-style="masonry" aria-pressed="false">
+                <b data-en="Brick wall" data-ar="حائط الطوب">Brick wall</b>
+                <small data-en="Mixed shapes, nothing cropped" data-ar="أشكال مختلطة، بلا اقتطاع">Mixed shapes, nothing cropped</small>
+              </button>
+              <button class="tab" type="button" data-gal-style="carousel" aria-pressed="false">
+                <b data-en="One at a time" data-ar="واحدة في المرة">One at a time</b>
+                <small data-en="Three or four pictures only" data-ar="ثلاث أو أربع صور فقط">Three or four pictures only</small>
+              </button>
+              <button class="tab" type="button" data-gal-style="enlarge" aria-pressed="false">
+                <b data-en="Press to enlarge" data-ar="اضغط للتكبير">Press to enlarge</b>
+                <small data-en="Add this to whichever you pick" data-ar="أضِفه لأيّها اخترت">Add this to whichever you pick</small>
+              </button>
+            </div>
+            <div class="ex-body">
+              <div class="gal-demo" id="gal-demo" data-style="grid">
+                <div class="gal-wrap">
+                  <figure class="gal-item"><img src="assets/s3/s3-gal-1.webp" alt="" data-en-label="A class with hands raised at the whiteboard" data-ar-label="صف بأيدٍ مرفوعة عند السبورة"></figure>
+                  <figure class="gal-item"><img src="assets/s3/s3-gal-2.webp" alt="" data-en-label="Two learners at the science bench" data-ar-label="متعلمان عند منصة العلوم"></figure>
+                  <figure class="gal-item"><img src="assets/s3/s3-gal-3.webp" alt="" data-en-label="The reading corner" data-ar-label="زاوية القراءة"></figure>
+                  <figure class="gal-item"><img src="assets/s3/s3-gal-4.webp" alt="" data-en-label="The art table" data-ar-label="طاولة الفنون"></figure>
+                  <figure class="gal-item"><img src="assets/s3/s3-gal-5.webp" alt="" data-en-label="Break time in the playground" data-ar-label="وقت الفسحة في الملعب"></figure>
+                  <figure class="gal-item"><img src="assets/s3/s3-gal-6.webp" alt="" data-en-label="Graduation day" data-ar-label="يوم التخرج"></figure>
+                </div>
+                <div class="galbar">
+                  <button class="btn btn-ghost" type="button" id="gal-prev" hidden data-en="Previous" data-ar="السابقة">Previous</button>
+                  <button class="btn btn-ghost" type="button" id="gal-next" hidden data-en="Next" data-ar="التالية">Next</button>
+                  <span class="gal-count" id="gal-count" hidden></span>
+                </div>
+              </div>
+            </div>
+            <div class="mini-note" id="gal-note" aria-live="polite"></div>
+          </div>
+
+          <p class="cap"><b data-en="Before you upload any picture: " data-ar="قبل رفع أي صورة: ">Before you upload any picture: </b><span data-en="shrink it to about 1600 pixels wide, write one line describing it, and check you have permission to publish it." data-ar="صغّرها إلى نحو 1600 بكسل عرضًا، واكتب سطرًا يصفها، وتحقّق أن لديك إذنًا بنشرها.">shrink it to about 1600 pixels wide, write one line describing it, and check you have permission to publish it.</span></p>
+        </div>
+
+        <div hidden>
+          <div id="galnote-grid">
+            <p><b data-en="Even grid. " data-ar="الشبكة المتساوية. ">Even grid. </b><span data-en="Every picture cropped to the same shape. Tidy, and it never breaks. The cost is cut edges, so keep faces away from the border." data-ar="كل صورة مقصوصة إلى الشكل نفسه. مرتبة، ولا تتعطل أبدًا. والثمن حواف مقتطعة، فأبعِد الوجوه عن الحافة.">Every picture cropped to the same shape. Tidy, and it never breaks. The cost is cut edges, so keep faces away from the border.</span></p>
+          </div>
+          <div id="galnote-masonry">
+            <p><b data-en="Brick wall. " data-ar="حائط الطوب. ">Brick wall. </b><span data-en="Nothing cropped: each picture keeps its own height and they stack with no gaps. The honest choice when you did not plan the photographs." data-ar="لا شيء مقتطع: كل صورة تحتفظ بارتفاعها وتتراكم بلا فراغات. وهو الخيار الصادق عندما لا تكون خطّطت للصور.">Nothing cropped: each picture keeps its own height and they stack with no gaps. The honest choice when you did not plan the photographs.</span></p>
+          </div>
+          <div id="galnote-carousel">
+            <p><b data-en="One at a time. " data-ar="واحدة في المرة. ">One at a time. </b><span data-en="Most visitors never press the arrow, so whatever is on picture two is not really on your website. Use three or four, strongest first." data-ar="معظم الزوار لا يضغطون السهم، فما على الصورة الثانية ليس موجودًا فعلًا في موقعك. استخدم ثلاثًا أو أربعًا، وأقواها أولًا.">Most visitors never press the arrow, so whatever is on picture two is not really on your website. Use three or four, strongest first.</span></p>
+          </div>
+          <div id="galnote-enlarge">
+            <p><b data-en="Press to enlarge. " data-ar="اضغط للتكبير. ">Press to enlarge. </b><span data-en="Not a fourth gallery: a behaviour you add on top. Press any picture above and it opens full size. Its name is a lightbox; say that word in your prompt." data-ar="ليس معرضًا رابعًا: بل سلوك تضيفه فوق الآخر. اضغط أي صورة أعلاه فتُفتح بحجمها الكامل. واسمه lightbox، فاذكر هذه الكلمة في برومبتك.">Not a fourth gallery: a behaviour you add on top. Press any picture above and it opens full size. Its name is a lightbox; say that word in your prompt.</span></p>
+          </div>
+        </div>
+
+        <div class="block" id="buttons">
+          <h2 class="display" data-en="Choose the buttons" data-ar="اختر الأزرار">Choose the buttons</h2>
+          <p class="lead" data-en="Press one. Nothing goes anywhere, but the line underneath says what a visitor would expect." data-ar="اضغط واحدًا. لا شيء ينتقل، لكن السطر أدناه يقول ما يتوقعه الزائر.">Press one. Nothing goes anywhere, but the line underneath says what a visitor would expect.</p>
+
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="Six live buttons" data-ar="ستة أزرار حيّة">Six live buttons</b>
+              <span data-en="one loud one per screen, never six" data-ar="زر عالٍ واحد لكل شاشة، لا ستة">one loud one per screen, never six</span>
+            </div>
+            <div class="ex-body">
+              <div class="btnset" id="btn-demo">
+                <button class="bdemo is-solid" type="button"
+                  data-btn-says-en="Solid: your one main action per screen. Use it once."
+                  data-btn-says-ar="ممتلئ: إجراؤك الرئيسي الواحد في كل شاشة. استخدمه مرة واحدة."
+                  data-en="Book a lesson" data-ar="احجز درسًا">Book a lesson</button>
+                <button class="bdemo is-outline" type="button"
+                  data-btn-says-en="Outlined: the polite second choice, beside the main button."
+                  data-btn-says-ar="بإطار: الخيار الثاني المهذّب، بجوار الزر الرئيسي."
+                  data-en="See the courses" data-ar="شاهد الدورات">See the courses</button>
+                <button class="bdemo is-ghost" type="button"
+                  data-btn-says-en="Ghost: text only, for what must be available but must not compete."
+                  data-btn-says-ar="شفاف: نص فقط، لما يجب أن يكون متاحًا دون أن ينافس."
+                  data-en="Read my full profile" data-ar="اقرأ ملفي الكامل">Read my full profile</button>
+                <button class="bdemo is-pill" type="button"
+                  data-btn-says-en="Pill: same job as solid, friendlier voice. Good for parents and young learners."
+                  data-btn-says-ar="بيضاوي: الوظيفة نفسها كالممتلئ، بصوت أودّ. جيد لأولياء الأمور والمتعلمين الصغار."
+                  data-en="Join the class" data-ar="انضم إلى الصف">Join the class</button>
+                <button class="bdemo is-grad" type="button"
+                  data-btn-says-en="Gradient: catches the eye faster than anything else. Once per site, not once per section."
+                  data-btn-says-ar="متدرج: يلفت العين أسرع من أي شيء آخر. مرة واحدة في الموقع، لا مرة في كل قسم."
+                  data-en="Start the free trial" data-ar="ابدأ التجربة المجانية">Start the free trial</button>
+                <button class="bdemo is-icon" type="button"
+                  data-btn-says-en="Icon and word: the picture says which app opens, the word says what happens. Never the icon alone."
+                  data-btn-says-ar="أيقونة وكلمة: الصورة تقول أي تطبيق سيُفتح، والكلمة تقول ما سيحدث. ولا الأيقونة وحدها أبدًا."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.2-5.6A8.4 8.4 0 1 1 21 11.5z"/></svg><span data-en="Message me on WhatsApp" data-ar="راسلني على واتساب">Message me on WhatsApp</span></button>
+              </div>
+              <div class="btn-out" id="btn-out" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <p class="cap"><b data-en="Four rules. " data-ar="أربع قواعد. ">Four rules. </b><span data-en="Write what will happen, not “Click here”. One loud button per screen. At least 44 pixels tall so a thumb can hit it. And it must look different while it is being pressed." data-ar="اكتب ما سيحدث، لا «اضغط هنا». وزر عالٍ واحد لكل شاشة. و44 بكسل ارتفاعًا على الأقل ليصيبه الإبهام. ويجب أن يبدو مختلفًا أثناء الضغط عليه.">Write what will happen, not “Click here”. One loud button per screen. At least 44 pixels tall so a thumb can hit it. And it must look different while it is being pressed.</span></p>
+        </div>
+
+        <div class="block" id="form">
+          <h2 class="display" data-en="Build the contact form" data-ar="ابنِ استمارة التواصل">Build the contact form</h2>
+          <p class="lead" data-en="Three fields. Try sending it empty and watch where the error appears." data-ar="ثلاثة حقول. جرّب إرسالها فارغة وشاهد أين يظهر الخطأ.">Three fields. Try sending it empty and watch where the error appears.</p>
+
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="A working form" data-ar="استمارة تعمل">A working form</b>
+              <span data-en="labels above, errors below, nothing sends" data-ar="التسميات أعلى، والأخطاء أسفل، ولا شيء يُرسل">labels above, errors below, nothing sends</span>
+            </div>
+            <div class="ex-body">
+              <form class="formex" id="formex" novalidate>
+                <div class="fld">
+                  <label for="f-name" data-en="Your name" data-ar="اسمك">Your name</label>
+                  <input id="f-name" name="name" type="text" autocomplete="name" data-en-ph="Salma Hassan" data-ar-ph="سلمى حسن" placeholder="Salma Hassan">
+                  <span class="err" data-err="f-name" hidden></span>
+                </div>
+                <div class="fld">
+                  <label for="f-mail" data-en="Your email" data-ar="بريدك الإلكتروني">Your email</label>
+                  <input id="f-mail" name="email" type="email" autocomplete="email" data-en-ph="salma@school.com" data-ar-ph="salma@school.com" placeholder="salma@school.com">
+                  <span class="help" data-en="I answer within two working days." data-ar="أرد خلال يومي عمل.">I answer within two working days.</span>
+                  <span class="err" data-err="f-mail" hidden></span>
+                </div>
+                <div class="fld">
+                  <label for="f-msg" data-en="Your message" data-ar="رسالتك">Your message</label>
+                  <textarea id="f-msg" name="message" data-en-ph="Which year group do you teach?" data-ar-ph="أي صف تدرّس؟" placeholder="Which year group do you teach?"></textarea>
+                  <span class="err" data-err="f-msg" hidden></span>
+                </div>
+                <button class="bdemo is-solid" type="submit" data-en="Send the message" data-ar="أرسل الرسالة">Send the message</button>
+                <p class="form-said" id="form-said" hidden></p>
+              </form>
+            </div>
+          </div>
+
+          <p class="cap"><b data-en="Four things this form gets right. " data-ar="أربعة أمور أصابت فيها هذه الاستمارة. ">Four things this form gets right. </b><span data-en="The label sits above the box and stays there. The error sits under the field it belongs to, not at the top. It says how fast you reply. And three fields is the whole form: every extra field loses you messages." data-ar="التسمية أعلى المربع وتبقى هناك. والخطأ تحت الحقل الذي يتبعه، لا في الأعلى. وتذكر سرعة ردّك. وثلاثة حقول هي الاستمارة كلها: فكل حقل إضافي يخسرك رسائل.">The label sits above the box and stays there. The error sits under the field it belongs to, not at the top. It says how fast you reply. And three fields is the whole form: every extra field loses you messages.</span></p>
+        </div>
+
+        <div class="block" id="seo">
+          <h2 class="display" data-en="Write what Google shows" data-ar="اكتب ما يعرضه Google">Write what Google shows</h2>
+          <p class="lead" data-en="This is one real Google result. Everything numbered on it is something you write." data-ar="هذه نتيجة حقيقية واحدة من Google. وكل ما هو مرقّم عليها شيء تكتبه أنت.">This is one real Google result. Everything numbered on it is something you write.</p>
+
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="What a parent sees" data-ar="ما يراه ولي الأمر">What a parent sees</b>
+              <span data-en="three parts, all three written by you" data-ar="ثلاثة أجزاء، وأنت من يكتب الثلاثة">three parts, all three written by you</span>
+            </div>
+            <div class="ex-body">
+              <div class="serpbox">
+                <p class="s-url"><i></i><span dir="ltr">abirwafa.com &rsaquo; teacher-training</span><b class="s-n">1</b></p>
+                <p class="s-title" dir="ltr">AI training for teachers in Alexandria | Abir Wafa<b class="s-n">2</b></p>
+                <p class="s-desc" dir="ltr">Two-day AI workshops for primary and secondary teachers, CEFR-aligned, run in Alexandria or online. Twenty years of classroom experience.<b class="s-n">3</b></p>
+              </div>
+              <div class="serpkey">
+                <span><b class="s-n">1</b><span data-en="The page name, in the address" data-ar="اسم الصفحة، في العنوان">The page name, in the address</span></span>
+                <span><b class="s-n">2</b><span data-en="The title" data-ar="العنوان">The title</span></span>
+                <span><b class="s-n">3</b><span data-en="The description" data-ar="الوصف">The description</span></span>
+              </div>
+            </div>
+          </div>
+
+          <h3 data-en="The five things, one example each" data-ar="الأمور الخمسة، مثال لكل واحد">The five things, one example each</h3>
+
+          <div class="seolist">
+
+            <div class="seorow">
+              <b class="s-n is-big">1</b>
+              <div>
+                <h4 data-en="The title" data-ar="العنوان">The title</h4>
+                <p class="seotry is-no"><span class="mk" aria-hidden="true">✕</span><span class="chip is-title" dir="ltr">Home | Welcome to my website</span></p>
+                <p class="seotry is-yes"><span class="mk" aria-hidden="true">✓</span><span class="chip is-title" dir="ltr">AI training for teachers in Alexandria | Abir Wafa</span></p>
+                <p class="seowhy" data-en="Put what you do and where you are in it. This is the line a parent presses." data-ar="ضع فيه ما تفعله ومكانك. فهذا هو السطر الذي يضغطه ولي الأمر.">Put what you do and where you are in it. This is the line a parent presses.</p>
+              </div>
+            </div>
+
+            <div class="seorow">
+              <b class="s-n is-big">2</b>
+              <div>
+                <h4 data-en="The description" data-ar="الوصف">The description</h4>
+                <p class="seotry is-no"><span class="mk" aria-hidden="true">✕</span><span class="chip is-desc" dir="ltr">Welcome to my site. Here you will find information about my services.</span></p>
+                <p class="seotry is-yes"><span class="mk" aria-hidden="true">✓</span><span class="chip is-desc" dir="ltr">Two-day AI workshops for primary and secondary teachers, CEFR-aligned, in Alexandria or online.</span></p>
+                <p class="seowhy" data-en="About 25 words. Say who it is for and what they get." data-ar="نحو 25 كلمة. اذكر لمن هو وما يحصلون عليه.">About 25 words. Say who it is for and what they get.</p>
+              </div>
+            </div>
+
+            <div class="seorow">
+              <b class="s-n is-big">3</b>
+              <div>
+                <h4 data-en="The words a parent types" data-ar="الكلمات التي يكتبها ولي الأمر">The words a parent types</h4>
+                <div class="seosearch">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.3-4.3"/></svg>
+                  <span dir="ltr">english teacher for grade 4 in alexandria</span>
+                </div>
+                <p class="seowhy" data-en="That, not “CEFR-aligned differentiated instruction”. Their words go in your headings; yours stay in the body." data-ar="هذا، لا «تدريس متمايز متوافق مع CEFR». فكلماتهم تدخل عناوينك، وكلماتك تبقى في المتن.">That, not “CEFR-aligned differentiated instruction”. Their words go in your headings; yours stay in the body.</p>
+              </div>
+            </div>
+
+            <div class="seorow">
+              <b class="s-n is-big">4</b>
+              <div>
+                <h4 data-en="One line describing every picture" data-ar="سطر يصف كل صورة">One line describing every picture</h4>
+                <div class="seoalt">
+                  <img src="assets/s3/s3-gal-1.webp" alt="" data-en-label="A class with hands raised at the whiteboard" data-ar-label="صف بأيدٍ مرفوعة عند السبورة">
+                  <div>
+                    <span class="altline" data-en="A class with hands raised at the whiteboard" data-ar="صف بأيدٍ مرفوعة عند السبورة">A class with hands raised at the whiteboard</span>
+                    <p class="seowhy" data-en="Google cannot see the photograph, and neither can a visitor who is blind. This one line serves both." data-ar="لا يرى Google الصورة، ولا يراها زائر أعمى. وهذا السطر الواحد يخدم الاثنين.">Google cannot see the photograph, and neither can a visitor who is blind. This one line serves both.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="seorow">
+              <b class="s-n is-big">5</b>
+              <div>
+                <h4 data-en="Real words in the page name" data-ar="كلمات حقيقية في اسم الصفحة">Real words in the page name</h4>
+                <p class="seotry is-no"><span class="mk" aria-hidden="true">✕</span><span class="chip is-url" dir="ltr">abirwafa.com/page2.html</span></p>
+                <p class="seotry is-yes"><span class="mk" aria-hidden="true">✓</span><span class="chip is-url" dir="ltr">abirwafa.com/teacher-training.html</span></p>
+                <p class="seowhy" data-en="Small letters, hyphens instead of spaces. The person reading the link can tell what is behind it." data-ar="أحرف صغيرة، وشُرَط بدل المسافات. فيعرف قارئ الرابط ما وراءه.">Small letters, hyphens instead of spaces. The person reading the link can tell what is behind it.</p>
+              </div>
+            </div>
+
+          </div>
+
+          <p class="cap"><b data-en="Where you type all five: " data-ar="أين تكتب الخمسة: ">Where you type all five: </b><span data-en="the SEO keywords field in the builder, plus the page names you chose earlier." data-ar="حقل كلمات SEO في أداة البناء، وأسماء الصفحات التي اخترتها سابقًا.">the SEO keywords field in the builder, plus the page names you chose earlier.</span></p>
+          <div class="tip is-warn">
+            <p><b data-en="Google takes days to weeks to notice a new site. " data-ar="يستغرق Google أيامًا إلى أسابيع لملاحظة موقع جديد. ">Google takes days to weeks to notice a new site. </b><span data-en="Anybody promising you the first result next week is selling something." data-ar="وكل من يوعدك بالنتيجة الأولى الأسبوع القادم يبيع لك شيئًا.">Anybody promising you the first result next week is selling something.</span></p>
+          </div>
+        </div>
+
+        <div class="block" id="words">
+          <h2 class="display" data-en="Four words you will hear" data-ar="أربع كلمات ستسمعها">Four words you will hear</h2>
+          <p class="lead" data-en="One sentence each, then the thing itself." data-ar="جملة واحدة لكل كلمة، ثم الشيء نفسه.">One sentence each, then the thing itself.</p>
+
+          <h3>SASS</h3>
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="Change one value, everything changes" data-ar="غيّر قيمة واحدة، فيتغير كل شيء">Change one value, everything changes</b>
+              <span data-en="press a colour" data-ar="اضغط لونًا">press a colour</span>
+            </div>
+            <div class="ex-body">
+              <div class="sassdemo" id="sassdemo">
+                <p class="sassline"><code><b>$brand</b>: <i class="sass-sw" aria-hidden="true"></i><span id="sass-hex">#5FD6C0</span>;</code></p>
+                <div class="sasspicks">
+                  <button class="sasspick is-on" type="button" data-sass="#5FD6C0" data-en-label="Teal" data-ar-label="أخضر مزرق" style="--p:#5FD6C0"></button>
+                  <button class="sasspick" type="button" data-sass="#F2994A" data-en-label="Rust" data-ar-label="أحمر طوبي" style="--p:#F2994A"></button>
+                  <button class="sasspick" type="button" data-sass="#A56BFF" data-en-label="Indigo" data-ar-label="نيلي" style="--p:#A56BFF"></button>
+                  <button class="sasspick" type="button" data-sass="#E9C46A" data-en-label="Gold" data-ar-label="ذهبي" style="--p:#E9C46A"></button>
+                </div>
+                <div class="sassout">
+                  <div class="sasscard"><b data-en="Courses" data-ar="الدورات">Courses</b><span data-en="Three panels" data-ar="ثلاث بطاقات">Three panels</span></div>
+                  <div class="sasscard"><b data-en="Resources" data-ar="الموارد">Resources</b><span data-en="A heading" data-ar="عنوان">A heading</span></div>
+                  <div class="sasscard"><b data-en="Contact" data-ar="تواصل">Contact</b><span data-en="A button" data-ar="زر">A button</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="cap"><b data-en="That is all SASS is. " data-ar="هذا كل ما تعنيه SASS. ">That is all SASS is. </b><span data-en="You name the colour once and use the name everywhere, so changing it is one edit instead of thirty. You will not write it in this course, but it is why you ask the AI to “put all the colours at the top of the file”." data-ar="تسمّي اللون مرة واحدة وتستخدم الاسم في كل مكان، فيصبح تغييره تعديلًا واحدًا بدل ثلاثين. ولن تكتبها في هذه الدورة، لكنها سبب طلبك من الذكاء الاصطناعي «ضع كل الألوان في أعلى الملف».">You name the colour once and use the name everywhere, so changing it is one edit instead of thirty. You will not write it in this course, but it is why you ask the AI to “put all the colours at the top of the file”.</span></p>
+
+          <h3>SaaS</h3>
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="What each road costs you" data-ar="ما يكلّفك كل طريق">What each road costs you</b>
+              <span data-en="Software as a Service means renting" data-ar="«البرمجيات كخدمة» تعني الاستئجار">Software as a Service means renting</span>
+            </div>
+            <div class="ex-body">
+              <div class="twocol">
+                <div class="plan">
+                  <p class="plan-name" data-en="Renting the tool" data-ar="استئجار الأداة">Renting the tool</p>
+                  <p class="plan-price" data-en="A fee, every month" data-ar="رسم، كل شهر">A fee, every month</p>
+                  <ul class="plan-list">
+                    <li class="is-yes" data-en="A page in an afternoon" data-ar="صفحة في عصر واحد">A page in an afternoon</li>
+                    <li class="is-yes" data-en="They keep it running" data-ar="هم يُبقونه يعمل">They keep it running</li>
+                    <li class="is-no" data-en="Stop paying and it disappears" data-ar="توقّف عن الدفع فيختفي">Stop paying and it disappears</li>
+                    <li class="is-no" data-en="No file you can take with you" data-ar="لا ملف تأخذه معك">No file you can take with you</li>
+                  </ul>
+                  <p class="plan-who" data-en="Wix · Squarespace · Canva Sites · Google Sites" data-ar="Wix · Squarespace · Canva Sites · Google Sites">Wix · Squarespace · Canva Sites · Google Sites</p>
+                </div>
+                <div class="plan is-ours">
+                  <p class="plan-name" data-en="Your own file" data-ar="ملفك الخاص">Your own file</p>
+                  <p class="plan-price" data-en="Free, for good" data-ar="مجاني، للأبد">Free, for good</p>
+                  <ul class="plan-list">
+                    <li class="is-yes" data-en="One file: index.html" data-ar="ملف واحد: index.html">One file: index.html</li>
+                    <li class="is-yes" data-en="Yours to keep and move anywhere" data-ar="ملكك تحتفظ به وتنقله لأي مكان">Yours to keep and move anywhere</li>
+                    <li class="is-yes" data-en="Nobody can add adverts to it" data-ar="لا أحد يستطيع إضافة إعلانات إليه">Nobody can add adverts to it</li>
+                    <li class="is-no" data-en="You upload it yourself" data-ar="ترفعه بنفسك">You upload it yourself</li>
+                  </ul>
+                  <p class="plan-who" data-en="This session" data-ar="هذه المحاضرة">This session</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="cap"><b data-en="Neither is wrong. " data-ar="لا خطأ في أيهما. ">Neither is wrong. </b><span data-en="If your school already pays for a website tool, use it and apply everything on this page inside their editor." data-ar="إن كانت مدرستك تدفع بالفعل مقابل أداة موقع، فاستخدمها وطبّق كل ما في هذه الصفحة داخل محرّرهم.">If your school already pays for a website tool, use it and apply everything on this page inside their editor.</span></p>
+
+          <h3>Bootstrap</h3>
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="The same course card, twice" data-ar="بطاقة الدورة نفسها، مرتين">The same course card, twice</b>
+              <span data-en="both are correct; only one looks like you" data-ar="كلتاهما صحيحة؛ لكن واحدة فقط تشبهك">both are correct; only one looks like you</span>
+            </div>
+            <div class="ex-body">
+              <div class="twocol">
+                <div>
+                  <div class="bs-card">
+                    <div class="bs-body">
+                      <h5 class="bs-title" data-en="AI for Young Learners" data-ar="الذكاء الاصطناعي للصغار">AI for Young Learners</h5>
+                      <p class="bs-sub" data-en="A1 to A2 · 6 hours" data-ar="من A1 إلى A2 · 6 ساعات">A1 to A2 · 6 hours</p>
+                      <p class="bs-text" data-en="Practical classroom activities you can run the next morning." data-ar="أنشطة صفية عملية يمكنك تنفيذها صباح الغد.">Practical classroom activities you can run the next morning.</p>
+                      <span class="bs-btn" data-en="Book now" data-ar="احجز الآن">Book now</span>
+                    </div>
+                  </div>
+                  <p class="cap" data-en="Bootstrap out of the box: a free kit of ready-made parts. Correct on a phone, and it looks like a million other sites." data-ar="Bootstrap كما يأتي: عدة مجانية من أجزاء جاهزة. صحيح على الهاتف، ويشبه مليون موقع آخر.">Bootstrap out of the box: a free kit of ready-made parts. Correct on a phone, and it looks like a million other sites.</p>
+                </div>
+                <div>
+                  <div class="pdemo is-lift">
+                    <span class="lvl" data-en="Your own CSS" data-ar="‏CSS خاصة بك">Your own CSS</span>
+                    <h4 data-en="AI for Young Learners" data-ar="الذكاء الاصطناعي للصغار">AI for Young Learners</h4>
+                    <p data-en="A1 to A2 · 6 hours. Practical classroom activities you can run the next morning." data-ar="من A1 إلى A2 · 6 ساعات. أنشطة صفية عملية يمكنك تنفيذها صباح الغد.">A1 to A2 · 6 hours. Practical classroom activities you can run the next morning.</p>
+                    <p style="margin-top:14px"><span class="bdemo is-solid" data-en="Book now" data-ar="احجز الآن">Book now</span></p>
+                  </div>
+                  <p class="cap" data-en="The same card in this course's own colours. Opens with no internet, and nobody else has it." data-ar="البطاقة نفسها بألوان هذه الدورة. تُفتح بلا إنترنت، ولا يملكها أحد غيرك.">The same card in this course's own colours. Opens with no internet, and nobody else has it.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3>SCORM</h3>
+          <p class="lead" data-en="Send the same lesson two ways. The difference is not what the learner sees. It is what comes back to you." data-ar="أرسل الدرس نفسه بطريقتين. والفرق ليس فيما يراه المتعلم، بل فيما يعود إليك.">Send the same lesson two ways. The difference is not what the learner sees. It is what comes back to you.</p>
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="What comes back to you" data-ar="ما الذي يعود إليك">What comes back to you</b>
+              <span data-en="same lesson, same learners, two deliveries" data-ar="الدرس نفسه، والمتعلمون أنفسهم، وتسليمان">same lesson, same learners, two deliveries</span>
+            </div>
+            <div class="ex-body">
+              <div class="twocol is-weighted">
+
+                <div class="deliv">
+                  <p class="deliv-head is-no"><span data-en="You sent a public link" data-ar="أرسلت رابطًا عامًا">You sent a public link</span></p>
+                  <p class="deliv-what"><span class="field" dir="ltr">abirwafa.com/lesson</span></p>
+                  <div class="deliv-empty">
+                    <span class="deliv-dash" aria-hidden="true">—</span>
+                    <p data-en="No record. You cannot tell who opened it, who finished it, or what anyone scored." data-ar="لا سجل. فلا تستطيع معرفة من فتحه، ولا من أكمله، ولا درجة أحد.">No record. You cannot tell who opened it, who finished it, or what anyone scored.</p>
+                  </div>
+                </div>
+
+                <div class="deliv is-ours">
+                  <p class="deliv-head is-yes"><span data-en="You sent a SCORM package" data-ar="أرسلت حزمة SCORM">You sent a SCORM package</span></p>
+                  <p class="deliv-what"><span class="field" dir="ltr">lesson.zip</span></p>
+                  <table class="gradebook">
+                    <caption data-en="What your school's platform shows you" data-ar="ما تعرضه لك منصة مدرستك">What your school's platform shows you</caption>
+                    <thead>
+                      <tr>
+                        <th data-en="Learner" data-ar="المتعلم">Learner</th>
+                        <th data-en="Status" data-ar="الحالة">Status</th>
+                        <th data-en="Score" data-ar="الدرجة">Score</th>
+                        <th data-en="Time" data-ar="الوقت">Time</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td data-en="Salma Hassan" data-ar="سلمى حسن">Salma Hassan</td>
+                        <td><span class="gb-tag is-done" data-en="Completed" data-ar="أكمل">Completed</span></td>
+                        <td dir="ltr">9 / 10</td><td dir="ltr">14 min</td>
+                      </tr>
+                      <tr>
+                        <td data-en="Omar Fathy" data-ar="عمر فتحي">Omar Fathy</td>
+                        <td><span class="gb-tag is-done" data-en="Completed" data-ar="أكمل">Completed</span></td>
+                        <td dir="ltr">7 / 10</td><td dir="ltr">22 min</td>
+                      </tr>
+                      <tr>
+                        <td data-en="Nour Adel" data-ar="نور عادل">Nour Adel</td>
+                        <td><span class="gb-tag is-doing" data-en="In progress" data-ar="قيد التقدم">In progress</span></td>
+                        <td dir="ltr">—</td><td dir="ltr">6 min</td>
+                      </tr>
+                      <tr>
+                        <td data-en="Youssef Kamal" data-ar="يوسف كمال">Youssef Kamal</td>
+                        <td><span class="gb-tag is-none" data-en="Not started" data-ar="لم يبدأ">Not started</span></td>
+                        <td dir="ltr">—</td><td dir="ltr">—</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <p class="cap"><b data-en="That table is the whole point of SCORM. " data-ar="هذا الجدول هو كل المقصود من SCORM. ">That table is the whole point of SCORM. </b><span data-en="You wrap the lesson in an agreed shape, so Moodle, Blackboard, Canvas or your school's own system can open it and keep the record." data-ar="تغلّف الدرس بشكل متفق عليه، فتستطيع Moodle أو Blackboard أو Canvas أو نظام مدرستك فتحه والاحتفاظ بالسجل.">You wrap the lesson in an agreed shape, so Moodle, Blackboard, Canvas or your school's own system can open it and keep the record.</span></p>
+          <p class="cap"><b data-en="When you need it: " data-ar="متى تحتاجه: ">When you need it: </b><span data-en="when marks must be tracked. Not for a public link, which is what this session builds. Its newer relative, xAPI, records far more detail." data-ar="عندما يجب تتبع الدرجات. لا لرابط عام، وهو ما تبنيه هذه المحاضرة. وقريبه الأحدث xAPI يسجّل تفاصيل أكثر بكثير.">when marks must be tracked. Not for a public link, which is what this session builds. Its newer relative, xAPI, records far more detail.</span></p>
+          <div class="tip is-warn">
+            <p><b data-en="The trap that catches everybody once. " data-ar="الفخ الذي يقع فيه الجميع مرة. ">The trap that catches everybody once. </b><span data-en="A SCORM package will not open by double-clicking. It needs a learning platform to talk to, which is why a colleague sends you one and says it is broken." data-ar="حزمة SCORM لا تُفتح بالنقر المزدوج. فهي تحتاج منصة تعلم تتحدث إليها، ولهذا يرسلها لك زميل ويقول إنها معطلة.">A SCORM package will not open by double-clicking. It needs a learning platform to talk to, which is why a colleague sends you one and says it is broken.</span></p>
+          </div>
+        </div>
+
+        <div class="block" id="builder">
+          <h2 class="display" data-en="Generate your site" data-ar="ولّد موقعك">Generate your site</h2>
+          <p class="lead" data-en="You have now made every choice. The builder turns them into a finished website you can download, and a written build order you can hand to an AI."
+             data-ar="لقد اتخذت الآن كل خيار. وأداة البناء تحوّلها إلى موقع جاهز تنزّله، وأمر بناء مكتوب تسلّمه لذكاء اصطناعى.">You have now made every choice. The builder turns them into a finished website you can download, and a written build order you can hand to an AI.</p>
+
+          <div class="fields">
+            <div class="fset">
+              <h4 data-en="Who you are" data-ar="من أنت">Who you are</h4>
+              <ol>
+                <li data-en="Site name" data-ar="اسم الموقع">Site name</li>
+                <li data-en="Mission, in one sentence" data-ar="الرسالة، في جملة">Mission, in one sentence</li>
+                <li data-en="Vision" data-ar="الرؤية">Vision</li>
+                <li data-en="Category: Academy or EdTech" data-ar="التصنيف: أكاديمية أو منصة تعليمية">Category: Academy or EdTech</li>
+              </ol>
+            </div>
+            <div class="fset">
+              <h4 data-en="How it looks" data-ar="كيف يبدو">How it looks</h4>
+              <ol>
+                <li data-en="Visual style" data-ar="الأسلوب البصري">Visual style</li>
+                <li data-en="Colour theme (the six above)" data-ar="لوحة الألوان (الست أعلاه)">Colour theme (the six above)</li>
+                <li data-en="Navigation bar (the three above)" data-ar="شريط التنقل (الثلاثة أعلاه)">Navigation bar (the three above)</li>
+                <li data-en="Animation" data-ar="الحركة">Animation</li>
+                <li data-en="One long page, or separate pages" data-ar="صفحة طويلة واحدة، أو صفحات منفصلة">One long page, or separate pages</li>
+                <li data-en="Logo address" data-ar="عنوان الشعار">Logo address</li>
+              </ol>
+            </div>
+            <div class="fset">
+              <h4 data-en="What is on it" data-ar="ما فيه">What is on it</h4>
+              <ol>
+                <li data-en="Your six page names" data-ar="أسماء صفحاتك الست">Your six page names</li>
+                <li data-en="Interactive features: pick one or two, not all" data-ar="الميزات التفاعلية: اختر واحدة أو اثنتين، لا كلها">Interactive features: pick one or two, not all</li>
+              </ol>
+            </div>
+            <div class="fset">
+              <h4 data-en="Finding and reaching you" data-ar="العثور عليك والتواصل">Finding and reaching you</h4>
+              <ol>
+                <li data-en="Search keywords" data-ar="كلمات البحث">Search keywords</li>
+                <li data-en="Email" data-ar="البريد الإلكتروني">Email</li>
+                <li data-en="WhatsApp, with country code" data-ar="واتساب، مع رمز الدولة">WhatsApp, with country code</li>
+                <li data-en="LinkedIn" data-ar="لينكد إن">LinkedIn</li>
+                <li data-en="Instagram" data-ar="إنستغرام">Instagram</li>
+              </ol>
+            </div>
+          </div>
+          <p class="cap"><b data-en="Leave nothing blank. " data-ar="لا تترك شيئًا فارغًا. ">Leave nothing blank. </b><span data-en="A blank field is not neutral: it is a gap the AI fills with a generic training company." data-ar="الحقل الفارغ ليس محايدًا: بل فراغ يملؤه الذكاء الاصطناعي بشركة تدريب عامة بلا هوية.">A blank field is not neutral: it is a gap the AI fills with a generic training company.</span></p>
+
+          <div class="tip">
+            <p><b data-en="This works with no internet at all. " data-ar="هذا يعمل بلا إنترنت إطلاقًا. ">This works with no internet at all. </b><span data-en="The builder sits inside this course folder, pictures and all. It even remembers your answers on this computer, so you can close it and come back."
+              data-ar="أداة البناء داخل مجلد هذه الدورة، بصورها كلها. بل إنها تتذكر إجاباتك على هذا الحاسوب، فيمكنك إغلاقها والعودة إليها.">The builder sits inside this course folder, pictures and all. It even remembers your answers on this computer, so you can close it and come back.</span></p>
+          </div>
+
+          <div>
+            <div class="lab-frame" id="lab-frame" data-en-holding="The builder opens here. It is roomier in its own tab, so use the button below." data-ar-holding="تُفتح أداة البناء هنا. وهى أوسع فى تبويب خاص بها، فاستخدم الزر بالأسفل.">
+              <iframe src="apps/app-site-builder.html" title="Edulixa Site Builder" loading="lazy"></iframe>
+            </div>
+            <div class="viewer-actions">
+              <button class="btn btn-ghost" type="button" id="lab-full" data-en="Show it full screen" data-ar="اعرضه بالشاشة الكاملة">Show it full screen</button>
+              <a class="btn btn-outline" href="apps/app-site-builder.html" target="_blank" rel="noopener" data-en="Open in a new tab" data-ar="افتح في تبويب جديد">Open in a new tab</a>
+            </div>
+          </div>
+
+          <h3 data-en="Then check six things" data-ar="ثم افحص ستة أمور">Then check six things</h3>
+          <ul class="ticks">
+            <li data-en="Every name in the navigation bar goes somewhere." data-ar="كل اسم في شريط التنقل ينتقل إلى مكان.">Every name in the navigation bar goes somewhere.</li>
+            <li data-en="Every picture appears." data-ar="كل صورة تظهر.">Every picture appears.</li>
+            <li data-en="Narrow the window to phone width: nothing slides sideways." data-ar="ضيّق النافذة إلى عرض هاتف: فلا ينزلق شيء جانبًا.">Narrow the window to phone width: nothing slides sideways.</li>
+            <li data-en="The WhatsApp button opens WhatsApp with your number in it." data-ar="زر واتساب يفتح واتساب ورقمك فيه.">The WhatsApp button opens WhatsApp with your number in it.</li>
+            <li data-en="Read your email address out loud, letter by letter." data-ar="اقرأ بريدك حرفًا حرفًا بصوت مسموع.">Read your email address out loud, letter by letter.</li>
+            <li data-en="Search the page for any learner's name, mark or photograph." data-ar="ابحث في الصفحة عن أي اسم متعلم أو درجة أو صورة.">Search the page for any learner's name, mark or photograph.</li>
+          </ul>
+          <p><a class="btn btn-primary" href="session1.html#run"><span data-en="Open the Edulixa HTML Viewer" data-ar="افتح عارض Edulixa لملفات HTML">Open the Edulixa HTML Viewer</span></a></p>
+        </div>
+
+        <div class="block" id="domain">
+          <h2 class="display" data-en="Buy your address" data-ar="اشترِ عنوانك">Buy your address</h2>
+          <p class="lead" data-en="A domain is the number on your gate. Here are its parts." data-ar="النطاق هو الرقم على بوابتك. وهذه أجزاؤه.">A domain is the number on your gate. Here are its parts.</p>
+
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="One address, three parts" data-ar="عنوان واحد، ثلاثة أجزاء">One address, three parts</b>
+              <span data-en="you choose the middle two" data-ar="وتختار الجزأين الأوسطين">you choose the middle two</span>
+            </div>
+            <div class="ex-body">
+              <div class="urlbar">
+                <b>https://</b><span>&nbsp;</span><b class="is-name">abirwafa</b><span>.</span><b class="is-end">com</b><span>/</span><b>teacher-training</b>
+              </div>
+              <div class="urlkeys">
+                <em><i style="background:var(--surface-2)"></i><span data-en="Always the same" data-ar="دائمًا هو نفسه">Always the same</span></em>
+                <em><i style="background:oklch(0.300 0.060 168 / .70)"></i><span data-en="Your name: you choose it" data-ar="اسمك: أنت تختاره">Your name: you choose it</span></em>
+                <em><i style="background:oklch(0.300 0.090 31 / .70)"></i><span data-en="The ending: you choose it" data-ar="النهاية: أنت تختارها">The ending: you choose it</span></em>
+                <em><i style="background:var(--surface-2)"></i><span data-en="The page name" data-ar="اسم الصفحة">The page name</span></em>
+              </div>
+            </div>
+          </div>
+
+          <div class="tld-row">
+            <div class="tld">
+              <code>.com</code>
+              <p data-en="What people type by habit. If somebody forgets the ending on the phone, they try this one." data-ar="ما يكتبه الناس بحكم العادة. فإن نسي أحد النهاية على الهاتف، جرّب هذه.">What people type by habit. If somebody forgets the ending on the phone, they try this one.</p>
+            </div>
+            <div class="tld">
+              <code>.eg .uk .ae</code>
+              <p data-en="Says where you work. Some country endings need a local address, so check first." data-ar="تقول أين تعمل. وبعض نهايات الدول تحتاج عنوانًا محليًا، فافحص أولًا.">Says where you work. Some country endings need a local address, so check first.</p>
+            </div>
+            <div class="tld">
+              <code>.academy</code>
+              <p data-en="Says what you do. Costs more and gets mistyped, so treat it as a second address." data-ar="تقول ما تفعله. وتكلّف أكثر ويخطئ الناس في كتابتها، فتعامل معها كعنوان ثانٍ.">Says what you do. Costs more and gets mistyped, so treat it as a second address.</p>
+            </div>
+          </div>
+
+          <p class="cap"><b data-en="Choosing the name: " data-ar="اختيار الاسم: ">Choosing the name: </b><span data-en="say it out loud on an imaginary phone call. If you have to spell it or explain a hyphen, choose something else. For a teacher, your own name is usually the best address you will ever own." data-ar="انطقه بصوت مسموع في مكالمة متخيلة. فإن اضطررت إلى تهجئته أو شرح شُرطة فيه، فاختر غيره. وللمعلم، اسمك عادةً أفضل عنوان ستملكه.">say it out loud on an imaginary phone call. If you have to spell it or explain a hyphen, choose something else. For a teacher, your own name is usually the best address you will ever own.</span></p>
+
+          <h3 data-en="Where people buy them" data-ar="أين يشتريها الناس">Where people buy them</h3>
+          <div class="tools">
+            <div class="tool">
+              <h4>Cloudflare Registrar</h4>
+              <p data-en="Sells at the price it pays, nothing added. Lowest renewals, and the same company as the free hosting below." data-ar="يبيع بالسعر الذي يدفعه، دون إضافة. أقل أسعار التجديد، وهي الشركة نفسها التي تقدّم الاستضافة المجانية أدناه.">Sells at the price it pays, nothing added. Lowest renewals, and the same company as the free hosting below.</p>
+              <code>cloudflare.com/products/registrar</code>
+              <a class="btn btn-outline" href="https://www.cloudflare.com/products/registrar/" target="_blank" rel="noopener" data-en="Open it" data-ar="افتحه">Open it</a>
+            </div>
+            <div class="tool">
+              <h4>Namecheap</h4>
+              <p data-en="The simplest first registrar. Privacy included free, and support that answers." data-ar="أبسط مُسجّل أول. الخصوصية مضمّنة مجانًا، ودعم يستجيب.">The simplest first registrar. Privacy included free, and support that answers.</p>
+              <code>namecheap.com</code>
+              <a class="btn btn-outline" href="https://www.namecheap.com" target="_blank" rel="noopener" data-en="Open it" data-ar="افتحه">Open it</a>
+            </div>
+            <div class="tool">
+              <h4>GoDaddy · Hostinger · Gandi</h4>
+              <p data-en="All fine. GoDaddy is the most advertised: watch the renewal price and the extras added to your basket." data-ar="كلها جيدة. و GoDaddy الأكثر إعلانًا: راقب سعر التجديد والإضافات التي تُضاف إلى سلتك.">All fine. GoDaddy is the most advertised: watch the renewal price and the extras added to your basket.</p>
+              <code>godaddy.com · hostinger.com · gandi.net</code>
+              <a class="btn btn-outline" href="https://www.hostinger.com/domain-name-search" target="_blank" rel="noopener" data-en="Compare prices" data-ar="قارن الأسعار">Compare prices</a>
+            </div>
+          </div>
+
+          <div class="tip is-warn">
+            <p><b data-en="Two things on the payment screen. " data-ar="أمران في شاشة الدفع. ">Two things on the payment screen. </b><span data-en="Look at the renewal price, not the first year. And tick privacy, so your home address is not published in the public register of owners." data-ar="انظر إلى سعر التجديد لا السنة الأولى. وأشّر على الخصوصية، حتى لا يُنشر عنوان منزلك في السجل العام للمالكين.">Look at the renewal price, not the first year. And tick privacy, so your home address is not published in the public register of owners.</span></p>
+            <p><b data-en="You do not need one today. " data-ar="ولا تحتاجه اليوم. ">You do not need one today. </b><span data-en="Free hosting gives you a working public link in a minute." data-ar="فالاستضافة المجانية تمنحك رابطًا عامًا يعمل في دقيقة.">Free hosting gives you a working public link in a minute.</span></p>
+          </div>
+        </div>
+
+        <div class="block" id="hosting">
+          <h2 class="display" data-en="Publish it free" data-ar="انشره مجانًا">Publish it free</h2>
+          <p class="lead" data-en="Hosting is a computer that stays switched on. Your laptop is not hosting: close it and the site is gone." data-ar="الاستضافة حاسوب يبقى مشتغلًا. وحاسوبك المحمول ليس استضافة: أغلقه فيختفي الموقع.">Hosting is a computer that stays switched on. Your laptop is not hosting: close it and the site is gone.</p>
+
+          <h3 data-en="Route A · live in one minute, no account" data-ar="المسار أ · حيّ في دقيقة، بلا حساب">Route A · live in one minute, no account</h3>
+          <p><span class="field">cloudflare.com/drop</span></p>
+          <p class="cap" data-en="Drag your folder in, get a live link. No sign-up, no settings. Perfect for a training room: every teacher sees their own site on the internet inside a minute." data-ar="اسحب مجلدك إلى الداخل، فتحصل على رابط حيّ. بلا تسجيل ولا إعدادات. مثالي لقاعة التدريب: فيرى كل معلم موقعه على الإنترنت في أقل من دقيقة.">Drag your folder in, get a live link. No sign-up, no settings. Perfect for a training room: every teacher sees their own site on the internet inside a minute.</p>
+          <div class="tip is-warn">
+            <p><b data-en="The link lasts about an hour. " data-ar="الرابط يبقى نحو ساعة. ">The link lasts about an hour. </b><span data-en="Inside that hour you can sign in and claim it, and it becomes permanent. Do not hand a Drop link to a parent." data-ar="وخلال تلك الساعة يمكنك تسجيل الدخول وتثبيته فيصبح دائمًا. فلا تسلّم رابط Drop لولي أمر.">Inside that hour you can sign in and claim it, and it becomes permanent. Do not hand a Drop link to a parent.</span></p>
+          </div>
+
+          <h3 data-en="Route B · the permanent free site" data-ar="المسار ب · الموقع المجاني الدائم">Route B · the permanent free site</h3>
+          <ol class="hsteps">
+            <li>
+              <b data-en="Put the site in one folder" data-ar="ضع الموقع في مجلد واحد">Put the site in one folder</b>
+              <p data-en="Name the main page exactly index.html, small letters, top of the folder." data-ar="سمِّ الصفحة الرئيسية index.html بالضبط، بأحرف صغيرة، في أعلى المجلد.">Name the main page exactly index.html, small letters, top of the folder.</p>
+              <p class="watchout"><b data-en="Watch out: " data-ar="احترس: ">Watch out: </b><span data-en="one level too deep and the page opens blank. This causes almost every “my site is empty”." data-ar="مستوى واحد أعمق فتُفتح الصفحة فارغة. وهذا سبب كل «موقعي فارغ» تقريبًا.">one level too deep and the page opens blank. This causes almost every “my site is empty”.</span></p>
+            </li>
+            <li>
+              <b data-en="Create a free Cloudflare account" data-ar="أنشئ حسابًا مجانيًا على Cloudflare">Create a free Cloudflare account</b>
+              <p data-en="dash.cloudflare.com/sign-up, work email, confirm from the message they send." data-ar="‏dash.cloudflare.com/sign-up، بريد العمل، وأكّد من الرسالة التي يرسلونها.">dash.cloudflare.com/sign-up, work email, confirm from the message they send.</p>
+              <p class="watchout"><b data-en="Watch out: " data-ar="احترس: ">Watch out: </b><span data-en="no card needed, and do not move your school's existing domain into Cloudflare to do this." data-ar="لا تحتاج بطاقة، ولا تنقل نطاق مدرستك القائم إلى Cloudflare من أجل هذا.">no card needed, and do not move your school's existing domain into Cloudflare to do this.</span></p>
+            </li>
+            <li>
+              <b data-en="Workers &amp; Pages, then Create application" data-ar="Workers &amp; Pages، ثم Create application">Workers &amp; Pages, then Create application</b>
+              <p data-en="Then Get started, then Drag and drop your files." data-ar="ثم Get started، ثم Drag and drop your files.">Then Get started, then Drag and drop your files.</p>
+              <p class="watchout"><b data-en="Watch out: " data-ar="احترس: ">Watch out: </b><span data-en="Cloudflare renames these buttons often. Look for “drag and drop” or “direct upload”." data-ar="تُعيد Cloudflare تسمية هذه الأزرار كثيرًا. ابحث عن «drag and drop» أو «direct upload».">Cloudflare renames these buttons often. Look for “drag and drop” or “direct upload”.</span></p>
+            </li>
+            <li>
+              <b data-en="Name the project: this becomes your address" data-ar="سمِّ المشروع: فهذا يصبح عنوانك">Name the project: this becomes your address</b>
+              <p><span class="field">https://abir-wafa-teaching.pages.dev</span></p>
+              <p class="watchout"><b data-en="Watch out: " data-ar="احترس: ">Watch out: </b><span data-en="changing the name later means a new link, so every address you gave out stops working. No spaces, no capitals, no Arabic letters." data-ar="تغيير الاسم لاحقًا يعني رابطًا جديدًا، فيتوقف كل عنوان وزّعته. بلا مسافات، وبلا أحرف كبيرة، وبلا حروف عربية.">changing the name later means a new link, so every address you gave out stops working. No spaces, no capitals, no Arabic letters.</span></p>
+            </li>
+            <li>
+              <b data-en="Drag the folder in, press Deploy site" data-ar="اسحب المجلد، واضغط Deploy site">Drag the folder in, press Deploy site</b>
+              <p data-en="Drag the whole folder, not file by file, so the pictures keep their places." data-ar="اسحب المجلد كله، لا ملفًا ملفًا، حتى تحتفظ الصور بمواضعها.">Drag the whole folder, not file by file, so the pictures keep their places.</p>
+              <p class="watchout"><b data-en="Watch out: " data-ar="احترس: ">Watch out: </b><span data-en="up to 1,000 files, 25 MB each. One refused file means uploading the whole folder again, so compress your pictures first." data-ar="حتى 1000 ملف، و25 ميغابايت لكل ملف. وملف واحد مرفوض يعني رفع المجلد كله من جديد، فاضغط صورك أولًا.">up to 1,000 files, 25 MB each. One refused file means uploading the whole folder again, so compress your pictures first.</span></p>
+            </li>
+            <li>
+              <b data-en="Test it on mobile data, not school wifi" data-ar="اختبره على بيانات الهاتف، لا شبكة المدرسة">Test it on mobile data, not school wifi</b>
+              <p data-en="Check the pages, pictures, the WhatsApp button and one download." data-ar="افحص الصفحات، والصور، وزر واتساب، وملفًا واحدًا للتنزيل.">Check the pages, pictures, the WhatsApp button and one download.</p>
+              <p class="watchout"><b data-en="Watch out: " data-ar="احترس: ">Watch out: </b><span data-en="school networks hold old copies and block new addresses. You would spend an afternoon fixing nothing." data-ar="شبكات المدارس تحتفظ بنسخ قديمة وتحجب العناوين الجديدة. فتمضي عصرًا في إصلاح لا شيء.">school networks hold old copies and block new addresses. You would spend an afternoon fixing nothing.</span></p>
+            </li>
+            <li>
+              <b data-en="To change it later" data-ar="لتغييره لاحقًا">To change it later</b>
+              <p data-en="Open the project, Create a new deployment, drag the folder in again. The link never changes." data-ar="افتح المشروع، ثم Create a new deployment، واسحب المجلد من جديد. فلا يتغير الرابط.">Open the project, Create a new deployment, drag the folder in again. The link never changes.</p>
+              <p class="watchout"><b data-en="Watch out: " data-ar="احترس: ">Watch out: </b><span data-en="keep the folder on your own computer as the real version. What is on Cloudflare is a copy." data-ar="احتفظ بالمجلد على حاسوبك كالنسخة الحقيقية. فما على Cloudflare نسخة.">keep the folder on your own computer as the real version. What is on Cloudflare is a copy.</span></p>
+            </li>
+            <li>
+              <b data-en="To put your own domain on it" data-ar="لتضع نطاقك الخاص عليه">To put your own domain on it</b>
+              <p data-en="In the project: Custom domains, Set up a domain, type your address, copy its lines into your registrar. The padlock is free." data-ar="في المشروع: Custom domains، ثم Set up a domain، واكتب عنوانك، وانسخ سطوره إلى مُسجّلك. والقفل مجاني.">In the project: Custom domains, Set up a domain, type your address, copy its lines into your registrar. The padlock is free.</p>
+              <p class="watchout"><b data-en="Watch out: " data-ar="احترس: ">Watch out: </b><span data-en="an address change takes hours to reach everybody. Do not announce it until you have seen it work on mobile data." data-ar="تغيير العنوان يستغرق ساعات ليصل إلى الجميع. فلا تُعلنه قبل أن تراه يعمل على بيانات الهاتف.">an address change takes hours to reach everybody. Do not announce it until you have seen it work on mobile data.</span></p>
+            </li>
+          </ol>
+
+          <p class="cap"><b data-en="The free plan: " data-ar="الخطة المجانية: ">The free plan: </b><span data-en="20,000 files per site, 25 MB per file, 500 publishes a month, 100 of your own domains. A teacher website is under fifty files. Cloudflare raises these, so check before promising your school anything." data-ar="‏20٫000 ملف لكل موقع، و25 ميغابايت لكل ملف، و500 عملية نشر شهريًا، و100 نطاق خاص بك. وموقع المعلم أقل من خمسين ملفًا. و Cloudflare ترفع هذه الأرقام، فافحص قبل أن تتعهد لمدرستك بشيء.">20,000 files per site, 25 MB per file, 500 publishes a month, 100 of your own domains. A teacher website is under fifty files. Cloudflare raises these, so check before promising your school anything.</span></p>
+
+          <div class="tip is-warn">
+            <p><b data-en="Before you press publish. " data-ar="قبل أن تضغط النشر. ">Before you press publish. </b><span data-en="A published site is readable by the whole world. Nothing on it identifies a learner: no full name, no mark, no photograph without written permission." data-ar="الموقع المنشور يقرأه العالم كله. فلا شيء عليه يعرّف بمتعلم: لا اسم كامل، ولا درجة، ولا صورة دون إذن مكتوب.">A published site is readable by the whole world. Nothing on it identifies a learner: no full name, no mark, no photograph without written permission.</span></p>
+          </div>
+        </div>
+
+        <div class="block" id="tools">
+          <h2 class="display" data-en="Every tool link" data-ar="كل روابط الأدوات">Every tool link</h2>
+          <p class="lead" data-en="In order. Prices and screens change, so check your own account before you publish." data-ar="بالترتيب. الأسعار والشاشات تتغير، فافحص حسابك قبل النشر.">In order. Prices and screens change, so check your own account before you publish.</p>
+
+          <div class="tools">
+            <div class="tool">
+              <h4 data-en="1 · Edulixa Site Builder" data-ar="‎1 · أداة بناء المواقع من Edulixa">1 · Edulixa Site Builder</h4>
+              <p data-en="Five steps, and it shows your site changing as you choose. At the end it hands you the finished website as one file, and the written build order beside it."
+                 data-ar="خمس خطوات، وتُريك موقعك يتغير وأنت تختار. وفى النهاية تسلّمك الموقع الجاهز فى ملف واحد، وأمر البناء المكتوب بجواره.">Five steps, and it shows your site changing as you choose. At the end it hands you the finished website as one file, and the written build order beside it.</p>
+              <code>apps/app-site-builder.html</code>
+              <a class="btn btn-primary" href="apps/app-site-builder.html" target="_blank" rel="noopener" data-en="Open the builder" data-ar="افتح أداة البناء">Open the builder</a>
+            </div>
+            <div class="tool">
+              <h4 data-en="2 · ChatGPT or Gemini" data-ar="‎2 · ChatGPT أو Gemini">2 · ChatGPT or Gemini</h4>
+              <p data-en="Paste the prompt, get the site back. Either works; use the other as a second opinion." data-ar="الصق البرومبت، فيعود إليك الموقع. وأيهما يعمل؛ واستخدم الآخر كرأي ثانٍ.">Paste the prompt, get the site back. Either works; use the other as a second opinion.</p>
+              <code>chatgpt.com · gemini.google.com</code>
+              <a class="btn btn-outline" href="https://chatgpt.com" target="_blank" rel="noopener" data-en="Open ChatGPT" data-ar="افتح ChatGPT">Open ChatGPT</a>
+            </div>
+            <div class="tool">
+              <h4 data-en="3 · Edulixa HTML Viewer" data-ar="‎3 · عارض Edulixa لملفات HTML">3 · Edulixa HTML Viewer</h4>
+              <p data-en="Paste the answer, see it run, and check it before anybody else opens it." data-ar="الصق الإجابة، وشاهدها تعمل، وافحصها قبل أن يفتحها أحد.">Paste the answer, see it run, and check it before anybody else opens it.</p>
+              <a class="btn btn-primary" href="session1.html#run" data-en="Open the viewer" data-ar="افتح العارض">Open the viewer</a>
+            </div>
+            <div class="tool">
+              <h4 data-en="4 · Cloudflare Drop" data-ar="‎4 · Cloudflare Drop">4 · Cloudflare Drop</h4>
+              <p data-en="Drag the folder in, live link in a minute, no account. Lasts about an hour unless you claim it." data-ar="اسحب المجلد، فرابط حيّ في دقيقة، بلا حساب. ويبقى نحو ساعة إن لم تثبّته.">Drag the folder in, live link in a minute, no account. Lasts about an hour unless you claim it.</p>
+              <code>cloudflare.com/drop</code>
+              <a class="btn btn-outline" href="https://www.cloudflare.com/drop/" target="_blank" rel="noopener" data-en="Open Drop" data-ar="افتح Drop">Open Drop</a>
+            </div>
+            <div class="tool">
+              <h4 data-en="5 · Cloudflare Pages" data-ar="‎5 · Cloudflare Pages">5 · Cloudflare Pages</h4>
+              <p data-en="The permanent free home for your folder, at yourname.pages.dev." data-ar="البيت المجاني الدائم لمجلدك، على yourname.pages.dev.">The permanent free home for your folder, at yourname.pages.dev.</p>
+              <code>dash.cloudflare.com/sign-up</code>
+              <a class="btn btn-outline" href="https://dash.cloudflare.com/sign-up" target="_blank" rel="noopener" data-en="Create the account" data-ar="أنشئ الحساب">Create the account</a>
+            </div>
+            <div class="tool">
+              <h4 data-en="Or · GitHub Pages" data-ar="أو · GitHub Pages">Or · GitHub Pages</h4>
+              <p data-en="The other free route, taught step by step in Session 1. Best when the site is a single file." data-ar="الطريق المجاني الآخر، مشروح خطوة بخطوة في المحاضرة 1. وأفضل ما يكون إن كان الموقع ملفًا واحدًا.">The other free route, taught step by step in Session 1. Best when the site is a single file.</p>
+              <a class="btn btn-outline" href="session1.html#publish" data-en="Open the steps" data-ar="افتح الخطوات">Open the steps</a>
+            </div>
+          </div>
+        </div>
+
+        <nav class="pager">
+          <a class="btn btn-outline" href="index.html">
+            <svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+            <span data-en="Back to all sessions" data-ar="العودة إلى كل المحاضرات">Back to all sessions</span>
+          </a>
+          <a class="btn btn-primary" href="#builder">
+            <span data-en="Back to the builder" data-ar="العودة إلى أداة البناء">Back to the builder</span>
+            <svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <img src="assets/logo-reversed.png" alt="Edulixa 360">
+    <p data-en="Session 3 · Build your teacher website · AI Masterclass for Teachers, Level 3" data-ar="المحاضرة 3 · ابنِ موقعك التعليمي · الماستر كلاس للمعلمين بالذكاء الاصطناعي، المستوى الثالث">Session 3 · Build your teacher website</p>
+    <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+  </div>
+</footer>
+
+<div class="backdock"><a class="backlink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="All sessions" data-ar="كل المحاضرات">All sessions</span></a></div>
+
+<script src="assets/edulixa.js"></script>
+<script src="assets/lightbox.js"></script>
+<script src="assets/site-parts.js"></script>
+<script>
+/* ---- the embedded builder: full screen on request ---- */
+(function(){
+  'use strict';
+  var band = document.getElementById('lab-frame');
+  if (!band) return;
+  var frame = band.querySelector('iframe');
+  var full  = document.getElementById('lab-full');
+
+  if (full) full.addEventListener('click', function(){
+    try {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else if (band.requestFullscreen) band.requestFullscreen();
+    } catch (e) {}
+  });
+  document.addEventListener('fullscreenchange', function(){
+    if (!full) return;
+    var on = document.fullscreenElement === band;
+    full.setAttribute('data-en', on ? 'Leave full screen' : 'Show it full screen');
+    full.setAttribute('data-ar', on ? 'إنهاء الشاشة الكاملة' : 'اعرضه بالشاشة الكاملة');
+    if (window.EdulixaLang) {
+      window.EdulixaLang.translate(band.parentNode, document.documentElement.getAttribute('dir') === 'rtl');
+    }
+  });
+  frame.addEventListener('error', function(){
+    var isAr = document.documentElement.getAttribute('dir') === 'rtl';
+    band.innerHTML = '<p style="margin:0;padding:40px;text-align:center;color:var(--muted)">' +
+      (isAr ? 'أداة البناء لم تُحمَّل. تحقّق من اتصالك، أو استخدم زر «افتح في تبويب جديد».'
+            : 'The builder did not load. Check your connection, or use “Open in a new tab”.') +
+      '</p>';
+  });
+})();
+</script>
+</body>
+</html>

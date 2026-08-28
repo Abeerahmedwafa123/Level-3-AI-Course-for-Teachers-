@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-en="Session 1 · Vibe Coding — Level 3 · Edulixa 360" data-ar="المحاضرة 1 · البرمجة باستخدام الأوامر النصية والتوجيه — المستوى الثالث · Edulixa 360">Session 1 · Vibe Coding — Level 3 · Edulixa 360</title>
+<link rel="stylesheet" href="assets/edulixa.css">
+<style>
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0 0}
+.role{padding:22px;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r-md)}
+.role.is-you{border-color:var(--brand-lift)}
+.role .who{display:block;margin:0 0 10px;font-family:var(--mono);font-size:12px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--brand-lift)}
+html[dir="rtl"] .role .who{font-family:var(--ar);letter-spacing:0;font-size:15px;font-weight:700}
+.block .role h3{margin:0 0 10px;padding:0;border:0;font-family:var(--sans);font-size:21px;
+  font-weight:800;letter-spacing:0;text-transform:none;color:var(--ink)}
+html[dir="rtl"] .block .role h3{font-family:var(--ar)}
+.role p{margin:0;font-size:16.5px;line-height:1.6}
+.layer-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0 0;align-items:start}
+.layer-card{display:block;width:100%;text-align:start;cursor:pointer;padding:22px;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);
+  font-family:inherit;color:inherit;transition:all var(--t) var(--ease)}
+.layer-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift);border-color:var(--brand-lift)}
+.layer-card .layer-tag{margin-bottom:14px}
+.block .layer-card h3{margin:0 0 8px;padding:0;border:0;font-family:var(--display);font-weight:400;
+  font-size:27px;letter-spacing:.006em;text-transform:none;color:var(--ink)}
+html[dir="rtl"] .block .layer-card h3{font-family:var(--ar);font-weight:700;line-height:1.4}
+.layer-card p{margin:0 0 14px;font-size:16.5px;line-height:1.6}
+.layer-card .more{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:700;
+  color:var(--accent-text)}
+.four{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:22px 0 0}
+.part{padding:20px;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r)}
+.part:before{content:attr(data-n);display:grid;place-items:center;width:32px;height:32px;
+  margin-bottom:14px;border:1px solid var(--accent-dim);border-radius:9px;
+  color:var(--accent-text);font-family:var(--mono);font-size:13px}
+.block .part h3{margin:0 0 8px;padding:0;border:0;font-family:var(--sans);font-size:18px;
+  font-weight:800;letter-spacing:0;text-transform:none;color:var(--ink)}
+html[dir="rtl"] .block .part h3{font-family:var(--ar)}
+.part p{margin:0;font-size:16px;line-height:1.56}
+.prompt-box.app-prompt{min-height:640px;max-height:820px;font-size:13.5px;line-height:1.74}
+.prompt-box.small-prompt{min-height:230px;max-height:420px;font-size:13.5px;line-height:1.74}
+.prompt-box .prompt-heading{display:block;margin-top:10px;color:var(--brand-lift);
+  font-weight:800;letter-spacing:.1em}
+.prompt-box .prompt-heading:first-child{margin-top:0}
+/* The three-layer lab needs room: it steps out across the full reading band so the
+   live page and its code sit side by side instead of stacking. */
+.lab-band{position:relative;z-index:3;width:calc(100% + 424px);margin-inline-start:-386px}
+.lab-frame{position:relative;margin:24px 0 0;border:1px solid var(--line);
+  border-radius:var(--r-lg);overflow:hidden;background:var(--bg);box-shadow:var(--shadow-lift)}
+.lab-frame iframe{display:block;width:100%;height:1020px;border:0}
+.lab-frame:fullscreen{border-radius:0;border:0;margin:0}
+.lab-frame:fullscreen iframe{height:100vh !important}
+.lab-band .viewer-actions{margin-top:14px}
+@media (max-width:960px){
+  .lab-band{width:100%;margin-inline-start:0}
+  .lab-frame iframe{height:1240px}
+}
+@media (max-width:820px){
+  .role-grid,.layer-cards,.four{grid-template-columns:1fr}
+  .prompt-box.app-prompt{min-height:520px;max-height:700px}
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main" data-en="Skip to content" data-ar="تخطَّ إلى المحتوى">Skip to content</a>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <img src="assets/logo-reversed.png" alt="Edulixa 360">
+      <span class="brand-tag" data-en="AI Masterclass · Level 3" data-ar="الماستر كلاس · المستوى الثالث">AI Masterclass · Level 3</span>
+    </div>
+    <div class="topbar-actions">
+      <a class="btn btn-ghost" href="index.html"><svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="All sessions" data-ar="كل المحاضرات">All sessions</span></a>
+      <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <a class="backlink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="Back to all sessions" data-ar="العودة إلى كل المحاضرات">Back to all sessions</span></a>
+    <p class="eyebrow" data-en="Session 1 of 5 · Vibe coding for educators" data-ar="المحاضرة 1 من 5 · البرمجة باستخدام الأوامر النصية والتوجيه للمعلمين">Session 1 of 5 · Vibe coding for educators</p>
+    <h1 class="display" data-en="You describe the lesson. The AI writes the code." data-ar="أنت تصف الدرس. والذكاء الاصطناعي يكتب الكود.">You describe the lesson. The AI writes the code.</h1>
+    <p class="lede" data-en="This session turns one teaching idea into a working interactive app. You will see what HTML, CSS and JavaScript each do — by watching the same car gain a frame, then paint, then an engine — then write one precise prompt, generate the app, review it, and run it in front of a class." data-ar="تحوّل هذه المحاضرة فكرة تعليمية واحدة إلى تطبيق تفاعلي يعمل. سترى ما يفعله كل من HTML و CSS و JavaScript — بمشاهدة السيارة نفسها تكتسب هيكلًا، ثم طلاءً، ثم محركًا — ثم تكتب برومبتًا دقيقًا واحدًا، وتولّد التطبيق، وتراجعه، وتشغّله أمام صف كامل.">This session turns one teaching idea into a working interactive app. You will see what HTML, CSS and JavaScript each do — by watching the same car gain a frame, then paint, then an engine — then write one precise prompt, generate the app, review it, and run it in front of a class.</p>
+    <div class="hero-actions">
+      <a class="btn btn-accent" href="#lab" data-en="See the difference on the model" data-ar="شاهد الفرق على المجسّم">See the difference on the model</a>
+      <a class="btn btn-outline" href="#write" data-en="Write the three layers yourself" data-ar="اكتب الطبقات الثلاث بنفسك">Write the three layers yourself</a>
+      <a class="btn btn-ghost" href="#objectives" data-en="Objectives" data-ar="الأهداف">Objectives</a>
+    </div>
+    <div class="hero-meta">
+      <span class="chip" data-en="Tool · Edulixa HTML Viewer" data-ar="الأداة · عارض Edulixa">Tool · Edulixa HTML Viewer</span>
+      <span class="chip" data-en="Works with ChatGPT and Gemini" data-ar="يعمل مع ChatGPT و Gemini">Works with ChatGPT and Gemini</span>
+      <span class="chip" data-en="No coding experience needed" data-ar="لا تحتاج خبرة برمجية">No coding experience needed</span>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+<section class="sec">
+  <div class="wrap">
+    <div class="split">
+
+      <aside class="rail">
+        <h2 data-en="Session at a glance" data-ar="المحاضرة في لمحة">Session at a glance</h2>
+        <p data-en="Eleven moves, in order. Select one to jump to it." data-ar="إحدى عشرة خطوة بالترتيب. اختر واحدة للانتقال إليها.">Eleven moves, in order. Select one to jump to it.</p>
+        <ol>
+          <li data-go="objectives" data-en="Read the objectives of the session" data-ar="اقرأ أهداف المحاضرة">Read the objectives of the session</li>
+          <li data-go="deck" data-en="Watch the masterclass and the guide" data-ar="شاهد الماستر كلاس والدليل">Watch the masterclass and the guide</li>
+          <li data-go="what" data-en="Understand what vibe coding is" data-ar="افهم ما هي البرمجة باستخدام الأوامر النصية والتوجيه">Understand what vibe coding is</li>
+          <li data-go="layers" data-en="Learn the three layers of an app" data-ar="تعلّم الطبقات الثلاث للتطبيق">Learn the three layers of an app</li>
+          <li data-go="lab" data-en="See the difference on the model" data-ar="شاهد الفرق على المجسّم">See the difference on the model</li>
+          <li data-go="write" data-en="Write the three layers yourself" data-ar="اكتب الطبقات الثلاث بنفسك">Write the three layers yourself</li>
+          <li data-go="prompt" data-en="Write a prompt that works" data-ar="اكتب برومبتًا ناجحًا">Write a prompt that works</li>
+          <li data-go="run" data-en="Generate, review, then run it" data-ar="ولّد، ثم راجع، ثم شغّل">Generate, review, then run it</li>
+          <li data-go="fix" data-en="Fix it by talking to it" data-ar="أصلحه بالمحادثة">Fix it by talking to it</li>
+          <li data-go="more" data-en="See what else you can build" data-ar="اطّلع على ما يمكنك بناؤه أيضًا">See what else you can build</li>
+          <li data-go="publish" data-en="Publish it on GitHub as a link" data-ar="انشره على GitHub كرابط">Publish it on GitHub as a link</li>
+        </ol>
+        <a class="btn btn-accent" href="#lab" data-en="Open the lab" data-ar="افتح المعمل">Open the lab</a>
+      </aside>
+
+      <div>
+
+        <!-- ============ OBJECTIVES ============ -->
+        <div class="block" id="objectives">
+          <h2 class="display" data-en="Objectives of this session" data-ar="أهداف هذه المحاضرة">Objectives of this session</h2>
+          <p class="sub" data-en="Five objectives, climbing the Depth of Knowledge ladder from recall to creation." data-ar="خمسة أهداف تتدرج على سلّم العمق المعرفي من التذكر إلى الإنشاء.">Five objectives, climbing the Depth of Knowledge ladder from recall to creation.</p>
+
+          <ol class="objectives">
+            <li>
+              <div class="ob-head">
+                <b data-en="Define what vibe coding is" data-ar="تعريف البرمجة باستخدام الأوامر النصية والتوجيه">Define what vibe coding is</b>
+                <span class="dok-chip" data-en="DOK 1 · Recall" data-ar="العمق 1 · تذكر">DOK 1 · Recall</span>
+              </div>
+              <p data-en="By the end you can say in one sentence what vibe coding means, and name who is the architect and who is the builder." data-ar="في النهاية تستطيع أن تقول في جملة واحدة ما تعنيه البرمجة باستخدام الأوامر النصية والتوجيه، وأن تسمّي من هو المهندس ومن هو البنّاء.">By the end you can say in one sentence what vibe coding means, and name who is the architect and who is the builder.</p>
+              <p><a href="#what" data-en="Where you meet it: What vibe coding actually is →" data-ar="أين تقابله: ما هي البرمجة باستخدام الأوامر النصية والتوجيه فعلًا →">Where you meet it: What vibe coding actually is →</a></p>
+            </li>
+            <li>
+              <div class="ob-head">
+                <b data-en="Distinguish vibe coding from the other kinds of coding" data-ar="التمييز بين البرمجة باستخدام الأوامر النصية والتوجيه وأنواع البرمجة الأخرى">Distinguish vibe coding from the other kinds of coding</b>
+                <span class="dok-chip" data-en="DOK 3 · Analyse" data-ar="العمق 3 · تحليل">DOK 3 · Analyse</span>
+              </div>
+              <p data-en="You can contrast it with traditional programming, separate pure vibe coding from responsible AI-assisted building, and justify which of the two belongs in front of a class." data-ar="تستطيع مقارنتها بالبرمجة التقليدية، والفصل بين النمط الخالص والبناء المسؤول بمساعدة الذكاء الاصطناعي، وتبرير أيهما يصلح للعرض أمام صف.">You can contrast it with traditional programming, separate pure vibe coding from responsible AI-assisted building, and justify which of the two belongs in front of a class.</p>
+              <p><a href="#what" data-en="Where you meet it: Two ways of working →" data-ar="أين تقابله: طريقتان للعمل →">Where you meet it: Two ways of working →</a></p>
+            </li>
+            <li>
+              <div class="ob-head">
+                <b data-en="Explain the difference between HTML, CSS and JavaScript" data-ar="شرح الفرق بين HTML و CSS و JavaScript">Explain the difference between HTML, CSS and JavaScript</b>
+                <span class="dok-chip" data-en="DOK 2 · Apply" data-ar="العمق 2 · تطبيق">DOK 2 · Apply</span>
+              </div>
+              <p data-en="Using the animated car model, you can say what each of the three layers is responsible for, and what a page looks like when any one of them is taken away." data-ar="باستخدام مجسّم السيارة المتحرك، تستطيع تحديد ما تتولاه كل من الطبقات الثلاث، وكيف تبدو الصفحة إذا نُزعت إحداها.">Using the animated car model, you can say what each of the three layers is responsible for, and what a page looks like when any one of them is taken away.</p>
+              <p><a href="#lab" data-en="Where you meet it: the animated car model →" data-ar="أين تقابله: مجسّم السيارة المتحرك →">Where you meet it: the animated car model →</a></p>
+            </li>
+            <li>
+              <div class="ob-head">
+                <b data-en="Write a page in three layers, by hand" data-ar="كتابة صفحة على ثلاث طبقات، بيدك">Write a page in three layers, by hand</b>
+                <span class="dok-chip is-create" data-en="DOK 4 · Create" data-ar="العمق 4 · إنشاء">DOK 4 · Create</span>
+              </div>
+              <p data-en="You write an HTML page, then add CSS to the same page, then add JavaScript so its button works — and you test each step in a live preview before you move on." data-ar="تكتب صفحة HTML، ثم تضيف CSS إلى الصفحة نفسها، ثم تضيف JavaScript حتى يعمل زرها — وتختبر كل خطوة في معاينة حيّة قبل الانتقال.">You write an HTML page, then add CSS to the same page, then add JavaScript so its button works — and you test each step in a live preview before you move on.</p>
+              <p><a href="#write" data-en="Where you meet it: Write it yourself →" data-ar="أين تقابله: اكتبها بنفسك →">Where you meet it: Write it yourself →</a></p>
+            </li>
+            <li>
+              <div class="ob-head">
+                <b data-en="Generate, review and publish an app from one prompt" data-ar="توليد تطبيق ومراجعته ونشره من برومبت واحد">Generate, review and publish an app from one prompt</b>
+                <span class="dok-chip is-create" data-en="DOK 4 · Create" data-ar="العمق 4 · إنشاء">DOK 4 · Create</span>
+              </div>
+              <p data-en="You produce a complete interactive activity on your own lesson topic, review it against a six-point checklist, run it in the viewer, and publish it on GitHub as a link before any student sees it." data-ar="تنتج نشاطًا تفاعليًا كاملًا على موضوع درسك، وتراجعه على قائمة من ست نقاط، وتشغّله في العارض، وتنشره على GitHub كرابط قبل أن يراه أي طالب.">You produce a complete interactive activity on your own lesson topic, review it against a six-point checklist, run it in the viewer, and publish it on GitHub as a link before any student sees it.</p>
+              <p><a href="#prompt" data-en="Where you meet it: the master prompt →" data-ar="أين تقابله: البرومبت الرئيسي →">Where you meet it: the master prompt →</a></p>
+            </li>
+          </ol>
+
+          <div class="callout">
+            <p><b data-en="Objectives 3 and 4 are the pair that matters: " data-ar="الهدفان 3 و 4 هما الزوج المهم: ">Objectives 3 and 4 are the pair that matters: </b><span data-en="first you watch the three layers on the model, then you write them yourself. Teachers who only watch can repeat the metaphor; teachers who write it can debug their own app." data-ar="أولًا تشاهد الطبقات الثلاث على المجسّم، ثم تكتبها بنفسك. فالمعلم الذي يشاهد فقط يستطيع تكرار التشبيه؛ والمعلم الذي يكتب يستطيع إصلاح تطبيقه بنفسه.">first you watch the three layers on the model, then you write them yourself. Teachers who only watch can repeat the metaphor; teachers who write it can debug their own app.</span></p>
+          </div>
+        </div>
+
+        <!-- ============ THE MASTERCLASS AND THE GUIDE ============ -->
+        <div class="block" id="deck">
+          <h2 class="display" data-en="The masterclass, slide by slide" data-ar="الماستر كلاس، شريحة بشريحة">The masterclass, slide by slide</h2>
+          <p class="sub" data-en="Thirteen slides, embedded here. Use the arrows, the dots, or the left and right keys." data-ar="ثلاث عشرة شريحة، مدمجة هنا. استخدم الأسهم أو النقاط أو مفتاحي اليمين واليسار.">Thirteen slides, embedded here. Use the arrows, the dots, or the left and right keys.</p>
+
+          <div class="deck" id="deck-box">
+            <div class="deck-stage" id="deck-stage">
+              <img class="is-on" src="assets/slides/slide-01.webp" alt="" data-en-label="Masterclass slide 1" data-ar-label="شريحة الماستر كلاس 1">
+              <img src="assets/slides/slide-02.webp" alt="" loading="lazy">
+              <img src="assets/slides/slide-03.webp" alt="" loading="lazy">
+              <img src="assets/slides/slide-04.webp" alt="" loading="lazy">
+              <img src="assets/slides/slide-05.webp" alt="" loading="lazy">
+              <img src="assets/slides/slide-06.webp" alt="" loading="lazy">
+              <img src="assets/slides/slide-07.webp" alt="" loading="lazy">
+              <img src="assets/slides/slide-08.webp" alt="" loading="lazy">
+              <img src="assets/slides/slide-09.webp" alt="" loading="lazy">
+              <img src="assets/slides/slide-10.webp" alt="" loading="lazy">
+              <img src="assets/slides/slide-11.webp" alt="" loading="lazy">
+              <img src="assets/slides/slide-12.webp" alt="" loading="lazy">
+              <img src="assets/slides/slide-13.webp" alt="" loading="lazy">
+            </div>
+            <div class="deck-bar">
+              <span class="deck-count" id="deck-count">1 / 13</span>
+              <div class="deck-dots" id="deck-dots"></div>
+              <div class="deck-nav">
+                <button class="btn btn-ghost" type="button" id="deck-prev" data-en="Previous" data-ar="السابق">Previous</button>
+                <button class="btn btn-primary" type="button" id="deck-next" data-en="Next" data-ar="التالي">Next</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="expand-row">
+            <button class="btn-expand" type="button" data-lightbox="#deck-stage img">
+              <span class="plus" aria-hidden="true">+</span>
+              <span data-en="Open the slides full screen" data-ar="افتح الشرائح بشاشة كاملة">Open the slides full screen</span>
+            </button>
+            <span style="font-size:15.5px;color:var(--muted)" data-en="Big enough to present from — zoom, drag, and move between all thirteen." data-ar="كبيرة بما يكفي للعرض منها — كبّر واسحب وتنقّل بين الثلاث عشرة كلها.">Big enough to present from — zoom, drag, and move between all thirteen.</span>
+          </div>
+
+          <h3 data-en="The one-page guide" data-ar="الدليل في صفحة واحدة">The one-page guide</h3>
+          <p data-en="This is the whole session on one sheet, in Arabic: the shift from writing code to directing it, the two kinds of vibe coding, the four steps of the loop, and which tool suits which level of experience. Select the image to enlarge it, and print it for the training room wall." data-ar="هذه هي المحاضرة كلها في ورقة واحدة، بالعربية: التحول من كتابة الكود إلى توجيهه، ونمطا هذه البرمجة، وخطوات الحلقة الأربع، وأي أداة تناسب أي مستوى خبرة. اختر الصورة لتكبيرها، واطبعها لحائط قاعة التدريب. لاحظ أن الشرائح والدليل يستخدمان المصطلح الإنجليزي vibe coding كما ورد في المادة الأصلية.">This is the whole session on one sheet, in Arabic: the shift from writing code to directing it, the two kinds of vibe coding, the four steps of the loop, and which tool suits which level of experience. Select the image to enlarge it, and print it for the training room wall.</p>
+
+          <div class="zoomer" id="zoomer" role="button" tabindex="0" data-en-label="Enlarge the guide" data-ar-label="كبّر الدليل">
+            <img src="assets/infographic-vibe-ar.webp" alt="" data-en-label="One-page Arabic guide to building apps with AI" data-ar-label="دليل عربي في صفحة واحدة لبناء التطبيقات بالذكاء الاصطناعي">
+          </div>
+          <div class="expand-row">
+            <button class="btn-expand" type="button" data-lightbox="#zoomer img">
+              <span class="plus" aria-hidden="true">+</span>
+              <span data-en="Open the guide full screen" data-ar="افتح الدليل بشاشة كاملة">Open the guide full screen</span>
+            </button>
+            <span style="font-size:15.5px;color:var(--muted)" data-en="Or select the picture for a quick zoom in place." data-ar="أو اختر الصورة لتكبير سريع في مكانها.">Or select the picture for a quick zoom in place.</span>
+          </div>
+        </div>
+
+        <!-- ============ SUMMARY ============ -->
+        <div class="block">
+          <h2 class="display" data-en="What you walk out with" data-ar="ما ستخرج به">What you walk out with</h2>
+          <p class="sub" data-en="One finished interactive app, and the language to explain how it was made." data-ar="تطبيق تفاعلي واحد جاهز، واللغة التي تشرح به كيف صُنع.">One finished interactive app, and the language to explain how it was made.</p>
+          <ul class="outputs">
+            <li data-en="A working interactive quiz on your own lesson topic" data-ar="اختبار تفاعلي يعمل على موضوع درسك">A working interactive quiz on your own lesson topic<small data-en="One index.html file, offline, on any phone" data-ar="ملف index.html واحد، يعمل بلا إنترنت، على أي هاتف">One index.html file, offline, on any phone</small></li>
+            <li data-en="A master prompt you can reuse every week" data-ar="برومبت رئيسي تعيد استخدامه كل أسبوع">A master prompt you can reuse every week<small data-en="Role, task, constraints and features, already written" data-ar="الدور والمهمة والقيود والخصائص، مكتوبة بالفعل">Role, task, constraints and features, already written</small></li>
+            <li data-en="A clear explanation of HTML, CSS and JavaScript" data-ar="شرح واضح لـ HTML و CSS و JavaScript">A clear explanation of HTML, CSS and JavaScript<small data-en="The frame, the paint, the engine" data-ar="الهيكل، والطلاء، والمحرك">The frame, the paint, the engine</small></li>
+            <li data-en="A review checklist to run before any class sees it" data-ar="قائمة مراجعة تنفّذها قبل أن يراه أي صف">A review checklist to run before any class sees it<small data-en="Six things to confirm, and one copy to keep" data-ar="ستة أمور تتأكد منها، ونسخة واحدة تحفظها">Six things to confirm, and one copy to keep</small></li>
+            <li class="is-new" data-en="Three repair sentences for when it breaks" data-ar="ثلاث جمل إصلاح عندما يتعطل">Three repair sentences for when it breaks<small data-en="Describe the fault, never edit the code at random" data-ar="صف الخطأ، ولا تعدّل الكود عشوائيًا أبدًا">Describe the fault, never edit the code at random</small></li>
+          </ul>
+        </div>
+
+        <!-- ============ 1. WHAT VIBE CODING IS ============ -->
+        <div class="block" id="what">
+          <h2 class="display" data-en="What vibe coding actually is" data-ar="ما هي البرمجة باستخدام الأوامر النصية والتوجيه فعلًا">What vibe coding actually is</h2>
+          <p class="sub" data-en="Turning educational thinking into a working app by describing precisely what you want." data-ar="تحويل التفكير التعليمي إلى تطبيق يعمل، من خلال وصف دقيق لما تريده.">Turning educational thinking into a working app by describing precisely what you want.</p>
+
+          <p data-en="Vibe coding means building software by describing the result in ordinary language instead of writing the code line by line. The term was coined by the researcher Andrej Karpathy in 2025. For a teacher, the shift is not about programming at all — it is about being precise. You already know what a good activity looks like, what the objective is, what a wrong answer needs to be told. Vibe coding is the practice of saying that clearly enough for a machine to build it." data-ar="البرمجة باستخدام الأوامر النصية والتوجيه تعني بناء البرمجيات من خلال وصف النتيجة بلغة عادية بدلًا من كتابة الكود سطرًا بسطر، وهي المعروفة في الإنجليزية بمصطلح vibe coding الذي صاغه الباحث Andrej Karpathy في عام 2025. وبالنسبة للمعلم، التحول ليس عن البرمجة إطلاقًا — بل عن الدقة. أنت تعرف بالفعل كيف يبدو النشاط الجيد، وما هو الهدف، وما يجب أن تُقال للإجابة الخاطئة. وهذه الممارسة هي قول ذلك بوضوح كافٍ لتبنيه آلة.">Vibe coding means building software by describing the result in ordinary language instead of writing the code line by line. The term was coined by the researcher Andrej Karpathy in 2025. For a teacher, the shift is not about programming at all — it is about being precise. You already know what a good activity looks like, what the objective is, what a wrong answer needs to be told. Vibe coding is the practice of saying that clearly enough for a machine to build it.</p>
+
+          <h3 data-en="Who does what" data-ar="من يفعل ماذا">Who does what</h3>
+          <div class="role-grid">
+            <div class="role is-you">
+              <span class="who" data-en="You" data-ar="أنت">You</span>
+              <h3 data-en="The architect" data-ar="المهندس">The architect</h3>
+              <p data-en="You set the learning objective, choose the level, decide what the activity must do, judge whether the result actually teaches, and take responsibility before a student ever opens it." data-ar="أنت تحدد الهدف التعليمي، وتختار المستوى، وتقرر ما يجب أن يفعله النشاط، وتحكم إن كان الناتج يعلّم فعلًا، وتتحمل المسؤولية قبل أن يفتحه أي طالب.">You set the learning objective, choose the level, decide what the activity must do, judge whether the result actually teaches, and take responsibility before a student ever opens it.</p>
+            </div>
+            <div class="role">
+              <span class="who" data-en="The AI" data-ar="الذكاء الاصطناعي">The AI</span>
+              <h3 data-en="The builder" data-ar="البنّاء">The builder</h3>
+              <p data-en="It writes the code, names the parts, wires the buttons, formats the layout and produces the file. It has no opinion about whether your lesson is sound, and it will build a weak activity just as willingly as a strong one." data-ar="هو يكتب الكود، ويسمّي الأجزاء، ويوصّل الأزرار، وينسّق التصميم، وينتج الملف. وليس له رأي في سلامة درسك، وسيبني نشاطًا ضعيفًا بالرغبة نفسها التي يبني بها نشاطًا قويًا.">It writes the code, names the parts, wires the buttons, formats the layout and produces the file. It has no opinion about whether your lesson is sound, and it will build a weak activity just as willingly as a strong one.</p>
+            </div>
+          </div>
+
+          <h3 data-en="Two ways of working, and the one you should use" data-ar="طريقتان للعمل، والطريقة التي عليك استخدامها">Two ways of working, and the one you should use</h3>
+          <div class="compare">
+            <div class="panel">
+              <h4 data-en="Pure vibe coding" data-ar="النمط الخالص من البرمجة بالأوامر النصية">Pure vibe coding</h4>
+              <p data-en="Fast, throwaway, total trust in the machine. You describe something, accept whatever comes back, and use it once. Fine for a personal experiment or a quick demonstration you will delete." data-ar="سريعة، مؤقتة، ثقة كاملة في الآلة. تصف شيئًا، وتقبل ما يعود إليك، وتستخدمه مرة واحدة. مناسبة لتجربة شخصية أو عرض سريع ستحذفه.">Fast, throwaway, total trust in the machine. You describe something, accept whatever comes back, and use it once. Fine for a personal experiment or a quick demonstration you will delete.</p>
+            </div>
+            <div class="panel is-lit">
+              <h4 data-en="Responsible AI-assisted building — use this one" data-ar="البناء المسؤول بمساعدة الذكاء الاصطناعي — استخدم هذه">Responsible AI-assisted building — use this one</h4>
+              <p data-en="The same speed, with a human review before anything is published. You read the questions, check the feedback the app gives on a wrong answer, and try it yourself as a student would. Anything a class will open belongs in this column." data-ar="السرعة نفسها، مع مراجعة بشرية قبل نشر أي شيء. تقرأ الأسئلة، وتتحقق من التغذية الراجعة التي يقدمها التطبيق على الإجابة الخاطئة، وتجرّبه بنفسك كما سيجرّبه طالب. وكل ما سيفتحه صف كامل ينتمي إلى هذا العمود.">The same speed, with a human review before anything is published. You read the questions, check the feedback the app gives on a wrong answer, and try it yourself as a student would. Anything a class will open belongs in this column.</p>
+            </div>
+          </div>
+
+          <div class="callout">
+            <p><b data-en="The honest limit: " data-ar="الحد الصريح: ">The honest limit: </b><span data-en="you do not need to be a programmer to build educational technology. You do need a clear learning objective, a precise prompt, and a responsible review before you share the app with students." data-ar="لا تحتاج أن تكون مبرمجًا لتصنع تكنولوجيا تعليمية. لكنك تحتاج هدفًا تعليميًا واضحًا، وبرومبتًا دقيقًا، ومراجعة مسؤولة قبل مشاركة التطبيق مع الطلاب.">you do not need to be a programmer to build educational technology. You do need a clear learning objective, a precise prompt, and a responsible review before you share the app with students.</span></p>
+          </div>
+        </div>
+
+        <!-- ============ 2. THE THREE LAYERS ============ -->
+        <div class="block" id="layers">
+          <h2 class="display" data-en="Every app is three layers, always the same three" data-ar="كل تطبيق ثلاث طبقات، وهي الثلاث نفسها دائمًا">Every app is three layers, always the same three</h2>
+          <p class="sub" data-en="Understand an app the way you understand a body: a skeleton, an appearance, and a brain." data-ar="افهم التطبيق كما تفهم الجسم: هيكل عظمي، ومظهر، وعقل.">Understand an app the way you understand a body: a skeleton, an appearance, and a brain.</p>
+
+          <p data-en="Whatever the AI builds for you, and whatever tool you use to build it, the file it hands back contains exactly three kinds of instruction. Knowing which layer a problem lives in is what lets you ask for a change in one sentence instead of describing the whole app again. Select a layer to see what happens when it is missing." data-ar="أيًّا كان ما يبنيه الذكاء الاصطناعي لك، وأيًّا كانت الأداة التي تستخدمها، فإن الملف الذي يعيده إليك يحتوي على ثلاثة أنواع من التعليمات بالضبط. ومعرفة الطبقة التي تنتمي إليها المشكلة هي ما يجعلك تطلب التعديل في جملة واحدة بدلًا من وصف التطبيق كله من جديد. اختر طبقة لترى ما يحدث عند غيابها.">Whatever the AI builds for you, and whatever tool you use to build it, the file it hands back contains exactly three kinds of instruction. Knowing which layer a problem lives in is what lets you ask for a change in one sentence instead of describing the whole app again. Select a layer to see what happens when it is missing.</p>
+
+          <div class="layer-cards">
+            <button class="layer-card" type="button" data-pop="pop-html">
+              <span class="layer-tag is-html">HTML</span>
+              <h3 data-en="The frame" data-ar="الهيكل">The frame</h3>
+              <p data-en="The skeleton. It decides which parts exist: the title, the question, the four options, the buttons, the box where a student types a name." data-ar="الهيكل العظمي. يحدد الأجزاء الموجودة: العنوان، والسؤال، والخيارات الأربعة، والأزرار، والمربع الذي يكتب فيه الطالب اسمه.">The skeleton. It decides which parts exist: the title, the question, the four options, the buttons, the box where a student types a name.</p>
+              <span class="more" data-en="What if it is missing?" data-ar="وماذا لو غاب؟">What if it is missing?</span>
+            </button>
+            <button class="layer-card" type="button" data-pop="pop-css">
+              <span class="layer-tag is-css">CSS</span>
+              <h3 data-en="The paint" data-ar="الطلاء">The paint</h3>
+              <p data-en="The appearance. It controls the colours, the fonts, the spacing, the rounded corners, the layout on a phone versus a laptop." data-ar="المظهر. يتحكم في الألوان والخطوط والمسافات والحواف الدائرية والتوزيع على الهاتف مقابل الحاسوب.">The appearance. It controls the colours, the fonts, the spacing, the rounded corners, the layout on a phone versus a laptop.</p>
+              <span class="more" data-en="What if it is missing?" data-ar="وماذا لو غاب؟">What if it is missing?</span>
+            </button>
+            <button class="layer-card" type="button" data-pop="pop-js">
+              <span class="layer-tag is-js">JS</span>
+              <h3 data-en="The engine" data-ar="المحرك">The engine</h3>
+              <p data-en="The brain. It makes the buttons work, counts the score, runs the timer, decides whether an answer is right, and writes the feedback." data-ar="العقل. يشغّل الأزرار، ويحسب الدرجة، ويدير المؤقت، ويحدد صحة الإجابة، ويكتب التغذية الراجعة.">The brain. It makes the buttons work, counts the score, runs the timer, decides whether an answer is right, and writes the feedback.</p>
+              <span class="more" data-en="What if it is missing?" data-ar="وماذا لو غاب؟">What if it is missing?</span>
+            </button>
+          </div>
+
+          <div class="callout">
+            <p><b data-en="The sentence to keep: " data-ar="الجملة التي تحتفظ بها: ">The sentence to keep: </b><span data-en="HTML is the car frame, CSS is the paint and the wheels, JavaScript is the engine. Three layers, one car." data-ar="HTML هو هيكل السيارة، و CSS هو الطلاء والعجلات، و JavaScript هو المحرك. ثلاث طبقات، وسيارة واحدة.">HTML is the car frame, CSS is the paint and the wheels, JavaScript is the engine. Three layers, one car.</span></p>
+          </div>
+        </div>
+
+        <!-- ============ 3. THE LAB ============ -->
+        <div class="block" id="lab">
+          <h2 class="display" data-en="Test the difference yourself" data-ar="اختبر الفرق بنفسك">Test the difference yourself</h2>
+          <p class="sub" data-en="Build the frame, then paint it, then start the engine — and watch the same car change three times." data-ar="ابنِ الهيكل، ثم لوّنه، ثم أدر المحرك — وشاهد السيارة نفسها تتغير ثلاث مرات.">Build the frame, then paint it, then start the engine — and watch the same car change three times.</p>
+
+          <p data-en="Press the three stages in order. Nothing is replaced between stages — the same car simply gains a layer. Stage 3 is the one to linger on: press “Start the engine” and the frame and the paint do not change at all, yet the car begins to move. That is the moment a class understands what JavaScript is for." data-ar="اضغط المراحل الثلاث بالترتيب. لا يُستبدل شيء بين المراحل — السيارة نفسها تكتسب طبقة فقط. والمرحلة 3 هي التي تستحق التوقف عندها: اضغط «أدر المحرك» فلا يتغير الهيكل ولا الطلاء إطلاقًا، ومع ذلك تبدأ السيارة في الحركة. تلك هي اللحظة التي يفهم فيها الصف ما وظيفة JavaScript.">Press the three stages in order. Nothing is replaced between stages — the same car simply gains a layer. Stage 3 is the one to linger on: press “Start the engine” and the frame and the paint do not change at all, yet the car begins to move. That is the moment a class understands what JavaScript is for.</p>
+
+          <div class="lab" data-car-lab data-stage="1"></div>
+
+          <h3 data-en="Then take the same three layers onto a real page" data-ar="ثم انقل الطبقات الثلاث نفسها إلى صفحة حقيقية">Then take the same three layers onto a real page</h3>
+          <p data-en="The lab below opens on the real page: the same three stages applied to a working activity, with its code beside it, so you can see exactly which lines arrived at which stage — select any block of code and it tells you what it does and outlines the part it controls. Its other two levels are the car you have just used and a twelve-card sorting activity for your own staff." data-ar="يفتح المعمل أدناه على الصفحة الحقيقية: المراحل الثلاث نفسها مطبَّقة على نشاط يعمل، مع كوده إلى جانبه، لترى بالضبط أي الأسطر وصلت في أي مرحلة — اختر أي كتلة كود فتخبرك بما تفعله وتُحيط الجزء الذي تتحكم فيه. ومستواه الآخران هما السيارة التي استخدمتها للتو، ونشاط ترتيب من اثنتي عشرة بطاقة لفريقك.">The lab below has two more levels. Level 2 applies the same three stages to an actual working web page with its code beside it, so you can see exactly which lines arrived at which stage — and copy the finished code to run in the HTML Player. Level 3 is a twelve-card sorting activity you can use with your own staff.</p>
+
+          <div class="lab-band">
+            <div class="lab-frame" id="lab-frame">
+              <iframe src="apps/app-build-style-drive.html#page" title="Build, Style, Drive — the three-layer lab" loading="lazy"></iframe>
+            </div>
+            <div class="viewer-actions">
+              <button class="btn btn-outline" type="button" id="lab-full" data-en="Show it full screen" data-ar="اعرضه بالشاشة الكاملة">Show it full screen</button>
+              <a class="btn btn-primary" href="apps/app-build-style-drive.html" target="_blank" rel="noopener"><span data-en="Open the lab in a full window" data-ar="افتح المعمل في نافذة كاملة">Open the lab in a full window</span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg></a>
+            </div>
+          </div>
+
+          <div class="hint" style="margin-top:24px">
+            <p style="margin:0"><b data-en="Use it as a starter: " data-ar="استخدمه كتمهيد: ">Use it as a starter: </b><span data-en="show stage 1 and ask the class what is missing. Show stage 2 and ask what changed. Then start the engine without warning. Three minutes, no slides." data-ar="اعرض المرحلة 1 واسأل الصف عمّا هو ناقص. اعرض المرحلة 2 واسأل عمّا تغيّر. ثم أدر المحرك دون تنبيه. ثلاث دقائق، بلا شرائح.">show stage 1 and ask the class what is missing. Show stage 2 and ask what changed. Then start the engine without warning. Three minutes, no slides.</span></p>
+          </div>
+        </div>
+
+        <!-- ============ WRITE IT YOURSELF ============ -->
+        <div class="block" id="write">
+          <h2 class="display" data-en="Now write the three layers yourself" data-ar="الآن اكتب الطبقات الثلاث بنفسك">Now write the three layers yourself</h2>
+          <p class="sub" data-en="Write an HTML page. Add CSS to it. Add JavaScript to it. One page, three steps, a live preview at every keystroke." data-ar="اكتب صفحة HTML. أضف إليها CSS. أضف إليها JavaScript. صفحة واحدة، وثلاث خطوات، ومعاينة حيّة مع كل حرف تكتبه.">Write an HTML page. Add CSS to it. Add JavaScript to it. One page, three steps, a live preview at every keystroke.</p>
+
+          <p data-en="This is the only part of Level 3 where you type code, and it takes about fifteen minutes. You are not learning to be a programmer — you are learning what the AI is going to hand you, so that when something is wrong you can name the layer instead of describing the whole app again. The page you write in step 1 is the page you style in step 2 and the page you bring to life in step 3; nothing is thrown away between steps." data-ar="هذا هو الجزء الوحيد في المستوى الثالث الذي تكتب فيه كودًا، ويستغرق نحو خمس عشرة دقيقة. أنت لا تتعلم لتصبح مبرمجًا — بل تتعلم ما سيسلّمه إليك الذكاء الاصطناعي، حتى إذا حدث خطأ استطعت تسمية الطبقة بدلًا من وصف التطبيق كله من جديد. والصفحة التي تكتبها في الخطوة 1 هي الصفحة التي تنسّقها في الخطوة 2 وتُحييها في الخطوة 3؛ ولا يُلغى شيء بين الخطوات.">This is the only part of Level 3 where you type code, and it takes about fifteen minutes. You are not learning to be a programmer — you are learning what the AI is going to hand you, so that when something is wrong you can name the layer instead of describing the whole app again. The page you write in step 1 is the page you style in step 2 and the page you bring to life in step 3; nothing is thrown away between steps.</p>
+
+          <div class="lab" data-write-lab data-stage="1"></div>
+
+          <div class="callout">
+            <p><b data-en="What your work is checked against: " data-ar="ما يُراجع عليه عملك: ">What your work is checked against: </b><span data-en="each step lists what it wants and why it matters, and ticks itself as you type. The last check of step 3 is different — it only passes when you press your own button in the preview and the page visibly changes. Nothing marks you; it explains." data-ar="كل خطوة تسرد ما تطلبه ولماذا هو مهم، وتعلّم نفسها أثناء كتابتك. والتحقق الأخير في الخطوة 3 مختلف — فهو لا ينجح إلا عندما تضغط زرك بنفسك في المعاينة وتتغير الصفحة فعلًا. ولا شيء يضع لك درجة؛ بل يشرح.">each step lists what it wants and why it matters, and ticks itself as you type. The last check of step 3 is different — it only passes when you press your own button in the preview and the page visibly changes. Nothing marks you; it explains.</span></p>
+          </div>
+
+          <div class="hint">
+            <p style="margin:0"><b data-en="Run it for real: " data-ar="شغّلها على الحقيقة: ">Run it for real: </b><span data-en="when step 3 is complete, press “Copy my page”, open the Edulixa HTML Viewer and paste it. The page you wrote by hand travels exactly the same route as every AI-generated app in this level — run it, review it, then publish it on GitHub as a link." data-ar="عند إكمال الخطوة 3، اضغط «انسخ صفحتي»، وافتح عارض Edulixa والصقها. فالصفحة التي كتبتها بيدك تسلك المسار نفسه الذي يسلكه كل تطبيق مولَّد بالذكاء الاصطناعي في هذا المستوى — شغّلها، وراجعها، ثم انشرها على GitHub كرابط.">when step 3 is complete, press “Copy my page”, open the Edulixa HTML Viewer and paste it. The page you wrote by hand travels exactly the same route as every AI-generated app in this level — run it, review it, then publish it on GitHub as a link.</span></p>
+          </div>
+          <div class="viewer-actions">
+            <a class="btn btn-outline" href="apps/app-html-viewer.html"><span data-en="Open the Edulixa HTML Viewer" data-ar="افتح عارض Edulixa">Open the Edulixa HTML Viewer</span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg></a>
+          </div>
+        </div>
+
+        <!-- ============ 4. THE PROMPT ============ -->
+        <div class="block" id="prompt">
+          <h2 class="display" data-en="Write a prompt that works" data-ar="اكتب برومبتًا ناجحًا">Write a prompt that works</h2>
+          <p class="sub" data-en="Four parts: the role, the task, the constraints, the features. Precision is what stops the AI guessing." data-ar="أربعة أجزاء: الدور، والمهمة، والقيود، والخصائص. والدقة هي ما يمنع الذكاء الاصطناعي من التخمين.">Four parts: the role, the task, the constraints, the features. Precision is what stops the AI guessing.</p>
+
+          <div class="four">
+            <div class="part" data-n="01">
+              <h3 data-en="Role" data-ar="الدور">Role</h3>
+              <p data-en="Who the AI is being asked to be. “An educational app designer who follows CEFR and Depth of Knowledge” produces a different app from “a helpful assistant”." data-ar="من تطلب من الذكاء الاصطناعي أن يكون. عبارة «مصمم تطبيقات تعليمية يتبع CEFR ومستويات العمق المعرفي» تنتج تطبيقًا مختلفًا عن «مساعد مفيد».">Who the AI is being asked to be. “An educational app designer who follows CEFR and Depth of Knowledge” produces a different app from “a helpful assistant”.</p>
+            </div>
+            <div class="part" data-n="02">
+              <h3 data-en="Task" data-ar="المهمة">Task</h3>
+              <p data-en="The exact thing to build, with the numbers in it: the topic, the grade, the language, how many questions, which question types, how long the timer runs." data-ar="الشيء المطلوب بناؤه بالضبط، بأرقامه: الموضوع، والصف، واللغة، وعدد الأسئلة، وأنواعها، ومدة المؤقت.">The exact thing to build, with the numbers in it: the topic, the grade, the language, how many questions, which question types, how long the timer runs.</p>
+            </div>
+            <div class="part" data-n="03">
+              <h3 data-en="Constraints" data-ar="القيود">Constraints</h3>
+              <p data-en="The rules the build must respect: one single offline file, vocabulary inside the CEFR level, nothing invented, no feature you did not ask for." data-ar="القواعد التي يجب أن يحترمها البناء: ملف واحد يعمل بلا إنترنت، ومفردات داخل مستوى CEFR، ولا شيء مُختلق، ولا خصائص لم تطلبها.">The rules the build must respect: one single offline file, vocabulary inside the CEFR level, nothing invented, no feature you did not ask for.</p>
+            </div>
+            <div class="part" data-n="04">
+              <h3 data-en="Features" data-ar="الخصائص">Features</h3>
+              <p data-en="What the finished app does for the learner: instant feedback with a reason, a countdown, a progress bar, a results screen, a certificate." data-ar="ما يفعله التطبيق النهائي للمتعلم: تغذية راجعة فورية مع سبب، ومؤقت تنازلي، وشريط تقدم، وشاشة نتائج، وشهادة.">What the finished app does for the learner: instant feedback with a reason, a countdown, a progress bar, a results screen, a certificate.</p>
+            </div>
+          </div>
+
+          <h3 data-en="Prepare the context first" data-ar="جهّز السياق أولًا">Prepare the context first</h3>
+          <ol class="numbered">
+            <li><b data-en="Edit the fields, don't rewrite the prompt" data-ar="عدّل الحقول، ولا تعد كتابة البرومبت">Edit the fields, don't rewrite the prompt</b><span data-en="Change the lesson name, the grade, the language, the CEFR level and the number of questions. Leave the structure alone — that structure is what makes the result consistent week after week." data-ar="غيّر اسم الدرس والصف واللغة ومستوى CEFR وعدد الأسئلة. واترك البنية كما هي — فهذه البنية هي ما يجعل الناتج ثابتًا أسبوعًا بعد أسبوع.">Change the lesson name, the grade, the language, the CEFR level and the number of questions. Leave the structure alone — that structure is what makes the result consistent week after week.</span></li>
+            <li><b data-en="Attach the source when the content must be exact" data-ar="أرفق المصدر عندما يجب أن يكون المحتوى دقيقًا">Attach the source when the content must be exact</b><span data-en="Add the lesson PDF, or a clear photograph of the textbook page, whenever the material is long or the questions must follow a set source. The clearer the context, the better the educational result." data-ar="أضف ملف PDF للدرس، أو صورة واضحة لصفحة الكتاب، كلما كانت المادة طويلة أو كانت الأسئلة يجب أن تلتزم بمصدر محدد. وكلما كان السياق أوضح، كانت النتيجة التعليمية أفضل.">Add the lesson PDF, or a clear photograph of the textbook page, whenever the material is long or the questions must follow a set source. The clearer the context, the better the educational result.</span></li>
+            <li><b data-en="Send it in a new conversation" data-ar="أرسله في محادثة جديدة">Send it in a new conversation</b><span data-en="A fresh conversation carries no leftover instructions from your last lesson. Attach the file, paste the prompt, send once, and wait for the whole answer." data-ar="المحادثة الجديدة لا تحمل تعليمات متبقية من درسك السابق. أرفق الملف، والصق البرومبت، وأرسل مرة واحدة، وانتظر الإجابة كاملة.">A fresh conversation carries no leftover instructions from your last lesson. Attach the file, paste the prompt, send once, and wait for the whole answer.</span></li>
+          </ol>
+
+          <h3 data-en="The master prompt — copy it and test it" data-ar="البرومبت الرئيسي — انسخه واختبره">The master prompt — copy it and test it</h3>
+          <div class="prompt-tools">
+            <button class="btn btn-primary" type="button" data-copy="app-prompt" data-en="Copy prompt" data-ar="انسخ البرومبت">Copy prompt</button>
+            <button class="btn btn-ghost" type="button" data-reset="app-prompt" data-en="Reset changes" data-ar="أعد النص الأصلي">Reset changes</button>
+            <span class="copied" aria-live="polite"></span>
+          </div>
+          <p class="prompt-legend"><span class="ph">[CHANGE THIS]</span><span data-en="Orange fields are the parts you replace. Select one and type over it." data-ar="الحقول البرتقالية هي الأجزاء التي تستبدلها. اختر واحدًا واكتب فوقه.">Orange fields are the parts you replace. Select one and type over it.</span></p>
+
+          <div id="app-prompt" class="prompt-box app-prompt" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" data-en-label="Editable master prompt for an interactive quiz app" data-ar-label="البرومبت الرئيسي القابل للتحرير لتطبيق اختبار تفاعلي"><span class="prompt-heading">ROLE</span>
+You are an educational application designer and front-end engineer who builds classroom-ready web apps. You treat CEFR levels and Depth of Knowledge as design constraints, not labels added at the end.
+
+<span class="prompt-heading">CONTEXT</span>
+Teacher name: <span class="ph">[YOUR NAME]</span>
+School or academy: <span class="ph">[SCHOOL NAME]</span>
+Subject: <span class="ph">[SUBJECT]</span>
+Lesson topic: <span class="ph">[LESSON TOPIC]</span>
+Grade or age of the learners: <span class="ph">[GRADE OR AGE]</span>
+CEFR level of the learners: <span class="ph">[A1]</span>
+Language of the interface: <span class="ph">[ENGLISH]</span>
+Language of the questions: <span class="ph">[ENGLISH]</span>
+Number of questions: <span class="ph">[10]</span>
+Question mix: <span class="ph">[6 MULTIPLE CHOICE, 2 TRUE OR FALSE, 2 SHORT ANSWER]</span>
+Time limit for the whole quiz: <span class="ph">[10 MINUTES]</span>
+Pass mark: <span class="ph">[70]</span>%
+Main colour: <span class="ph">[#0F695D]</span>
+Accent colour: <span class="ph">[#EE3A23]</span>
+
+<span class="prompt-heading">TASK</span>
+Build one interactive quiz application about <span class="ph">[LESSON TOPIC]</span> for these learners.
+
+The app must:
+1. Open on a start screen showing the title, my name, the number of questions and the time limit, with one box for the student to type a first name. The quiz cannot begin until a name is typed.
+2. Show short, clear instructions on that start screen.
+3. Show one question at a time, with the question number and a progress bar.
+4. Run a countdown timer for the whole quiz and end the quiz when the time runs out.
+5. Not allow a question to be skipped, and not allow an answer to be changed once it is submitted.
+6. Give instant feedback after every answer: state whether it is right or wrong AND give one short sentence explaining why. Never a bare tick or cross.
+7. Climb the Depth of Knowledge ladder — at least four recall questions, at least three apply questions, at least two analyse questions — and display the DOK level and the CEFR level of each question on screen.
+8. Keep every word inside CEFR <span class="ph">[A1]</span>. Do not use vocabulary above that level in a question or in an option.
+9. End on a results screen showing the score out of <span class="ph">[10]</span>, the time taken, every question with the student's answer beside the correct answer, and one sentence of advice on what to study next.
+10. Produce a completion certificate when the student reaches the pass mark. The certificate shows the student name, the score, the lesson topic, my name and the date, and can be downloaded as an image.
+11. Include a "Try again" button that reshuffles the order of the questions and the order of the options.
+
+<span class="prompt-heading">FORMAT</span>
+- Deliver ONE single file named index.html. Put the HTML, the CSS and the JavaScript inside that one file. Do not create separate .css or .js files, and do not link to any external library, font, image or stylesheet. The file must work with no internet connection.
+- Declare every colour, size, spacing and radius as a CSS variable at the top of the file so I can change the whole look in one place.
+- Mobile first. It must be comfortable on a phone held upright, with tap targets no smaller than 44 by 44 pixels.
+- Fully usable with a keyboard, with a visible focus outline on every control.
+- Comment each major section in plain English so a non-programmer can find the questions and edit them.
+
+<span class="prompt-heading">SOURCE CONTROL</span>
+- Take every fact, definition and example from the material I attached. Where I have attached nothing, use only content that is standard and safe for this grade.
+- Do not invent a fact, a date, a statistic or a quotation. Where you are not certain, leave a clearly marked gap written as [CHECK THIS] and list every gap at the end of your answer.
+- Do not add a screen, a feature or a question type I did not ask for.
+
+<span class="prompt-heading">OUTPUT</span>
+Give me the complete code of index.html in one code block, from the opening doctype line to the closing html tag, with nothing left out and nothing abbreviated. Do not summarise, do not write "the rest of the code goes here", and do not stop halfway. If the answer is too long, stop at the end of a line and wait for me to say "continue", then carry on from that exact line without repeating anything you have already written.</div>
+
+          <h3 data-en="Send it to either tool" data-ar="أرسله إلى أي من الأداتين">Send it to either tool</h3>
+          <p data-en="Both tools accept this prompt and both return one complete HTML file. Send the same prompt to each of them once and compare the two apps — the differences will teach you more about prompting than any explanation." data-ar="كلتا الأداتين تقبل هذا البرومبت وتعيد ملف HTML واحدًا كاملًا. أرسل البرومبت نفسه إلى كل منهما مرة واحدة وقارن التطبيقين — الاختلافات ستعلّمك عن كتابة البرومبت أكثر من أي شرح.">Both tools accept this prompt and both return one complete HTML file. Send the same prompt to each of them once and compare the two apps — the differences will teach you more about prompting than any explanation.</p>
+          <div class="trials">
+            <div class="trial">
+              <b>ChatGPT</b>
+              <p data-en="Open a new chat, attach your lesson file if you have one, paste the prompt, and send. Ask for the code in one block." data-ar="افتح محادثة جديدة، وأرفق ملف درسك إن كان لديك، والصق البرومبت، وأرسل. واطلب الكود في كتلة واحدة.">Open a new chat, attach your lesson file if you have one, paste the prompt, and send. Ask for the code in one block.</p>
+              <span class="app-url">chatgpt.com</span>
+              <a class="btn btn-primary" href="https://chatgpt.com/" target="_blank" rel="noopener"><span data-en="Open ChatGPT" data-ar="افتح ChatGPT">Open ChatGPT</span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg></a>
+            </div>
+            <div class="trial">
+              <b>Gemini</b>
+              <p data-en="Open a new conversation, attach the same lesson file, paste the same prompt, and send. Compare the result with ChatGPT's." data-ar="افتح محادثة جديدة، وأرفق ملف الدرس نفسه، والصق البرومبت نفسه، وأرسل. وقارن الناتج بناتج ChatGPT.">Open a new conversation, attach the same lesson file, paste the same prompt, and send. Compare the result with ChatGPT's.</p>
+              <span class="app-url">gemini.google.com</span>
+              <a class="btn btn-primary" href="https://gemini.google.com/" target="_blank" rel="noopener"><span data-en="Open Gemini" data-ar="افتح Gemini">Open Gemini</span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg></a>
+            </div>
+          </div>
+
+          <h3 data-en="A second prompt: make the AI build the layer test itself" data-ar="برومبت ثانٍ: اجعل الذكاء الاصطناعي يبني اختبار الطبقات بنفسه">A second prompt: make the AI build the layer test itself</h3>
+          <p data-en="This short prompt asks the tool to rebuild the three-stage car you just used. It is the fastest way to prove to a sceptical colleague that this works — and the result becomes a teaching resource you own." data-ar="يطلب هذا البرومبت القصير من الأداة أن تعيد بناء السيارة ثلاثية المراحل التي استخدمتها للتو. وهو أسرع طريقة لإثبات أن هذا يعمل لزميل متشكك — ويصبح الناتج موردًا تعليميًا تملكه.">This short prompt asks the tool to rebuild the three-stage car you just used. It is the fastest way to prove to a sceptical colleague that this works — and the result becomes a teaching resource you own.</p>
+          <div class="prompt-tools">
+            <button class="btn btn-primary" type="button" data-copy="layer-prompt" data-en="Copy prompt" data-ar="انسخ البرومبت">Copy prompt</button>
+            <button class="btn btn-ghost" type="button" data-reset="layer-prompt" data-en="Reset changes" data-ar="أعد النص الأصلي">Reset changes</button>
+            <span class="copied" aria-live="polite"></span>
+          </div>
+          <div id="layer-prompt" class="prompt-box small-prompt" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" data-en-label="Editable prompt for building the three-layer car demonstration" data-ar-label="برومبت قابل للتحرير لبناء عرض السيارة ثلاثي الطبقات"><span class="prompt-heading">TASK</span>
+Build one single HTML file that teaches the difference between HTML, CSS and JavaScript using the same simple side-view car three times.
+
+Stage 1 — HTML only: the car drawn as plain outlines. No colour, no shadow, no movement. Label it "HTML: the frame" and add one sentence saying that HTML decides which parts exist.
+Stage 2 — CSS added: the same car painted, with a colour gradient on the body, rounded corners, pale glass windows, dark rubber tyres and a headlight. Still completely still. Label it "CSS: the paint" and add one sentence saying that CSS decides how the parts look.
+Stage 3 — JavaScript added: the same painted car, plus a button labelled "Start the engine". Pressing it makes the wheels turn, the car bob gently, the road markings move past and a small puff come from the exhaust. Pressing it again stops everything and the label changes to "Stop the engine". Label it "JavaScript: the engine" and add one sentence saying that JavaScript decides what the parts do.
+
+<span class="prompt-heading">FORMAT</span>
+- Three buttons at the top let me move between the three stages, and the stage I am on is clearly marked.
+- Under the car, show the few lines of code that produced that stage, so I can point at them while I teach.
+- One single index.html file with the HTML, the CSS and the JavaScript inside it. No external library, font or link — it must open with no internet connection.
+- Main colour <span class="ph">[#0F695D]</span>, accent colour <span class="ph">[#EE3A23]</span>. Interface language <span class="ph">[ENGLISH]</span>.
+- Respect a reduced-motion setting: if the device asks for less motion, do not animate.
+
+<span class="prompt-heading">OUTPUT</span>
+Give me the complete code in one block, from the opening doctype line to the closing html tag, with nothing abbreviated and nothing left out.</div>
+        </div>
+
+        <!-- ============ 5. GENERATE, REVIEW, RUN ============ -->
+        <div class="block" id="run">
+          <h2 class="display" data-en="Generate, review, then run it" data-ar="ولّد، ثم راجع، ثم شغّل">Generate, review, then run it</h2>
+          <p class="sub" data-en="The order matters. Nothing reaches a student before the review step." data-ar="الترتيب مهم. ولا يصل شيء إلى الطالب قبل خطوة المراجعة.">The order matters. Nothing reaches a student before the review step.</p>
+
+          <ol class="numbered">
+            <li><b data-en="Wait for the whole answer" data-ar="انتظر الإجابة كاملة">Wait for the whole answer</b><span data-en="Let the generation finish. Then check that the code has a proper beginning and a proper ending. If it stopped in the middle, reply “continue from the last line without repeating anything” — never paste an unfinished file." data-ar="اترك التوليد يكتمل. ثم تحقق من أن للكود بداية سليمة ونهاية سليمة. وإذا توقف في المنتصف، فأجب «تابع من آخر سطر دون إعادة أي شيء» — ولا تلصق ملفًا غير مكتمل أبدًا.">Let the generation finish. Then check that the code has a proper beginning and a proper ending. If it stopped in the middle, reply “continue from the last line without repeating anything” — never paste an unfinished file.</span></li>
+            <li><b data-en="Save a copy of the original code" data-ar="احفظ نسخة من الكود الأصلي">Save a copy of the original code</b><span data-en="Before you change a single thing, keep the first working version somewhere safe. Every teacher who skips this step eventually loses a working app to a small edit." data-ar="قبل أن تغيّر أي شيء، احفظ أول نسخة عاملة في مكان آمن. فكل معلم يتخطى هذه الخطوة يخسر في النهاية تطبيقًا يعمل بسبب تعديل صغير.">Before you change a single thing, keep the first working version somewhere safe. Every teacher who skips this step eventually loses a working app to a small edit.</span></li>
+            <li><b data-en="Review it as a teacher, then as a student" data-ar="راجعه كمعلم، ثم كطالب">Review it as a teacher, then as a student</b><span data-en="Confirm six things: a clear title, a start screen, readable instructions, the questions, working buttons, and real feedback on a wrong answer. Then answer it yourself once, and deliberately get one wrong." data-ar="تأكد من ستة أمور: عنوان واضح، وشاشة بداية، وتعليمات مقروءة، والأسئلة، وأزرار تعمل، وتغذية راجعة حقيقية على الإجابة الخاطئة. ثم أجب عنه بنفسك مرة واحدة، وأخطئ في سؤال متعمدًا.">Confirm six things: a clear title, a start screen, readable instructions, the questions, working buttons, and real feedback on a wrong answer. Then answer it yourself once, and deliberately get one wrong.</span></li>
+            <li><b data-en="Run it in the HTML Player" data-ar="شغّله في HTML Player">Run it in the HTML Player</b><span data-en="Paste the code into the Edulixa HTML Viewer and press run. It checks the file for you first — whether it is complete, whether it needs the internet — then runs it, and you can put the preview full screen for a class." data-ar="الصق الكود في عارض Edulixa واضغط تشغيل. سيفحص لك الملف أولًا — هل هو كامل، وهل يحتاج إلى الإنترنت — ثم يشغّله، ويمكنك عرض المعاينة بشاشة كاملة لصف كامل.">Paste the code into the Edulixa HTML Viewer and press run. It checks the file for you first — whether it is complete, whether it needs the internet — then runs it, and you can put the preview full screen for a class.</span>
+              <p class="step-cta"><a class="btn btn-accent" href="apps/app-html-viewer.html"><span data-en="Open the Edulixa HTML Viewer" data-ar="افتح عارض Edulixa">Open the Edulixa HTML Viewer</span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg></a></p>
+            </li>
+            <li><b data-en="Share it, online or offline" data-ar="شاركه، أونلاين أو أوفلاين">Share it, online or offline</b><span data-en="Publish it on GitHub and send the link, or download the file and let students run it on their own device with no connection at all. The same link can be added to your learning platform." data-ar="انشره على GitHub وأرسل الرابط، أو نزّل الملف واترك الطلاب يشغّلونه على أجهزتهم دون أي اتصال. ويمكن إضافة الرابط نفسه إلى منصة التعلم لديك.">Publish it on GitHub and send the link, or download the file and let students run it on their own device with no connection at all. The same link can be added to your learning platform.</span></li>
+          </ol>
+
+          <h3 data-en="Why one single file, every time" data-ar="لماذا ملف واحد في كل مرة">Why one single file, every time</h3>
+          <p data-en="Ask for the HTML, the CSS and the JavaScript combined into one file called index.html rather than three separate files. One file can be sent through WhatsApp, opened straight from the viewer, and cannot arrive with a missing piece. Three files fail the moment one of them is left behind." data-ar="اطلب دمج HTML و CSS و JavaScript في ملف واحد باسم index.html بدلًا من ثلاثة ملفات منفصلة. فالملف الواحد يمكن إرساله عبر واتساب، وفتحه مباشرة من أداة العرض، ولا يمكن أن يصل ناقصًا. أما الثلاثة فتفشل في اللحظة التي يُنسى فيها أحدها.">Ask for the HTML, the CSS and the JavaScript combined into one file called index.html rather than three separate files. One file can be sent through WhatsApp, opened straight from the viewer, and cannot arrive with a missing piece. Three files fail the moment one of them is left behind.</p>
+        </div>
+
+        <!-- ============ 6. FIX BY TALKING ============ -->
+        <div class="block" id="fix">
+          <h2 class="display" data-en="Fix it by talking to it" data-ar="أصلحه بالمحادثة">Fix it by talking to it</h2>
+          <p class="sub" data-en="Do not edit the code at random. Describe the fault, and let the same conversation repair it." data-ar="لا تعدّل الكود عشوائيًا. صف الخطأ، واترك المحادثة نفسها تصلحه.">Do not edit the code at random. Describe the fault, and let the same conversation repair it.</p>
+
+          <p data-en="The strongest habit in this whole level is this one: when something is wrong, say what is wrong in a full sentence, in the same conversation that produced the file. Paste the error message, or the section that misbehaves. A vague “it doesn't work” gets a vague repair; a precise description gets a precise one." data-ar="أقوى عادة في هذا المستوى كله هي هذه: عندما يكون هناك خطأ، قل ما هو الخطأ في جملة كاملة، وفي المحادثة نفسها التي أنتجت الملف. والصق رسالة الخطأ، أو الجزء الذي يسيء التصرف. فعبارة «لا يعمل» الغامضة تحصل على إصلاح غامض؛ والوصف الدقيق يحصل على إصلاح دقيق.">The strongest habit in this whole level is this one: when something is wrong, say what is wrong in a full sentence, in the same conversation that produced the file. Paste the error message, or the section that misbehaves. A vague “it doesn't work” gets a vague repair; a precise description gets a precise one.</p>
+
+          <div class="prompt-tools">
+            <button class="btn btn-primary" type="button" data-copy="fix-prompt" data-en="Copy the repair sentences" data-ar="انسخ جمل الإصلاح">Copy the repair sentences</button>
+            <button class="btn btn-ghost" type="button" data-reset="fix-prompt" data-en="Reset changes" data-ar="أعد النص الأصلي">Reset changes</button>
+            <span class="copied" aria-live="polite"></span>
+          </div>
+          <div id="fix-prompt" class="prompt-box small-prompt" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" data-en-label="Editable repair sentences" data-ar-label="جمل إصلاح قابلة للتحرير">1. The app does not run. Here is the error message I see: <span class="ph">[PASTE THE ERROR MESSAGE]</span>. Fix only the fault that prevents it from running, keep everything else exactly as it is, and give me the complete corrected index.html.
+
+2. The answer options always appear in the same order. Shuffle the options every time a question is shown, and shuffle the order of the questions each time the quiz is restarted. Change nothing else.
+
+3. Change the theme to <span class="ph">[TEAL]</span> with <span class="ph">[#0F695D]</span> as the main colour and <span class="ph">[#EE3A23]</span> as the accent. Keep every question, every score rule and every screen exactly as it is — change only the colours.
+
+4. On question <span class="ph">[NUMBER]</span> the feedback says the answer is wrong when it is right. The correct answer is <span class="ph">[CORRECT ANSWER]</span>. Correct that one question and leave the rest of the file untouched.</div>
+
+          <div class="callout">
+            <p><b data-en="Notice the pattern: " data-ar="لاحظ النمط: ">Notice the pattern: </b><span data-en="every repair sentence names the fault, states the fix, and protects the rest of the file. That last clause — “change nothing else” — is what stops a small correction turning into a new app." data-ar="كل جملة إصلاح تسمّي الخطأ، وتحدد التصحيح، وتحمي بقية الملف. وذلك الشرط الأخير — «لا تغيّر شيئًا آخر» — هو ما يمنع تصحيحًا صغيرًا من أن يتحول إلى تطبيق جديد.">every repair sentence names the fault, states the fix, and protects the rest of the file. That last clause — “change nothing else” — is what stops a small correction turning into a new app.</span></p>
+          </div>
+        </div>
+
+        <!-- ============ 7. WHAT ELSE ============ -->
+        <div class="block" id="more">
+          <h2 class="display" data-en="What else you can build with the same prompt" data-ar="ما يمكنك بناؤه أيضًا بالبرومبت نفسه">What else you can build with the same prompt</h2>
+          <p class="sub" data-en="A quiz is the first app, not the only one. Swap the task line and keep everything else." data-ar="الاختبار هو التطبيق الأول، وليس الوحيد. غيّر سطر المهمة واحتفظ بكل ما عداه.">A quiz is the first app, not the only one. Swap the task line and keep everything else.</p>
+
+          <ul class="outputs is-quiet">
+            <li data-en="Flashcards that flip and track what a student got wrong" data-ar="بطاقات تعليمية تُقلب وتتابع ما أخطأ فيه الطالب">Flashcards that flip and track what a student got wrong</li>
+            <li data-en="An interactive lesson opener with the objective on screen" data-ar="تمهيد درس تفاعلي بالهدف معروضًا على الشاشة">An interactive lesson opener with the objective on screen</li>
+            <li data-en="A revision game with points, a streak and a hint button" data-ar="لعبة مراجعة بالنقاط وسلسلة الإجابات الصحيحة وزر تلميح">A revision game with points, a streak and a hint button</li>
+            <li data-en="A sorting or drag-and-drop activity for categories" data-ar="نشاط ترتيب أو سحب وإفلات للتصنيفات">A sorting or drag-and-drop activity for categories</li>
+            <li data-en="A smart study schedule a learner can tick off" data-ar="جدول مذاكرة ذكي يمكن للمتعلم أن يعلّم عليه">A smart study schedule a learner can tick off</li>
+            <li data-en="A classroom timer, a random name picker, a noise meter" data-ar="مؤقت للصف، ومختار أسماء عشوائي، ومقياس ضجيج">A classroom timer, a random name picker, a noise meter</li>
+          </ul>
+
+          <h3 data-en="What makes it a learning experience, not a list of questions" data-ar="ما يجعله تجربة تعلم، لا قائمة أسئلة">What makes it a learning experience, not a list of questions</h3>
+          <ul class="ticks">
+            <li data-en="It knows who is answering, because it asked for a first name." data-ar="يعرف من يجيب، لأنه سأل عن الاسم الأول.">It knows who is answering, because it asked for a first name.</li>
+            <li data-en="It explains why an answer is wrong instead of marking it wrong." data-ar="يشرح لماذا الإجابة خاطئة بدلًا من مجرد وضع علامة خطأ.">It explains why an answer is wrong instead of marking it wrong.</li>
+            <li data-en="It does not let a hard question be skipped." data-ar="لا يسمح بتخطي سؤال صعب.">It does not let a hard question be skipped.</li>
+            <li data-en="It shows the DOK level, so the climb is visible to the learner." data-ar="يعرض مستوى العمق المعرفي، فيصبح التدرج مرئيًا للمتعلم.">It shows the DOK level, so the climb is visible to the learner.</li>
+            <li data-en="It ends with advice on what to study next, not just a number." data-ar="ينتهي بنصيحة عمّا يدرسه تاليًا، لا برقم فقط.">It ends with advice on what to study next, not just a number.</li>
+            <li data-en="It hands the learner a certificate they can keep and show." data-ar="يمنح المتعلم شهادة يحتفظ بها ويعرضها.">It hands the learner a certificate they can keep and show.</li>
+          </ul>
+        </div>
+
+        <!-- ============ APPS ============ -->
+        <div class="block" id="tools">
+          <h2 class="display" data-en="Apps used in this session" data-ar="التطبيقات المستخدمة في هذه المحاضرة">Apps used in this session</h2>
+          <p class="sub" data-en="Two apps of ours and two AI tools. Everything except the AI runs offline, on your own machine." data-ar="تطبيقان من عندنا وأداتا ذكاء اصطناعي. وكل شيء عدا الذكاء الاصطناعي يعمل بلا إنترنت، على جهازك.">Two apps of ours and two AI tools. Everything except the AI runs offline, on your own machine.</p>
+          <div class="apps">
+            <div class="app">
+              <span class="app-badge" data-en="Edulixa app" data-ar="تطبيق Edulixa">Edulixa app</span>
+              <h3>Build · Style · Drive</h3>
+              <p data-en="The three-layer lab: the car in three stages, the same three stages on a real web page with its code beside it, and a twelve-card sorting activity for your staff." data-ar="معمل الطبقات الثلاث: السيارة في ثلاث مراحل، والمراحل الثلاث نفسها على صفحة ويب حقيقية مع كودها إلى جانبها، ونشاط ترتيب من اثنتي عشرة بطاقة لفريقك.">The three-layer lab: the car in three stages, the same three stages on a real web page with its code beside it, and a twelve-card sorting activity for your staff.</p>
+              <a class="btn btn-primary" href="apps/app-build-style-drive.html"><span data-en="Open the lab" data-ar="افتح المعمل">Open the lab</span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg></a>
+            </div>
+            <div class="app">
+              <span class="app-badge" data-en="Edulixa app" data-ar="تطبيق Edulixa">Edulixa app</span>
+              <h3 data-en="Edulixa HTML Viewer" data-ar="عارض Edulixa لملفات HTML">Edulixa HTML Viewer</h3>
+              <p data-en="Where the generated code becomes a running app. Paste the file, press run, review it full screen, then download it as index.html. It runs on your own computer with no internet connection and uploads nothing." data-ar="حيث يتحول الكود المولَّد إلى تطبيق يعمل. الصق الملف، واضغط تشغيل، وراجعه بشاشة كاملة، ثم نزّله كملف index.html. يعمل على حاسوبك بلا اتصال بالإنترنت ولا يرفع شيئًا.">Where the generated code becomes a running app. Paste the file, press run, review it full screen, then download it as index.html. It runs on your own computer with no internet connection and uploads nothing.</p>
+              <a class="btn btn-primary" href="apps/app-html-viewer.html"><span data-en="Open the viewer" data-ar="افتح العارض">Open the viewer</span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg></a>
+            </div>
+            <div class="app">
+              <span class="app-badge is-ext" data-en="AI tool" data-ar="أداة ذكاء اصطناعي">AI tool</span>
+              <h3>ChatGPT</h3>
+              <p data-en="One of the two tools that will take the master prompt and return a complete single-file app. Attach your lesson material in the same conversation." data-ar="إحدى الأداتين التي ستأخذ البرومبت الرئيسي وتعيد تطبيقًا كاملًا في ملف واحد. أرفق مادة درسك في المحادثة نفسها.">One of the two tools that will take the master prompt and return a complete single-file app. Attach your lesson material in the same conversation.</p>
+              <span class="app-url">chatgpt.com</span>
+              <a class="btn btn-outline" href="https://chatgpt.com/" target="_blank" rel="noopener"><span data-en="Open ChatGPT" data-ar="افتح ChatGPT">Open ChatGPT</span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg></a>
+            </div>
+            <div class="app">
+              <span class="app-badge is-ext" data-en="AI tool" data-ar="أداة ذكاء اصطناعي">AI tool</span>
+              <h3>Gemini</h3>
+              <p data-en="The other tool. Send it the same prompt and the same attachment, then compare the two apps side by side before choosing one." data-ar="الأداة الأخرى. أرسل إليها البرومبت نفسه والمرفق نفسه، ثم قارن التطبيقين جنبًا إلى جنب قبل اختيار أحدهما.">The other tool. Send it the same prompt and the same attachment, then compare the two apps side by side before choosing one.</p>
+              <span class="app-url">gemini.google.com</span>
+              <a class="btn btn-outline" href="https://gemini.google.com/" target="_blank" rel="noopener"><span data-en="Open Gemini" data-ar="افتح Gemini">Open Gemini</span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg></a>
+            </div>
+          </div>
+
+          <div class="callout">
+            <p><b data-en="Order of use: " data-ar="ترتيب الاستخدام: ">Order of use: </b><span data-en="the lab first, so the three layers are clear. Then ChatGPT or Gemini, to generate the app. Then the viewer, to run it and review it. Then GitHub, to turn it into a link. Never the other way round." data-ar="المعمل أولًا، لتتضح الطبقات الثلاث. ثم ChatGPT أو Gemini، لتوليد التطبيق. ثم العارض، لتشغيله ومراجعته. ثم GitHub، لتحويله إلى رابط. ولا العكس أبدًا.">the lab first, so the three layers are clear. Then ChatGPT or Gemini, to generate the app. Then the viewer, to run it and review it. Then GitHub, to turn it into a link. Never the other way round.</span></p>
+          </div>
+        </div>
+
+        <!-- ============ PUBLISH ON GITHUB ============ -->
+        <div class="block" id="publish">
+          <h2 class="display" data-en="Put it online, so a class opens a link" data-ar="انشره على الإنترنت، ليفتح الصف رابطًا">Put it online, so a class opens a link</h2>
+          <p class="sub" data-en="The viewer runs your file on your own computer. GitHub Pages gives it an address anyone can open — free, and about five minutes the first time." data-ar="يشغّل العارض ملفك على حاسوبك. و GitHub Pages يمنحه عنوانًا يفتحه أي شخص — مجانًا، ونحو خمس دقائق في المرة الأولى.">The viewer runs your file on your own computer. GitHub Pages gives it an address anyone can open — free, and about five minutes the first time.</p>
+
+          <p data-en="Sending a file to thirty students goes wrong in thirty ways: it lands in a downloads folder, it opens in the wrong app, someone gets an older copy. A link goes wrong in none of them, and when you fix a typo, every student sees the fix. GitHub is where the file will live. You do this once; after that, publishing a new activity takes two minutes." data-ar="إرسال ملف إلى ثلاثين طالبًا يفشل بثلاثين طريقة: يقع في مجلد التنزيلات، أو يُفتح بتطبيق خاطئ، أو يحصل أحدهم على نسخة قديمة. والرابط لا يفشل بأي منها، وعندما تصلح خطأً مطبعيًا يرى كل طالب الإصلاح. و GitHub هو المكان الذي سيعيش فيه الملف. تفعل هذا مرة واحدة؛ وبعدها يستغرق نشر نشاط جديد دقيقتين.">Sending a file to thirty students goes wrong in thirty ways: it lands in a downloads folder, it opens in the wrong app, someone gets an older copy. A link goes wrong in none of them, and when you fix a typo, every student sees the fix. GitHub is where the file will live. You do this once; after that, publishing a new activity takes two minutes.</p>
+
+          <ol class="steps">
+            <li>
+              <h4 data-en="Create your GitHub account" data-ar="أنشئ حسابك على GitHub">Create your GitHub account</h4>
+              <p data-en="Go to github.com and choose Sign up. Use your work email. GitHub will send you a code to confirm the address — do that step now, because it will not publish anything for an unverified account." data-ar="اذهب إلى github.com واختر Sign up. استخدم بريدك المهني. سيرسل GitHub رمزًا لتأكيد العنوان — أنجز هذه الخطوة الآن، لأنه لن ينشر شيئًا لحساب غير مؤكَّد.">Go to github.com and choose Sign up. Use your work email. GitHub will send you a code to confirm the address — do that step now, because it will not publish anything for an unverified account.</p>
+              <p data-en="The username you pick becomes part of every link you ever share, in the form" data-ar="اسم المستخدم الذي تختاره يصبح جزءًا من كل رابط تشاركه، بالصيغة">The username you pick becomes part of every link you ever share, in the form</p>
+              <p><span class="field">https://USERNAME.github.io/REPOSITORY/</span></p>
+              <div class="watch"><p><b data-en="Watch out: " data-ar="احترس: ">Watch out: </b><span data-en="choose the username as carefully as you would choose a school email. Changing it later breaks every link you have already given out." data-ar="اختر اسم المستخدم بالعناية نفسها التي تختار بها بريد المدرسة. فتغييره لاحقًا يعطّل كل رابط وزّعته بالفعل.">choose the username as carefully as you would choose a school email. Changing it later breaks every link you have already given out.</span></p></div>
+            </li>
+
+            <li>
+              <h4 data-en="Create a repository for the activity" data-ar="أنشئ مستودعًا للنشاط">Create a repository for the activity</h4>
+              <p data-en="A repository — a “repo” — is simply one folder on GitHub. Press the plus sign at the top right and choose New repository." data-ar="المستودع — أو الـ repo — هو مجرد مجلد واحد على GitHub. اضغط علامة الزائد أعلى اليمين واختر New repository.">A repository — a “repo” — is simply one folder on GitHub. Press the plus sign at the top right and choose New repository.</p>
+              <p data-en="Give it a short lowercase name with hyphens instead of spaces, such as" data-ar="أعطه اسمًا قصيرًا بأحرف صغيرة وشُرَط بدلًا من المسافات، مثل">Give it a short lowercase name with hyphens instead of spaces, such as</p>
+              <p><span class="field">water-cycle-quiz</span></p>
+              <p data-en="Set it to Public, leave the description empty if you like, and tick “Add a README file”. Then press Create repository." data-ar="اجعله Public، واترك الوصف فارغًا إن شئت، وضع علامة على «Add a README file». ثم اضغط Create repository.">Set it to Public, leave the description empty if you like, and tick “Add a README file”. Then press Create repository.</p>
+              <div class="watch"><p><b data-en="Watch out: " data-ar="احترس: ">Watch out: </b><span data-en="the free plan will not publish a private repository, so Public is not optional here. And keep spaces and Arabic letters out of the name — whatever you type ends up inside the link." data-ar="الخطة المجانية لا تنشر مستودعًا خاصًا، فكونه Public ليس اختياريًا هنا. وابعد المسافات والحروف العربية عن الاسم — فما تكتبه ينتهي داخل الرابط.">the free plan will not publish a private repository, so Public is not optional here. And keep spaces and Arabic letters out of the name — whatever you type ends up inside the link.</span></p></div>
+            </li>
+
+            <li>
+              <h4 data-en="Upload your index.html" data-ar="ارفع ملف index.html">Upload your index.html</h4>
+              <p data-en="Download your activity from the viewer above, then in the repository choose Add file and Upload files. Drag the file in, write one line in the “Commit changes” box such as “first version”, and press Commit changes." data-ar="نزّل نشاطك من العارض أعلاه، ثم في المستودع اختر Add file ثم Upload files. اسحب الملف إلى الداخل، واكتب سطرًا واحدًا في مربع «Commit changes» مثل «النسخة الأولى»، واضغط Commit changes.">Download your activity from the viewer above, then in the repository choose Add file and Upload files. Drag the file in, write one line in the “Commit changes” box such as “first version”, and press Commit changes.</p>
+              <div class="watch"><p><b data-en="Watch out: " data-ar="احترس: ">Watch out: </b><span data-en="the name has to be exactly index.html, all lowercase, sitting at the top level of the repository and not inside another folder. That one detail is behind almost every “my page shows 404”." data-ar="يجب أن يكون الاسم index.html بالضبط، بأحرف صغيرة كلها، وفي المستوى الأعلى من المستودع لا داخل مجلد آخر. وهذه التفصيلة وحدها وراء كل «صفحتي تظهر 404» تقريبًا.">the name has to be exactly index.html, all lowercase, sitting at the top level of the repository and not inside another folder. That one detail is behind almost every “my page shows 404”.</span></p></div>
+            </li>
+
+            <li>
+              <h4 data-en="Turn on Pages" data-ar="شغّل خدمة Pages">Turn on Pages</h4>
+              <p data-en="Open Settings at the top of the repository, then Pages in the left sidebar. Under “Build and deployment” set Source to “Deploy from a branch”, set the branch to main and the folder to / (root), and press Save." data-ar="افتح Settings أعلى المستودع، ثم Pages في الشريط الجانبي. وتحت «Build and deployment» اجعل Source هو «Deploy from a branch»، واجعل الفرع main والمجلد / (root)، واضغط Save.">Open Settings at the top of the repository, then Pages in the left sidebar. Under “Build and deployment” set Source to “Deploy from a branch”, set the branch to main and the folder to / (root), and press Save.</p>
+              <p data-en="This is the step that turns a stored file into a web page. Nothing about your activity changes — GitHub simply starts serving it at an address." data-ar="هذه هي الخطوة التي تحوّل ملفًا مخزَّنًا إلى صفحة ويب. ولا يتغير شيء في نشاطك — بل يبدأ GitHub بتقديمه على عنوان فقط.">This is the step that turns a stored file into a web page. Nothing about your activity changes — GitHub simply starts serving it at an address.</p>
+            </li>
+
+            <li>
+              <h4 data-en="Copy the link, and test it the way a student will" data-ar="انسخ الرابط، واختبره كما سيفعل الطالب">Copy the link, and test it the way a student will</h4>
+              <p data-en="Wait a minute or two, then reload that same Pages settings page. It shows a green line: “Your site is live at …”. That address is what you send." data-ar="انتظر دقيقة أو دقيقتين، ثم أعد تحميل صفحة إعدادات Pages نفسها. سيظهر سطر أخضر: «Your site is live at …». وهذا العنوان هو ما ترسله.">Wait a minute or two, then reload that same Pages settings page. It shows a green line: “Your site is live at …”. That address is what you send.</p>
+              <p data-en="Open it on your phone on mobile data rather than on the school network. That is the only test that proves it works for a learner sitting at home." data-ar="افتحه على هاتفك ببيانات الهاتف لا على شبكة المدرسة. فهذا هو الاختبار الوحيد الذي يثبت أنه يعمل لمتعلم يجلس في بيته.">Open it on your phone on mobile data rather than on the school network. That is the only test that proves it works for a learner sitting at home.</p>
+              <div class="watch"><p><b data-en="Watch out: " data-ar="احترس: ">Watch out: </b><span data-en="the very first publish is slow. A 404 in the first two minutes usually means “not finished yet”, not “broken”. If it is still a 404 after five minutes, check two things only: the file is named index.html, and the repository is Public." data-ar="أول نشر يكون بطيئًا. وظهور 404 في أول دقيقتين يعني عادةً «لم ينته بعد» لا «معطّل». وإذا استمر 404 بعد خمس دقائق، فافحص أمرين فقط: أن اسم الملف index.html، وأن المستودع Public.">the very first publish is slow. A 404 in the first two minutes usually means “not finished yet”, not “broken”. If it is still a 404 after five minutes, check two things only: the file is named index.html, and the repository is Public.</span></p></div>
+            </li>
+
+            <li>
+              <h4 data-en="Change the activity later without changing the link" data-ar="عدّل النشاط لاحقًا دون تغيير الرابط">Change the activity later without changing the link</h4>
+              <p data-en="Open the repository, select index.html, press the pencil, paste the corrected version over it, and press Commit changes. The link stays exactly the same and updates within about a minute." data-ar="افتح المستودع، واختر index.html، واضغط القلم، والصق النسخة المصححة فوقه، واضغط Commit changes. سيبقى الرابط كما هو تمامًا ويُحدَّث في نحو دقيقة.">Open the repository, select index.html, press the pencil, paste the corrected version over it, and press Commit changes. The link stays exactly the same and updates within about a minute.</p>
+              <p data-en="This is the real reason to publish rather than to send a file: you correct one wrong answer once, and every learner who opens the link gets the correction." data-ar="وهذا هو السبب الحقيقي للنشر بدلًا من إرسال ملف: تصحح إجابة خاطئة واحدة مرة واحدة، فيحصل كل متعلم يفتح الرابط على التصحيح.">This is the real reason to publish rather than to send a file: you correct one wrong answer once, and every learner who opens the link gets the correction.</p>
+            </li>
+          </ol>
+
+          <div class="callout">
+            <p><b data-en="Before you publish anything, read this once: " data-ar="قبل أن تنشر أي شيء، اقرأ هذا مرة: ">Before you publish anything, read this once: </b><span data-en="a public Pages site is readable by anyone who has the address, and search engines can find it. Never put a learner’s full name, mark, photograph, phone number or any personal detail inside the file. Your activity should ask for a first name only, keep it in the learner’s own browser, and send it nowhere." data-ar="موقع Pages العام يستطيع قراءته أي شخص لديه العنوان، ومحركات البحث تجده. لا تضع أبدًا اسم متعلم كاملًا أو درجته أو صورته أو رقم هاتفه أو أي تفصيل شخصي داخل الملف. ونشاطك يجب أن يطلب الاسم الأول فقط، ويحفظه في متصفح المتعلم نفسه، ولا يرسله إلى أي مكان.">a public Pages site is readable by anyone who has the address, and search engines can find it. Never put a learner’s full name, mark, photograph, phone number or any personal detail inside the file. Your activity should ask for a first name only, keep it in the learner’s own browser, and send it nowhere.</span></p>
+          </div>
+
+          <div class="apps" style="margin-top:26px">
+            <div class="app">
+              <span class="app-badge is-ext" data-en="Where the file lives" data-ar="حيث يعيش الملف">Where the file lives</span>
+              <h3>GitHub</h3>
+              <p data-en="Create the free account and the repository here. One repository per activity keeps the links short and readable." data-ar="أنشئ الحساب المجاني والمستودع من هنا. ومستودع واحد لكل نشاط يجعل الروابط قصيرة ومقروءة.">Create the free account and the repository here. One repository per activity keeps the links short and readable.</p>
+              <span class="app-url">github.com</span>
+              <a class="btn btn-outline" href="https://github.com/" target="_blank" rel="noopener"><span data-en="Open GitHub" data-ar="افتح GitHub">Open GitHub</span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg></a>
+            </div>
+            <div class="app">
+              <span class="app-badge is-ext" data-en="The official guide" data-ar="الدليل الرسمي">The official guide</span>
+              <h3>GitHub Pages</h3>
+              <p data-en="GitHub’s own instructions, if a screen ever looks different from the six steps above. Interfaces change; the six steps rarely do." data-ar="تعليمات GitHub نفسه، إن بدت أي شاشة مختلفة عن الخطوات الست أعلاه. فالواجهات تتغير؛ والخطوات الست يندر أن تتغير.">GitHub’s own instructions, if a screen ever looks different from the six steps above. Interfaces change; the six steps rarely do.</p>
+              <span class="app-url">docs.github.com/pages</span>
+              <a class="btn btn-outline" href="https://docs.github.com/en/pages/quickstart" target="_blank" rel="noopener"><span data-en="Open the guide" data-ar="افتح الدليل">Open the guide</span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg></a>
+            </div>
+          </div>
+        </div>
+
+        <nav class="pager">
+          <a class="btn btn-outline" href="index.html">
+            <svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+            <span data-en="Back to all sessions" data-ar="العودة إلى كل المحاضرات">Back to all sessions</span>
+          </a>
+          <a class="btn btn-primary" href="#lab">
+            <span data-en="Back to the lab" data-ar="العودة إلى المعمل">Back to the lab</span>
+            <svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- popup content, copied into the dialog on demand -->
+<div hidden>
+  <div id="pop-html">
+    <h3 data-en="Remove HTML" data-ar="احذف HTML">Remove HTML</h3>
+    <p data-en="Nothing is left. There is no question to answer, no button to press, no box to type in — the page is empty. HTML is the only layer that puts a part on the page, so it is the only layer that cannot be skipped." data-ar="لا يبقى شيء. لا سؤال يُجاب، ولا زر يُضغط، ولا مربع يُكتب فيه — الصفحة فارغة. فـ HTML هو الطبقة الوحيدة التي تضع جزءًا على الصفحة، ولهذا هو الطبقة الوحيدة التي لا يمكن تخطيها.">Nothing is left. There is no question to answer, no button to press, no box to type in — the page is empty. HTML is the only layer that puts a part on the page, so it is the only layer that cannot be skipped.</p>
+    <p data-en="When a teacher says “the question is not there at all”, the fault is in this layer." data-ar="عندما يقول معلم «السؤال غير موجود إطلاقًا»، فالخطأ في هذه الطبقة.">When a teacher says “the question is not there at all”, the fault is in this layer.</p>
+  </div>
+  <div id="pop-css">
+    <h3 data-en="Remove CSS" data-ar="احذف CSS">Remove CSS</h3>
+    <p data-en="Everything still works and everything looks plain. The questions are there, the buttons still respond, the score still counts — but the text is in the browser's default font, stacked down the left edge with no colour and no spacing. It is usable and it is ugly." data-ar="كل شيء يظل يعمل وكل شيء يبدو بسيطًا. الأسئلة موجودة، والأزرار ما زالت تستجيب، والدرجة ما زالت تُحسب — لكن النص بخط المتصفح الافتراضي، مرصوص عند الحافة اليسرى بلا لون ولا مسافات. صالح للاستخدام وقبيح.">Everything still works and everything looks plain. The questions are there, the buttons still respond, the score still counts — but the text is in the browser's default font, stacked down the left edge with no colour and no spacing. It is usable and it is ugly.</p>
+    <p data-en="When a teacher says “it works but it looks wrong on the phone”, the fault is in this layer." data-ar="عندما يقول معلم «يعمل لكن شكله خاطئ على الهاتف»، فالخطأ في هذه الطبقة.">When a teacher says “it works but it looks wrong on the phone”, the fault is in this layer.</p>
+  </div>
+  <div id="pop-js">
+    <h3 data-en="Remove JavaScript" data-ar="احذف JavaScript">Remove JavaScript</h3>
+    <p data-en="You get a beautiful poster. Every question is on screen, the colours are right, the buttons look perfect — and nothing happens when you press one. No score, no timer, no feedback, no certificate. This is the difference between a picture of an activity and an activity." data-ar="تحصل على ملصق جميل. كل سؤال على الشاشة، والألوان صحيحة، والأزرار تبدو مثالية — ولا يحدث شيء عند الضغط على أحدها. لا درجة، ولا مؤقت، ولا تغذية راجعة، ولا شهادة. هذا هو الفرق بين صورة النشاط والنشاط نفسه.">You get a beautiful poster. Every question is on screen, the colours are right, the buttons look perfect — and nothing happens when you press one. No score, no timer, no feedback, no certificate. This is the difference between a picture of an activity and an activity.</p>
+    <p data-en="When a teacher says “the button does nothing”, the fault is in this layer." data-ar="عندما يقول معلم «الزر لا يفعل شيئًا»، فالخطأ في هذه الطبقة.">When a teacher says “the button does nothing”, the fault is in this layer.</p>
+  </div>
+</div>
+
+<dialog id="pop">
+  <div class="pop-in">
+    <div class="pop-body"></div>
+    <button class="btn btn-ghost pop-close" type="button" data-pop-close data-en="Close" data-ar="إغلاق">Close</button>
+  </div>
+</dialog>
+
+<footer class="foot">
+  <div class="foot-in">
+    <img src="assets/logo-reversed.png" alt="Edulixa 360">
+    <p data-en="Session 1 · Vibe Coding — AI Masterclass for Teachers, Level 3." data-ar="المحاضرة 1 · البرمجة باستخدام الأوامر النصية والتوجيه — الماستر كلاس للمعلمين بالذكاء الاصطناعي، المستوى الثالث.">Session 1 · Vibe Coding — AI Masterclass for Teachers, Level 3.</p>
+    <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+  </div>
+</footer>
+
+<div class="backdock"><a class="backlink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="All sessions" data-ar="كل المحاضرات">All sessions</span></a></div>
+
+<script src="assets/edulixa.js"></script>
+<script src="assets/car-lab.js"></script>
+<script src="assets/write-lab.js"></script>
+<script src="assets/lightbox.js"></script>
+<script>
+/* ---- the masterclass deck ---- */
+(function(){
+  'use strict';
+  var box   = document.getElementById('deck-box');
+  var stage = document.getElementById('deck-stage');
+  if (!stage || !box) return;
+  var slides = [].slice.call(stage.querySelectorAll('img'));
+  var count  = document.getElementById('deck-count');
+  var dots   = document.getElementById('deck-dots');
+  var at = 0;
+
+  slides.forEach(function(_, i){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-current', i === 0 ? 'true' : 'false');
+    b.setAttribute('data-en-label', 'Slide ' + (i + 1));
+    b.setAttribute('data-ar-label', 'شريحة ' + (i + 1));
+    b.setAttribute('aria-label', 'Slide ' + (i + 1));
+    b.addEventListener('click', function(){ show(i); });
+    dots.appendChild(b);
+  });
+
+  function show(i){
+    at = (i + slides.length) % slides.length;
+    slides.forEach(function(s, n){ s.classList.toggle('is-on', n === at); });
+    [].slice.call(dots.children).forEach(function(d, n){
+      d.setAttribute('aria-current', n === at ? 'true' : 'false');
+    });
+    count.textContent = (at + 1) + ' / ' + slides.length;
+  }
+  document.getElementById('deck-prev').addEventListener('click', function(){ show(at - 1); });
+  document.getElementById('deck-next').addEventListener('click', function(){ show(at + 1); });
+  document.getElementById('deck-box').addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight') { e.preventDefault(); show(at + 1); }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); show(at - 1); }
+  });
+  show(0);
+})();
+
+/* ---- the three-layer lab: show it whole, and give it the screen on request ---- */
+(function(){
+  'use strict';
+  var band  = document.getElementById('lab-frame');
+  if (!band) return;
+  var frame = band.querySelector('iframe');
+  var full  = document.getElementById('lab-full');
+
+  /* The lab reports its own height, so the session page shows all of it
+     instead of putting a second scrollbar inside the page. */
+  window.addEventListener('message', function(e){
+    if (!e.data || typeof e.data.edulixaLabHeight !== 'number') return;
+    if (frame.contentWindow && e.source !== frame.contentWindow) return;
+    if (document.fullscreenElement === band) return;
+    var h = Math.min(2200, Math.max(520, Math.ceil(e.data.edulixaLabHeight)));
+    frame.style.height = h + 'px';
+  });
+
+  if (full) full.addEventListener('click', function(){
+    try {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else if (band.requestFullscreen) band.requestFullscreen();
+    } catch (e) {}
+  });
+  document.addEventListener('fullscreenchange', function(){
+    if (!full) return;
+    var on = document.fullscreenElement === band;
+    full.setAttribute('data-en', on ? 'Leave full screen' : 'Show it full screen');
+    full.setAttribute('data-ar', on ? 'إنهاء الشاشة الكاملة' : 'اعرضه بالشاشة الكاملة');
+    if (window.EdulixaLang) {
+      window.EdulixaLang.translate(band, document.documentElement.getAttribute('dir') === 'rtl');
+    }
+    if (!on) frame.style.height = '';
+  });
+})();
+
+/* ---- the zoomable guide ---- */
+(function(){
+  'use strict';
+  var z = document.getElementById('zoomer');
+  if (!z) return;
+  var flip = function(){ z.classList.toggle('is-zoomed'); };
+  z.addEventListener('click', flip);
+  z.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
+  });
+})();
+</script>
+</body>
+</html>
