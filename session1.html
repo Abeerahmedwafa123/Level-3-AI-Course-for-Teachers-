@@ -45,6 +45,12 @@ html[dir="rtl"] .block .part h3{font-family:var(--ar)}
 /* The three-layer lab needs room: it steps out across the full reading band so the
    live page and its code sit side by side instead of stacking. */
 .lab-band{position:relative;z-index:3;width:calc(100% + 424px);margin-inline-start:-386px}
+/* The band steps out over the sticky rail, so it has to paint its own surface.
+   Without this only the frame covers the rail, and the buttons underneath it
+   float over the rail's step names. */
+@media (min-width:961px){
+  .lab-band{background:var(--bg);border-radius:var(--r-lg);padding-bottom:20px}
+}
 .lab-frame{position:relative;margin:24px 0 0;border:1px solid var(--line);
   border-radius:var(--r-lg);overflow:hidden;background:var(--bg);box-shadow:var(--shadow-lift)}
 .lab-frame iframe{display:block;width:100%;height:1020px;border:0}
