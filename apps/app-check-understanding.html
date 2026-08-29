@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-en="Check your understanding — Session 1 · Level 3" data-ar="اختبر فهمك — المحاضرة 1 · المستوى 3">Check your understanding — Session 1 · Level 3</title>
+<link rel="stylesheet" href="../assets/edulixa.css">
+<script>
+/* framed mode is decided before the first paint, so the compact layout is drawn
+   rather than corrected */
+try { if (window.self !== window.top) document.documentElement.className += ' is-framed'; }
+catch (e) { document.documentElement.className += ' is-framed'; }
+</script>
+<style>
+body{padding-bottom:48px}
+.app-top{background:var(--bg-2);border-bottom:1px solid var(--line-soft);padding:16px 0}
+.app-top-in{max-width:1100px;margin-inline:auto;padding-inline:24px;display:flex;
+  align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.app-top img{width:132px}
+.shell{max-width:1100px;margin-inline:auto;padding:32px 24px 0}
+.shell h1{margin:0 0 12px;font-size:clamp(30px,4.6vw,46px)}
+.shell .lede{margin:0 0 10px;color:var(--ink-2);font-size:19px;max-width:66ch;line-height:1.62}
+
+/* the running count, always in view */
+.tally{position:sticky;top:0;z-index:20;margin:26px 0 0;padding:14px 18px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  background:oklch(0.200 0.024 185 / .94);backdrop-filter:blur(10px);
+  border:1px solid var(--line);border-radius:var(--r-md)}
+.tally b{font-size:15px;color:var(--ink);white-space:nowrap}
+html[dir="rtl"] .tally b{font-family:var(--ar)}
+.tally-bar{flex:1;min-width:120px;height:8px;border-radius:var(--r-pill);
+  background:var(--surface-2);overflow:hidden}
+.tally-bar i{display:block;height:100%;width:0;border-radius:var(--r-pill);
+  background:var(--brand-lift);transition:width var(--t) var(--out)}
+.tally .right{color:var(--signal);font-weight:800}
+
+.part{margin:34px 0 0}
+.part-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:0 0 4px}
+.part-head h2{margin:0;font-size:clamp(21px,2.6vw,27px)}
+.part-head span{font-size:14.5px;color:var(--muted)}
+html[dir="rtl"] .part-head span{font-family:var(--ar);font-size:16px}
+
+.q{margin:18px 0 0;padding:24px;background:var(--surface);border:1px solid var(--line-soft);
+  border-radius:var(--r-lg)}
+.q-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+.q-num{display:grid;place-items:center;width:34px;height:34px;flex:0 0 auto;
+  border-radius:var(--r-pill);background:var(--surface-2);border:1px solid var(--line);
+  font-family:var(--mono);font-size:14px;color:var(--ink-2)}
+html[dir="rtl"] .q-num{font-family:var(--ar);font-weight:700}
+.dok{padding:5px 12px;border-radius:var(--r-pill);font-size:11.5px;font-weight:800;
+  letter-spacing:.12em;text-transform:uppercase;
+  background:oklch(0.735 0.088 180 / .16);border:1px solid oklch(0.735 0.088 180 / .38);
+  color:var(--brand-lift)}
+html[dir="rtl"] .dok{letter-spacing:0;text-transform:none;font-size:13px;font-family:var(--ar)}
+.q-stem{margin:0 0 6px;font-size:18.5px;line-height:1.6;color:var(--ink)}
+html[dir="rtl"] .q-stem{font-size:19.5px;line-height:1.85}
+
+.opts{display:grid;gap:10px;margin:16px 0 0;border:0;padding:0}
+.opt{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:start;
+  width:100%;min-height:56px;padding:15px 18px;text-align:start;cursor:pointer;
+  background:var(--bg-2);border:1.5px solid var(--line-soft);border-radius:var(--r-md);
+  font:inherit;font-size:16px;line-height:1.55;color:var(--ink-2);
+  transition:border-color var(--t-fast) var(--ease),background var(--t-fast) var(--ease),
+    transform var(--t) var(--out)}
+.opt:hover:not(:disabled){border-color:var(--brand-lift);color:var(--ink);
+  background:var(--surface-2);transform:translateY(-1px)}
+.opt:disabled{cursor:default}
+.opt .letter{display:grid;place-items:center;width:28px;height:28px;flex:0 0 auto;
+  border-radius:var(--r-pill);background:var(--surface-2);border:1px solid var(--line);
+  font-family:var(--mono);font-size:13.5px;font-weight:700;color:var(--muted)}
+html[dir="rtl"] .opt .letter{font-family:var(--ar)}
+.opt .mark{width:24px;height:24px;flex:0 0 auto;opacity:0;transition:opacity var(--t)}
+.opt .mark svg{width:24px;height:24px;display:block}
+
+.opt.is-right{border-color:var(--signal);background:oklch(0.790 0.140 168 / .12);color:var(--ink)}
+.opt.is-right .letter{background:var(--signal);color:var(--on-accent);border-color:transparent}
+.opt.is-right .mark{opacity:1;color:var(--signal)}
+.opt.is-wrong{border-color:var(--accent-dim);background:oklch(0.520 0.185 31 / .14);color:var(--ink)}
+.opt.is-wrong .letter{background:var(--accent-dim);color:var(--ink);border-color:transparent}
+.opt.is-wrong .mark{opacity:1;color:var(--accent-text)}
+.opt.is-dim{opacity:.55}
+
+.why{display:none;margin:16px 0 0;padding:16px 18px;border-radius:var(--r-md);
+  border-inline-start:4px solid var(--brand-lift);background:var(--bg-2);
+  font-size:16px;line-height:1.62;color:var(--ink-2)}
+.why.is-on{display:block;animation:rise 420ms var(--out) both}
+.why b{color:var(--ink)}
+.why.is-miss{border-inline-start-color:var(--accent)}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* the result */
+.result{display:none;margin:34px 0 0;padding:30px;border-radius:var(--r-lg);
+  background:var(--surface);border:1px solid var(--line)}
+.result.is-on{display:block;animation:rise 520ms var(--out) both}
+.result h2{margin:0 0 6px;font-size:clamp(24px,3.4vw,34px)}
+.score{display:flex;align-items:baseline;gap:12px;margin:0 0 14px}
+.score b{font-family:var(--display);font-size:clamp(44px,7vw,72px);line-height:1;
+  color:var(--brand-lift)}
+html[dir="rtl"] .score b{font-family:var(--ar);font-weight:800}
+.score span{font-size:18px;color:var(--muted)}
+.result p{margin:0 0 14px;font-size:17px;line-height:1.65;color:var(--ink-2);max-width:66ch}
+.revise{display:grid;gap:10px;margin:16px 0 0;padding:0;list-style:none}
+.revise li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;
+  padding:13px 16px;border-radius:var(--r-md);background:var(--bg-2);
+  border:1px solid var(--line-soft);font-size:16px;line-height:1.55}
+.revise li:before{content:"";width:8px;height:8px;margin-top:8px;border-radius:50%;
+  background:var(--accent)}
+.revise a{color:var(--brand-lift);font-weight:700}
+.again{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0 0}
+
+@media (max-width:640px){
+  .q{padding:18px}
+  .opt{grid-template-columns:auto minmax(0,1fr);padding:14px}
+  .opt .mark{grid-column:2;justify-self:end}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+
+/* framed inside session 1: the page around it already gives the chrome */
+html.is-framed body{padding-bottom:0}
+html.is-framed .skip,
+html.is-framed .app-top,
+html.is-framed .foot{display:none}
+html.is-framed .shell{max-width:none;padding:4px 0 0}
+html.is-framed .shell > h1,
+html.is-framed .shell > .lede{display:none}
+html.is-framed .tally{top:4px}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#quiz-main" data-en="Skip to the questions" data-ar="تخطَّ إلى الأسئلة">Skip to the questions</a>
+
+<header class="app-top">
+  <div class="app-top-in">
+    <img src="../assets/logo-reversed.png" alt="Edulixa 360">
+    <span class="brand-tag" data-en="Check your understanding" data-ar="اختبر فهمك">Check your understanding</span>
+    <div class="topbar-actions">
+      <a class="btn btn-ghost" href="../session1.html" target="_top"><svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="Back to Session 1" data-ar="العودة إلى المحاضرة 1">Back to Session 1</span></a>
+      <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+    </div>
+  </div>
+</header>
+
+<main id="quiz-main" class="shell">
+  <h1 data-en="Check your understanding" data-ar="اختبر فهمك">Check your understanding</h1>
+  <p class="lede" data-en="Ten questions on what Session 1 covered. Answer one and it tells you straight away why that answer is right or wrong — a mark on its own teaches nothing. Nothing is recorded and nothing is sent anywhere."
+     data-ar="عشرة أسئلة على ما غطّته المحاضرة 1. أجب عن سؤال فيخبرك فورًا لماذا هذه الإجابة صحيحة أو خاطئة — فالدرجة وحدها لا تُعلّم شيئًا. ولا يُسجَّل شىء ولا يُرسل إلى أى مكان.">Ten questions on what Session 1 covered. Answer one and it tells you straight away why that answer is right or wrong — a mark on its own teaches nothing. Nothing is recorded and nothing is sent anywhere.</p>
+
+  <div class="tally" role="status" aria-live="polite">
+    <b id="t-count" data-en="0 of 10 answered" data-ar="أُجيب عن 0 من 10">0 of 10 answered</b>
+    <div class="tally-bar"><i id="t-bar"></i></div>
+    <b class="right" id="t-right" data-en="0 right" data-ar="0 صحيحة">0 right</b>
+  </div>
+
+  <section class="part" id="part-a">
+    <div class="part-head">
+      <h2 data-en="Part A · Vibe coding" data-ar="الجزء أ · البرمجة باستخدام الأوامر النصية والتوجيه">Part A · Vibe coding</h2>
+      <span data-en="What it is, its two types, what does not belong to it, which tools can actually build an app, and the fault that costs the most"
+            data-ar="ما هى، ونوعاها، وما لا ينتمى إليها، وأى الأدوات تبنى تطبيقًا فعلًا، والعطل الأكثر كلفة">What it is, its two types, what does not belong to it, which tools can actually build an app, and the fault that costs the most</span>
+    </div>
+    <div id="qs-a"></div>
+  </section>
+
+  <section class="part" id="part-b">
+    <div class="part-head">
+      <h2 data-en="Part B · HTML, CSS and JavaScript" data-ar="الجزء ب · HTML وCSS وJavaScript">Part B · HTML, CSS and JavaScript</h2>
+      <span data-en="The three layers, how to name the one a fault lives in, and what a standalone file means"
+            data-ar="الطبقات الثلاث، وكيف تسمّى الطبقة التى يسكنها العطل، وما معنى الملف المستقل">The three layers, how to name the one a fault lives in, and what a standalone file means</span>
+    </div>
+    <div id="qs-b"></div>
+  </section>
+
+  <section class="result" id="result" tabindex="-1" aria-live="polite">
+    <h2 id="r-head" data-en="Done" data-ar="انتهيت">Done</h2>
+    <div class="score"><b id="r-score">0</b><span data-en="out of 10" data-ar="من 10">out of 10</span></div>
+    <p id="r-line"></p>
+    <div id="r-revise-wrap" hidden>
+      <p style="margin-bottom:6px"><b data-en="Worth reading again before you build:" data-ar="يستحق إعادة القراءة قبل أن تبنى:">Worth reading again before you build:</b></p>
+      <ul class="revise" id="r-revise"></ul>
+    </div>
+    <div class="again">
+      <button class="btn btn-primary" type="button" id="again" data-en="Try it again" data-ar="جرّبه مرة أخرى">Try it again</button>
+      <a class="btn btn-outline" href="../session1.html" target="_top" data-en="Back to Session 1" data-ar="العودة إلى المحاضرة 1">Back to Session 1</a>
+    </div>
+  </section>
+</main>
+
+<script src="../assets/edulixa.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+
+  /* Each question carries the Session 1 anchor it came from, so a wrong answer
+     can point the teacher back at the exact part to re-read. */
+  var Q = [
+  /* ---------------- Part A · vibe coding ---------------- */
+  {
+    part: 'a', dok: 1, go: 'what',
+    goName: ['What vibe coding actually is', 'ما هى البرمجة باستخدام الأوامر النصية والتوجيه'],
+    stem: ['What does vibe coding mean?',
+           'ما معنى البرمجة باستخدام الأوامر النصية والتوجيه؟'],
+    opts: [
+      { t: ['Building software by describing the result you want in ordinary language, instead of writing the code line by line.',
+            'بناء البرمجيات بوصف النتيجة التى تريدها بلغة عادية، بدلًا من كتابة الكود سطرًا سطرًا.'], ok: true },
+      { t: ['Copying code from a website and changing the words inside it.',
+            'نسخ كود من موقع وتغيير الكلمات التى بداخله.'] },
+      { t: ['A new programming language that has replaced HTML.',
+            'لغة برمجة جديدة حلّت محل HTML.'] },
+      { t: ['Letting the AI decide what your lesson should teach.',
+            'ترك الذكاء الاصطناعى يقرر ما ينبغى أن يعلّمه درسك.'] }
+    ],
+    why: ['You describe the result; the machine writes the code. The term was coined by the researcher Andrej Karpathy in 2025. For a teacher the shift is not about programming at all — it is about being precise. You stay the architect: you set the objective and you carry the responsibility.',
+          'أنت تصف النتيجة، والآلة تكتب الكود. وقد صاغ المصطلح الباحث Andrej Karpathy عام 2025. وبالنسبة للمعلم فالتحوّل ليس عن البرمجة إطلاقًا — بل عن الدقة. وتبقى أنت المهندس: أنت تضع الهدف وتتحمل المسؤولية.']
+  },
+  {
+    part: 'a', dok: 1, go: 'what',
+    goName: ['Two ways of working', 'أسلوبا العمل'],
+    stem: ['What are the two types of vibe coding?',
+           'ما نوعا البرمجة باستخدام الأوامر النصية والتوجيه؟'],
+    opts: [
+      { t: ['Pure vibe coding, and responsible AI-assisted building.',
+            'النمط الخالص، والبناء المسؤول بمساعدة الذكاء الاصطناعى.'], ok: true },
+      { t: ['Fast vibe coding, and slow vibe coding.',
+            'البرمجة السريعة بالأوامر، والبرمجة البطيئة بالأوامر.'] },
+      { t: ['Front-end vibe coding, and back-end vibe coding.',
+            'برمجة الواجهة الأمامية بالأوامر، وبرمجة الواجهة الخلفية بالأوامر.'] },
+      { t: ['Written vibe coding, and spoken vibe coding.',
+            'البرمجة المكتوبة بالأوامر، والبرمجة المنطوقة بالأوامر.'] }
+    ],
+    why: ['Pure vibe coding: you describe something, accept whatever comes back, and use it once — fine for a personal experiment or a demonstration you will delete. Responsible AI-assisted building: the same speed, with a human review before anything is published. Anything a class will open belongs in the second one.',
+          'النمط الخالص: تصف شيئًا، وتقبل ما يعود إليك، وتستخدمه مرة واحدة — وهو مناسب لتجربة شخصية أو عرض ستحذفه. والبناء المسؤول: السرعة نفسها، مع مراجعة بشرية قبل نشر أى شىء. وكل ما سيفتحه صف كامل ينتمى إلى الثانى.']
+  },
+  {
+    part: 'a', dok: 2, go: 'what',
+    goName: ['What vibe coding actually is', 'ما هى البرمجة باستخدام الأوامر النصية والتوجيه'],
+    stem: ['Which statement does NOT belong to vibe coding?',
+           'أى العبارات الآتية لا تنتمى إلى البرمجة باستخدام الأوامر النصية والتوجيه؟'],
+    opts: [
+      { t: ['It removes the need for a teacher to check the app before students use it.',
+            'إنها تُغنى عن مراجعة المعلم للتطبيق قبل أن يستخدمه الطلاب.'], ok: true },
+      { t: ['You describe the result you want in ordinary language.',
+            'أنت تصف النتيجة التى تريدها بلغة عادية.'] },
+      { t: ['You stay responsible for whether the activity actually teaches.',
+            'تبقى مسؤولًا عمّا إذا كان النشاط يُعلّم فعلًا.'] },
+      { t: ['You do not need to be a programmer to build educational technology.',
+            'لا تحتاج أن تكون مبرمجًا لتبنى تقنية تعليمية.'] }
+    ],
+    why: ['Three of these are true. The fourth is the one thing vibe coding never does. The AI has no opinion about whether your lesson is sound, and it will build a weak activity just as willingly as a strong one — so you stay the architect, and the review stays yours.',
+          'ثلاث من هذه صحيحة. والرابعة هى الشىء الوحيد الذى لا تفعله هذه الممارسة أبدًا. فالذكاء الاصطناعى لا رأى له فى سلامة درسك، وسيبنى نشاطًا ضعيفًا برضًا كما يبنى نشاطًا قويًا — فتبقى أنت المهندس، وتبقى المراجعة عليك.']
+  },
+  {
+    part: 'a', dok: 1, go: 'tools',
+    goName: ['Every tool link', 'كل روابط الأدوات'],
+    stem: ['Which of these can actually take your prompt and give you back a working app?',
+           'أى من هذه يستطيع فعلًا أن يأخذ برومبتك ويعيد إليك تطبيقًا يعمل؟'],
+    opts: [
+      { t: ['ChatGPT or Gemini.', 'ChatGPT أو Gemini.'], ok: true },
+      { t: ['Microsoft Word or PowerPoint.', 'Microsoft Word أو PowerPoint.'] },
+      { t: ['Photoshop or Canva.', 'Photoshop أو Canva.'] },
+      { t: ['WhatsApp or Zoom.', 'واتساب أو Zoom.'] }
+    ],
+    why: ['Word and PowerPoint make documents and slides, Photoshop and Canva make pictures and designs, WhatsApp and Zoom carry messages and meetings — not one of them writes code. ChatGPT and Gemini are the two used in this session: send the same prompt to both and compare the results. The Edulixa HTML Viewer then runs the file and GitHub turns it into a link, but neither of those builds the app.',
+          'يصنع Word وPowerPoint مستندات وشرائح، ويصنع Photoshop وCanva صورًا وتصميمات، وينقل واتساب وZoom الرسائل والاجتماعات — ولا واحد منها يكتب كودًا. أما أداتا هذه المحاضرة فهما ChatGPT وGemini: أرسل البرومبت نفسه إليهما وقارن النتيجتين. ثم يشغّل عارض Edulixa الملفَ ويحوّله GitHub إلى رابط، وكلاهما لا يبنى التطبيق.']
+  },
+  {
+    part: 'a', dok: 2, go: 'fix',
+    goName: ['Fix it by talking to it', 'أصلحه بالحديث إليه'],
+    stem: ['You asked for one small change, and the AI sent back a different app with your questions gone. Which habit would have prevented this?',
+           'طلبت تغييرًا صغيرًا واحدًا، فأعاد إليك الذكاء الاصطناعى تطبيقًا مختلفًا واختفت أسئلتك. فأى عادة كانت ستمنع هذا؟'],
+    opts: [
+      { t: ['Ending the request with “change nothing else”, and keeping a saved copy of the first working version.',
+            'أن تُنهى طلبك بعبارة «لا تغيّر شيئًا آخر»، وأن تحتفظ بنسخة من أول إصدار يعمل.'], ok: true },
+      { t: ['Asking for the change in a brand-new conversation every time.',
+            'أن تطلب التغيير فى محادثة جديدة فى كل مرة.'] },
+      { t: ['Asking for several changes in one message, to save time.',
+            'أن تطلب عدة تغييرات فى رسالة واحدة توفيرًا للوقت.'] },
+      { t: ['Accepting the new app, since the newest version is always the better one.',
+            'أن تقبل التطبيق الجديد، فالأحدث دائمًا هو الأفضل.'] }
+    ],
+    why: ['Two habits from the session. Save the first working version before you change anything — every teacher who skips this eventually loses a working app to a small edit. Then protect the rest of the file in every repair sentence: name the fault, state the fix, and say “change nothing else”. Say it in the same conversation that produced the file.',
+          'عادتان من المحاضرة. احفظ أول إصدار يعمل قبل أن تغيّر شيئًا — فكل معلم يتخطى هذه الخطوة يفقد فى النهاية تطبيقًا يعمل بسبب تعديل صغير. ثم احمِ بقية الملف فى كل جملة إصلاح: سمِّ العطل، واذكر الإصلاح، وقل «لا تغيّر شيئًا آخر». وقلها فى المحادثة نفسها التى أنتجت الملف.']
+  },
+
+  /* ---------------- Part B · the three layers ---------------- */
+  {
+    part: 'b', dok: 1, go: 'layers',
+    goName: ['The three layers of an app', 'طبقات التطبيق الثلاث'],
+    stem: ['Which layer decides which parts exist on the page — the title, the question, the four options, the box where a student types a name?',
+           'أى طبقة تقرر ما الأجزاء الموجودة فى الصفحة — العنوان، والسؤال، والخيارات الأربعة، والمربع الذى يكتب فيه الطالب اسمه؟'],
+    opts: [
+      { t: ['HTML — the frame.', 'HTML — الهيكل.'], ok: true },
+      { t: ['CSS — the paint.', 'CSS — الطلاء.'] },
+      { t: ['JavaScript — the engine.', 'JavaScript — المحرك.'] },
+      { t: ['All three equally; the parts come from the three together.',
+            'الثلاث بالتساوى؛ فالأجزاء تأتى منها مجتمعة.'] }
+    ],
+    why: ['HTML is the skeleton: it decides which parts exist. CSS then controls how those parts look, and JavaScript makes them do something. HTML is the car frame, CSS is the paint and the wheels, JavaScript is the engine. Three layers, one car.',
+          'HTML هو الهيكل العظمى: يقرر ما الأجزاء الموجودة. ثم يتحكم CSS فى شكل هذه الأجزاء، ويجعلها JavaScript تفعل شيئًا. فـ HTML هيكل السيارة، وCSS الطلاء والعجلات، وJavaScript المحرك. ثلاث طبقات وسيارة واحدة.']
+  },
+  {
+    part: 'b', dok: 2, go: 'lab',
+    goName: ['See the difference on the model', 'شاهد الفرق على النموذج'],
+    stem: ['Your quiz opens. Every word, every option and the input box are all there, in the browser’s plain default font, stacked down one edge. Which layer is missing?',
+           'يُفتح اختبارك. وكل كلمة وكل خيار ومربع الإدخال موجودة كلها، بخط المتصفح الافتراضى العادى، مرصوصة على حافة واحدة. فأى طبقة ناقصة؟'],
+    opts: [
+      { t: ['CSS.', 'CSS.'], ok: true },
+      { t: ['HTML.', 'HTML.'] },
+      { t: ['JavaScript.', 'JavaScript.'] },
+      { t: ['None of them; a file that looks like this is broken and must be rebuilt.',
+            'ولا واحدة؛ فالملف الذى يبدو هكذا معطوب ولا بد من إعادة بنائه.'] }
+    ],
+    why: ['Everything exists, so the frame is there. Nothing has been painted — no colours, no fonts, no spacing, no layout — so the missing layer is CSS. The buttons may well still work, because the engine is a separate layer from the paint.',
+          'كل شىء موجود، إذن الهيكل موجود. ولم يُطلَ شىء — لا ألوان ولا خطوط ولا مسافات ولا تنسيق — فالطبقة الناقصة هى CSS. وقد تظل الأزرار تعمل، لأن المحرك طبقة منفصلة عن الطلاء.']
+  },
+  {
+    part: 'b', dok: 2, go: 'layers',
+    goName: ['The three layers of an app', 'طبقات التطبيق الثلاث'],
+    stem: ['The quiz looks exactly right, but pressing an option does nothing and the score never changes. Which layer is missing, and what do you ask for?',
+           'يبدو الاختبار صحيحًا تمامًا، لكن الضغط على أى خيار لا يفعل شيئًا والدرجة لا تتغير. فأى طبقة ناقصة، وماذا تطلب؟'],
+    opts: [
+      { t: ['JavaScript — ask for the behaviour: mark the answer, count the score, show the feedback.',
+            'JavaScript — اطلب السلوك: صحّح الإجابة، واحسب الدرجة، واعرض التغذية الراجعة.'], ok: true },
+      { t: ['CSS — ask for clearer colours so the buttons look pressable.',
+            'CSS — اطلب ألوانًا أوضح ليبدو الزر قابلًا للضغط.'] },
+      { t: ['HTML — ask for the buttons to be added to the page.',
+            'HTML — اطلب إضافة الأزرار إلى الصفحة.'] },
+      { t: ['You cannot tell from the symptom; the app has to be built again.',
+            'لا يمكن معرفة ذلك من العَرَض؛ فلا بد من بناء التطبيق من جديد.'] }
+    ],
+    why: ['The parts exist and they look right, so HTML and CSS are both doing their jobs. Nothing has told the page what to do when an option is pressed. Naming the layer a fault lives in is exactly what lets you ask for a change in one sentence instead of describing the whole app again.',
+          'الأجزاء موجودة وتبدو صحيحة، إذن HTML وCSS يؤديان عملهما. ولم يخبر شىءٌ الصفحةَ بما تفعله عند الضغط على خيار. وتسمية الطبقة التى يسكنها العطل هى بالضبط ما يتيح لك طلب التغيير فى جملة واحدة بدل وصف التطبيق كله من جديد.']
+  },
+  {
+    part: 'b', dok: 1, go: 'run',
+    goName: ['Why one single file, every time', 'لماذا ملف واحد فى كل مرة'],
+    stem: ['What is meant by a standalone file?',
+           'ما المقصود بالملف المستقل؟'],
+    opts: [
+      { t: ['One single file — index.html — with the HTML, the CSS and the JavaScript all inside it, which opens by double-clicking, with nothing to install and no internet needed.',
+            'ملف واحد — index.html — بداخله HTML وCSS وJavaScript جميعًا، يُفتح بنقرة مزدوجة، بلا شىء تُثبّته وبلا حاجة إلى إنترنت.'], ok: true },
+      { t: ['A file that only works while the computer is online.',
+            'ملف لا يعمل إلا والحاسوب متصل بالإنترنت.'] },
+      { t: ['Three files — one for HTML, one for CSS, one for JavaScript — kept together in the same folder.',
+            'ثلاثة ملفات — واحد لـ HTML وواحد لـ CSS وواحد لـ JavaScript — تُحفظ معًا فى المجلد نفسه.'] },
+      { t: ['A file that runs only inside the Edulixa HTML Viewer.',
+            'ملف لا يعمل إلا داخل عارض Edulixa لملفات HTML.'] }
+    ],
+    why: ['Standing alone means depending on nothing else — no server, no installation, no connection, no second file that has to travel with it. So when you write the prompt, ask for the three layers combined into one file called index.html rather than three separate files.',
+          'أن يقف وحده يعنى ألا يعتمد على شىء آخر — لا خادم ولا تثبيت ولا اتصال ولا ملف ثانٍ لا بد أن يسافر معه. ولذلك حين تكتب البرومبت، اطلب دمج الطبقات الثلاث فى ملف واحد اسمه index.html بدل ثلاثة ملفات منفصلة.']
+  },
+  {
+    part: 'b', dok: 2, go: 'run',
+    goName: ['Why one single file, every time', 'لماذا ملف واحد فى كل مرة'],
+    stem: ['Why ask for one single file rather than three separate ones?',
+           'لماذا تطلب ملفًا واحدًا بدل ثلاثة ملفات منفصلة؟'],
+    opts: [
+      { t: ['One file can be sent through WhatsApp, opened straight from the viewer, and cannot arrive with a piece missing. Three files fail the moment one is left behind.',
+            'الملف الواحد يمكن إرساله عبر واتساب، وفتحه مباشرة من العارض، ولا يمكن أن يصل ناقصًا. أما الثلاثة فتفشل لحظة تخلّف واحد منها.'], ok: true },
+      { t: ['One file loads faster on a slow school connection.',
+            'الملف الواحد يُحمّل أسرع على اتصال مدرسى بطىء.'] },
+      { t: ['GitHub does not accept more than one file in a project.',
+            'GitHub لا يقبل أكثر من ملف واحد فى المشروع.'] },
+      { t: ['One file makes the AI write shorter, simpler code.',
+            'الملف الواحد يجعل الذكاء الاصطناعى يكتب كودًا أقصر وأبسط.'] }
+    ],
+    why: ['It is about arriving intact, not about speed. Sending a file to thirty students goes wrong in many ways; a single file removes the worst one — a piece left behind. The same file can then be published on GitHub as a link, or handed to a student to run on their own device with no connection at all.',
+          'المسألة هى الوصول سليمًا لا السرعة. فإرسال ملف إلى ثلاثين طالبًا يفشل بطرق كثيرة، والملف الواحد يزيل أسوأها — جزء تُرك خلفه. ثم يمكن نشر الملف نفسه على GitHub كرابط، أو تسليمه لطالب ليشغّله على جهازه بلا اتصال إطلاقًا.']
+  }
+  ];
+
+  var LETTERS = ['A', 'B', 'C', 'D'];
+  var AR_LETTERS = ['أ', 'ب', 'ج', 'د'];
+  var answered = 0, right = 0;
+
+  function isAr() { return document.documentElement.getAttribute('dir') === 'rtl'; }
+  function L(pair) { return isAr() ? pair[1] : pair[0]; }
+
+  var TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></svg>';
+  var CROSS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+
+  function shuffled(n) {
+    var a = [], i, j, t;
+    for (i = 0; i < n; i++) a.push(i);
+    for (i = a.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1)); t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  /* Markup built here must be handed to EdulixaLang.translate, or an Arabic page
+     would render this section in English. */
+  function say(el, pair) {
+    el.setAttribute('data-en', pair[0]);
+    el.setAttribute('data-ar', pair[1]);
+    el.textContent = L(pair);
+  }
+
+  function build() {
+    answered = 0; right = 0;
+    $('#qs-a').innerHTML = '';
+    $('#qs-b').innerHTML = '';
+    $('#result').classList.remove('is-on');
+
+    Q.forEach(function (q, i) {
+      var card = document.createElement('div');
+      card.className = 'q';
+      card.setAttribute('data-i', i);
+
+      var top = document.createElement('div');
+      top.className = 'q-top';
+      var num = document.createElement('span');
+      num.className = 'q-num';
+      say(num, [String(i + 1), String(i + 1)]);
+      var dok = document.createElement('span');
+      dok.className = 'dok';
+      say(dok, q.dok === 1 ? ['DOK 1 · Recall', 'العمق 1 · التذكّر']
+                           : ['DOK 2 · Apply', 'العمق 2 · التطبيق']);
+      top.appendChild(num); top.appendChild(dok);
+      card.appendChild(top);
+
+      var stem = document.createElement('p');
+      stem.className = 'q-stem';
+      say(stem, q.stem);
+      card.appendChild(stem);
+
+      var group = document.createElement('div');
+      group.className = 'opts';
+      group.setAttribute('role', 'group');
+      group.setAttribute('aria-label', L(q.stem));
+
+      shuffled(q.opts.length).forEach(function (oi, pos) {
+        var o = q.opts[oi];
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'opt';
+        b.setAttribute('data-ok', o.ok ? '1' : '0');
+
+        var letter = document.createElement('span');
+        letter.className = 'letter';
+        letter.setAttribute('data-en', LETTERS[pos]);
+        letter.setAttribute('data-ar', AR_LETTERS[pos]);
+        letter.textContent = isAr() ? AR_LETTERS[pos] : LETTERS[pos];
+
+        var txt = document.createElement('span');
+        say(txt, o.t);
+
+        var mark = document.createElement('span');
+        mark.className = 'mark';
+        mark.setAttribute('aria-hidden', 'true');
+
+        b.appendChild(letter); b.appendChild(txt); b.appendChild(mark);
+        b.addEventListener('click', function () { answer(card, b, q); });
+        group.appendChild(b);
+      });
+      card.appendChild(group);
+
+      var why = document.createElement('p');
+      why.className = 'why';
+      say(why, q.why);
+      card.appendChild(why);
+
+      $(q.part === 'a' ? '#qs-a' : '#qs-b').appendChild(card);
+    });
+
+    if (window.EdulixaLang) window.EdulixaLang.translate(document.body, isAr());
+    tally();
+  }
+
+  function answer(card, btn, q) {
+    if (card.getAttribute('data-done')) return;
+    card.setAttribute('data-done', '1');
+
+    var correct = btn.getAttribute('data-ok') === '1';
+    answered++; if (correct) right++;
+
+    Array.prototype.forEach.call(card.querySelectorAll('.opt'), function (b) {
+      b.disabled = true;
+      var ok = b.getAttribute('data-ok') === '1';
+      if (ok) { b.classList.add('is-right'); b.querySelector('.mark').innerHTML = TICK; }
+      else if (b === btn) { b.classList.add('is-wrong'); b.querySelector('.mark').innerHTML = CROSS; }
+      else b.classList.add('is-dim');
+    });
+
+    var why = card.querySelector('.why');
+    why.classList.add('is-on');
+    why.classList.toggle('is-miss', !correct);
+    card.setAttribute('data-right', correct ? '1' : '0');
+    tally();
+    if (answered === Q.length) finish();
+  }
+
+  function tally() {
+    var c = $('#t-count'), r = $('#t-right');
+    c.setAttribute('data-en', answered + ' of ' + Q.length + ' answered');
+    c.setAttribute('data-ar', 'أُجيب عن ' + answered + ' من ' + Q.length);
+    c.textContent = isAr() ? c.getAttribute('data-ar') : c.getAttribute('data-en');
+    r.setAttribute('data-en', right + ' right');
+    r.setAttribute('data-ar', right + ' صحيحة');
+    r.textContent = isAr() ? r.getAttribute('data-ar') : r.getAttribute('data-en');
+    $('#t-bar').style.width = Math.round(answered / Q.length * 100) + '%';
+  }
+
+  function finish() {
+    var res = $('#result');
+    $('#r-score').textContent = String(right);
+
+    var head, line;
+    if (right === 10) {
+      head = ['Every one right', 'كلها صحيحة'];
+      line = ['You can name what vibe coding is, which way of working a class deserves, and which of the three layers any fault lives in. That last one is the skill that saves the most time — it is what lets you ask for a change in one sentence.',
+              'تستطيع أن تسمّى ما هى البرمجة بالأوامر النصية والتوجيه، وأى أسلوب عمل يستحقه الصف، وأى الطبقات الثلاث يسكنها أى عطل. وهذه الأخيرة هى المهارة التى توفر أكثر الوقت — فهى ما يتيح لك طلب التغيير فى جملة واحدة.'];
+    } else if (right >= 7) {
+      head = ['Solidly through', 'اجتزته باقتدار'];
+      line = ['Enough to build your first app with confidence. Read the parts listed below once more before you write your prompt — each one is a place where a small misunderstanding costs a rebuild.',
+              'يكفى لتبنى تطبيقك الأول بثقة. اقرأ الأجزاء المذكورة بالأسفل مرة أخرى قبل أن تكتب برومبتك — فكل واحد منها موضع يكلّف فيه سوء فهم صغير إعادة بناء كاملة.'];
+    } else if (right >= 5) {
+      head = ['Half of it is there', 'نصفه موجود'];
+      line = ['The ideas are landing, but not yet firmly enough to lean on in front of a class. Go back through the parts below, then answer these ten again — the options are shuffled each time.',
+              'الأفكار تصل، لكن ليس بثبات يكفى للاعتماد عليه أمام صف كامل. عُد إلى الأجزاء بالأسفل، ثم أجب عن العشرة مرة أخرى — فالخيارات تُخلط فى كل مرة.'];
+    } else {
+      head = ['Worth another pass', 'يستحق مرورًا آخر'];
+      line = ['Nothing here is difficult, and none of it is programming. Read the session through once more with the lab open beside it, then come back to these ten questions.',
+              'لا شىء هنا صعب، ولا شىء منه برمجة. اقرأ المحاضرة مرة أخرى والمعمل مفتوح بجوارك، ثم عُد إلى هذه الأسئلة العشرة.'];
+    }
+    say($('#r-head'), head);
+    say($('#r-line'), line);
+
+    /* which parts of the session to send them back to */
+    var seen = {}, list = [];
+    Array.prototype.forEach.call(document.querySelectorAll('.q'), function (card) {
+      if (card.getAttribute('data-right') === '1') return;
+      var q = Q[+card.getAttribute('data-i')];
+      if (seen[q.go]) return;
+      seen[q.go] = 1; list.push(q);
+    });
+
+    var ul = $('#r-revise');
+    ul.innerHTML = '';
+    list.forEach(function (q) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = '../session1.html#' + q.go;
+      a.setAttribute('target', '_top');
+      say(a, q.goName);
+      var wrap = document.createElement('span');
+      wrap.appendChild(a);
+      li.appendChild(wrap);
+      ul.appendChild(li);
+    });
+    $('#r-revise-wrap').hidden = list.length === 0;
+
+    if (window.EdulixaLang) window.EdulixaLang.translate(res, isAr());
+    res.classList.add('is-on');
+    res.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    res.focus({ preventScroll: true });
+  }
+
+  $('#again').addEventListener('click', function () {
+    build();
+    $('#part-a').scrollIntoView({ block: 'start', behavior: 'smooth' });
+  });
+
+  /* the language button, and the session page flipping language around us */
+  window.addEventListener('edulixa:lang', function () {
+    var wasDone = answered === Q.length;
+    tally();
+    if (window.EdulixaLang) window.EdulixaLang.translate(document.body, isAr());
+    /* the letters and the running count are generated, so refresh them by hand */
+    Array.prototype.forEach.call(document.querySelectorAll('.opt .letter'), function (el) {
+      el.textContent = isAr() ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+    });
+    if (wasDone) finish();
+  });
+
+  build();
+})();
+</script>
+</body>
+</html>
