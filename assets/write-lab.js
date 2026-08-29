@@ -177,6 +177,11 @@
         { label: ['Pressing your button really changes the page', 'الضغط على زرك يغيّر الصفحة فعلًا'],
           why: ['Press it yourself in the preview. This is the moment the page stops being a picture of an activity and becomes an activity.',
                 'اضغطه بنفسك في المعاينة. هذه هي اللحظة التي تتوقف فيها الصفحة عن كونها صورة لنشاط وتصبح نشاطًا.'],
+          /* There is nothing to press until the page has a button on it, so say so
+             plainly instead of leaving this check quietly impossible to pass. */
+          blocked: function (c) { return !/<button[^>]*>/i.test(c); },
+          whyBlocked: ['Your page has no button yet, so there is nothing to press. Go back to step 1 and add one, or press “Show me one answer” and it will be written for you.',
+                       'صفحتك ليس بها زر بعد، فلا يوجد ما تضغطه. ارجع إلى الخطوة 1 وأضف زرًا، أو اضغط «أرِني إجابة واحدة» فيُكتب لك.'],
           live: true }
       ],
       done: ['You have written all three layers of a working web page by hand. From here on, AI writes these three layers for you — and you now know exactly which one to ask it to change.',
@@ -261,6 +266,21 @@
   function modelStep1() {
     return START.replace(/\n\n  <!-- Write your page here[\s\S]*?-->\n\n/, '\n' + MODEL_BODY + '\n');
   }
+  /* A teacher who opens step 2 or step 3 first carries an empty page forward, and
+     styling or scripting nothing teaches nothing. If the page still has no content
+     of its own, the model answer writes the content in too. */
+  function ensureBody(code) {
+    if (/<(h1|button)[^>]*>\s*\S/i.test(code)) return code;
+    var body = MODEL_BODY + '\n';
+    if (/<body[^>]*>/i.test(code)) {
+      return code.replace(/(<body[^>]*>)([\s\S]*?)(<\/body>)/i, function (all, open, inner, close) {
+        /* keep any style or script block the step already opened */
+        var keep = (inner.match(/<(style|script)[\s\S]*?<\/(style|script)>/gi) || []).join('\n');
+        return open + '\n' + body + (keep ? keep + '\n' : '') + close;
+      });
+    }
+    return body + code;
+  }
   function fillStyle(code) {
     return addStyleBlock(code).replace(
       /(<style[^>]*>)[\s\S]*?(<\/style>)/i,
@@ -328,7 +348,12 @@
         var b = document.createElement('b');
         say(b, ch.label[0], ch.label[1]);
         var s = document.createElement('small');
-        say(s, ch.why[0], ch.why[1]);
+        var why = ch.why;
+        if (!ok && ch.blocked && ch.blocked(code[step] || '')) {
+          why = ch.whyBlocked;
+          li.className = 'is-blocked';
+        }
+        say(s, why[0], why[1]);
         var wrap = document.createElement('div');
         wrap.appendChild(b);
         wrap.appendChild(s);
@@ -357,8 +382,10 @@
       lab.querySelectorAll('[data-go-step]').forEach(function (b) {
         b.setAttribute('aria-selected', String(Number(b.getAttribute('data-go-step')) === step));
       });
-      back.disabled = step === 1;
-      next.disabled = step === 3;
+      /* A greyed-out primary button at the last step reads as a fault rather than
+         as an ending, so a step that cannot be reached hides its button instead. */
+      back.disabled = step === 1; back.hidden = step === 1;
+      next.disabled = step === 3; next.hidden = step === 3;
       paintPreview();
       renderChecks();
       save();
@@ -385,8 +412,8 @@
 
     q('model').addEventListener('click', function () {
       if (step === 1) code[1] = modelStep1();
-      if (step === 2) code[2] = fillStyle(code[2] || addStyleBlock(code[1] || START));
-      if (step === 3) code[3] = fillScript(code[3] || addScriptBlock(code[2] || START));
+      if (step === 2) code[2] = fillStyle(ensureBody(code[2] || addStyleBlock(code[1] || START)));
+      if (step === 3) code[3] = fillScript(ensureBody(code[3] || addScriptBlock(code[2] || START)));
       render();
     });
 

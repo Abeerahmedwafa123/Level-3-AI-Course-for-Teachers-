@@ -573,6 +573,8 @@ html[dir="rtl"] .lab-caption h3{font-family:var(--ar); font-weight:700; line-hei
 .layer-tag.is-js{background:var(--lampf); color:oklch(0.250 0.040 95); border:1px solid var(--lampf)}
 .lab-caption p{margin:0; font-size:18px; line-height:1.66; color:var(--ink-2)}
 .lab-actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:20px}
+/* .btn sets its own display, which would otherwise win over the hidden attribute */
+.lab-actions .btn[hidden]{display:none}
 
 /* ---------- Code panel ---------- */
 .codepane{margin:22px 0 0; border:1px solid var(--line); border-radius:var(--r-md);
@@ -705,6 +707,11 @@ html[dir="rtl"] .editor-bar span{font-family:var(--ar); letter-spacing:0; font-s
 .checks li.is-done{border-color:var(--signal); background:var(--surface)}
 .checks li.is-done:before{background:var(--signal); border-color:var(--signal);
   box-shadow:inset 0 0 0 2px var(--bg-2)}
+/* A check that cannot yet be reached: it is not a failure, it is waiting on
+   something the teacher has to add first, so it is marked but not scored red. */
+.checks li.is-blocked{border-color:var(--accent-text); background:var(--surface)}
+.checks li.is-blocked:before{border-color:var(--accent-text); border-style:dashed}
+.checks li.is-blocked small{color:var(--accent-text)}
 .checks b{display:block; font-size:17px; font-weight:700; color:var(--ink); margin-bottom:3px}
 .checks small{display:block; font-size:15.5px; font-weight:500; color:var(--ink-2); line-height:1.55}
 .checks-count{font-family:var(--mono); font-size:12.5px; font-weight:500; letter-spacing:.16em;
