@@ -22,12 +22,39 @@ Created by **Dr. Abir Ahmed Aly Wafa**, Head of EdTech & Instructional Design.
 |---|---|
 | `index.html` | The front door. Every session and every tool link in one place. |
 | `session1.html` | Session 1 — prompting, and the vibe-coding lab. |
+| `session2.html` | Session 2 — building your own Gem, from two working examples. |
 | `session3.html` | Session 3 — the anatomy of a website, built entirely from working examples. |
+| `apps/app-gem-builder.html` | **The Gem Instruction Builder.** Fields in, a paste-ready Gem instruction block out. |
 | `apps/app-site-builder.html` | **The Site Builder.** Five steps from one sentence to a finished website. |
 | `apps/app-build-style-drive.html` | The build-style lab from Session 1. |
 | `apps/app-html-viewer.html` | Paste HTML, see it render. |
 | `apps/example-exported-site.html` | An example of what the Site Builder hands you. |
 | `Site_Builder_v2_Build_Prompt.md` | The written specification the Site Builder was built from. |
+
+---
+
+## Session 2 at a glance
+
+Nine steps. The centre of it is that a Gem is not a smarter model — it is the same model holding your instructions permanently.
+
+- The same request sent to a plain chat and to a Gem, both answers on screen at once
+- A real working instruction block taken apart into its seven jobs, each one pressable
+- The Gemini Gem screen, with a note on every control and where it goes wrong
+- **The three platform limits, measured rather than described:** the Instructions box silently cuts off near **31,000 characters**, a free account has **no knowledge files**, and Canvas turns a runnable file into a document
+- A live character meter: paste a block in, and it shows you the exact text that would never reach the Gem
+- **The Gem Instruction Builder** — fields in, a complete paste-ready block out, with seven lamps for the seven parts
+- Both finished Gems in full: **Lesson Plan Architect** and **Worksheet Architect**, with a live preview of what each produces
+- Nine symptoms, each with the exact sentence to send back to the Gem
+- Publishing: the Gem's link for your department, and the file it made for your learners
+
+### The two Gems
+
+Both are self-contained, so they work on a free Gemini account with no knowledge files, and both fit under the paste limit.
+
+| Gem | What it makes | Length |
+|---|---|---|
+| **Lesson Plan Architect** | Any subject, any grade. Six measurable objectives, eight stages, three-tier differentiation in every row, a 16-mark rubric, and a printable HTML file. | 16,584 characters |
+| **Worksheet Architect** | Any subject, any stage. Sections that climb the DOK ladder, marks that total, and an answer key that cannot reach the student's print. The same file is both a paper worksheet and a self-marking one. | 27,717 characters |
 
 ---
 
@@ -67,7 +94,8 @@ It works in English and Arabic, mirrors right-to-left, remembers your answers on
 - Every page works offline. Put the folder on a USB stick if the room has no wifi.
 - Both languages are in the same file — the button in the top bar switches them.
 - The Site Builder saves to the browser on that computer only. Nothing is sent anywhere.
-- Before a teacher publishes a site: no learner's full name, no marks, and no photograph without written permission.
+- Before a teacher publishes a site or anything a Gem wrote: no learner's full name, no marks, and no photograph without written permission.
+- Every AI-generated item is reviewed, corrected and approved by the teacher before it reaches a learner.
 
 ---
 

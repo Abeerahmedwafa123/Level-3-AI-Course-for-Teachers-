@@ -1,0 +1,1837 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-en="Session 2 · Build your own Gem · Level 3 · Edulixa 360" data-ar="المحاضرة 2 · ابنِ الـ Gem الخاص بك · المستوى الثالث · Edulixa 360">Session 2 · Build your own Gem</title>
+<link rel="stylesheet" href="assets/edulixa.css">
+<style>
+/* ============================================================
+   Session 2 · examples, not explanations.
+   Every block below is a working component the teacher operates.
+   Captions are one line.
+
+   edulixa.css has `.block p {font-size;color}` at (0,1,1), which beats a bare
+   single-class rule aimed at a <p>. Every such selector carries a `.block`
+   prefix so it actually wins.
+   ============================================================ */
+.block .cap{margin:10px 0 0;font-size:15px;line-height:1.5;color:var(--muted)}
+.block .cap b{color:var(--ink);font-weight:700}
+.block > .lead{margin:14px 0 0;font-size:17.5px;line-height:1.6;max-width:64ch}
+.block h3{margin-top:34px;font-family:var(--mono);font-size:13px;font-weight:700;
+  letter-spacing:.10em;text-transform:uppercase;color:var(--brand-lift)}
+[dir=rtl] .block h3{font-family:var(--ar);letter-spacing:0;font-size:16px}
+
+/* ---------- a labelled example frame ---------- */
+.ex{margin:22px 0 0;border:1px solid var(--line);border-radius:var(--r-md);
+  background:var(--bg-2);overflow:hidden}
+.ex-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:12px 16px;
+  background:var(--surface);border-bottom:1px solid var(--line)}
+.ex-head b{font-size:15.5px;color:var(--ink)}
+.ex-head span{font-size:14.5px;color:var(--muted)}
+.ex-body{padding:20px}
+.ex-body.is-flush{padding:0}
+
+/* ---------- chips that pick an example ---------- */
+.picker{display:flex;flex-wrap:wrap;gap:8px;padding:14px 16px;background:var(--bg-2);
+  border-bottom:1px solid var(--line)}
+.pick{min-height:44px;padding:10px 15px;border-radius:var(--r-pill);border:1px solid var(--line);
+  background:var(--surface);color:var(--ink-2);font:inherit;font-size:14.5px;font-weight:650;
+  cursor:pointer;transition:background var(--t-fast),border-color var(--t-fast),color var(--t-fast)}
+.pick:hover{border-color:var(--brand-lift);color:var(--ink)}
+.pick[aria-pressed=true]{background:var(--brand);border-color:var(--brand);color:#fff}
+
+/* ---------- the note that a pick reveals ---------- */
+.notebox{padding:18px 20px;background:var(--surface);border-top:1px solid var(--line)}
+.notebox[hidden]{display:none}
+.notebox .nb{display:grid;gap:6px}
+.notebox .nb[hidden]{display:none}
+.notebox .nb b{font-size:16.5px;color:var(--ink);font-weight:700}
+.notebox .nb p{margin:0;font-size:15.5px;line-height:1.6;color:var(--ink-2)}
+.notebox .nb .stops{margin:4px 0 0;font-size:14.5px;color:var(--accent-text);font-weight:650}
+
+/* ============ 1 · two destinations, side by side ============ */
+.chatpanes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;
+  padding:20px;align-items:start}
+.chatpanes > *{min-width:0}
+@media (max-width:820px){.chatpanes{grid-template-columns:minmax(0,1fr)}}
+.chatpane{border:1px solid var(--line);border-radius:var(--r-md);background:var(--bg);
+  overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.chatpane-head{display:flex;align-items:center;gap:9px;padding:11px 14px;
+  border-bottom:1px solid var(--line);background:var(--surface)}
+.chatpane-head b{font-size:14.5px;color:var(--ink);font-weight:700}
+.chatpane-head .tagl{margin-inline-start:auto;font-size:12px;font-family:var(--mono);
+  padding:3px 9px;border-radius:var(--r-pill);border:1px solid var(--line);color:var(--muted)}
+[dir=rtl] .chatpane-head .tagl{font-family:var(--ar)}
+.chatpane.is-gem .chatpane-head{background:oklch(0.290 0.040 180)}
+.chatpane.is-gem .chatpane-head .tagl{border-color:var(--brand-lift);color:var(--brand-lift)}
+.chatlog{padding:14px;display:grid;gap:10px;min-height:290px;align-content:start;min-width:0}
+.chatlog > *{min-width:0}
+.msg{opacity:1;transform:none;transition:opacity 320ms var(--out),transform 320ms var(--out);
+  padding:11px 14px;border-radius:var(--r);font-size:14.5px;line-height:1.55;
+  border:1px solid var(--line);background:var(--bg-2);color:var(--ink-2);
+  min-width:0;overflow-wrap:anywhere}
+.msg.is-out{opacity:0;transform:translateY(6px)}
+.msg.me{background:var(--surface-2);color:var(--ink);font-weight:600}
+.msg.bad{border-color:oklch(0.520 0.185 31 / .55)}
+.msg.good{border-color:oklch(0.520 0.075 180)}
+.msg.code{font-family:var(--mono);font-size:11.5px;white-space:pre-wrap;direction:ltr;
+  text-align:left;overflow-x:auto;overflow-wrap:anywhere}
+[dir=rtl] .msg.code{font-family:var(--mono)}
+.msg em{color:var(--accent-text);font-style:normal;font-weight:700}
+.runbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:0 20px 20px}
+.diffs{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px;
+  padding:0 20px 20px}
+.diff{border:1px solid var(--line);border-radius:var(--r);background:var(--bg);padding:12px 14px}
+.diff b{display:block;font-size:13.5px;color:var(--accent-text);font-weight:700;margin:0 0 4px}
+.diff p{margin:0;font-size:14px;line-height:1.5;color:var(--ink-2)}
+
+/* ============ 2 · the instruction taken apart ============ */
+.gemsrc{margin:0;padding:0;background:var(--bg);max-height:440px;overflow:auto}
+.gemseg{display:block;width:100%;text-align:start;border:0;border-bottom:1px solid var(--line-soft);
+  background:transparent;color:var(--muted);font-family:var(--mono);font-size:12.5px;
+  line-height:1.62;padding:13px 16px;cursor:pointer;white-space:pre-wrap;word-break:break-word;
+  direction:ltr;transition:background var(--t-fast),color var(--t-fast)}
+.gemseg:hover{background:var(--bg-2);color:var(--ink-2)}
+.gemseg.is-lit{background:var(--surface-2);color:var(--ink);
+  box-shadow:inset 0 0 0 2px var(--brand-lift)}
+.gemseg .lbl{display:block;font-family:var(--sans);font-size:12px;font-weight:800;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--brand-lift);margin:0 0 5px}
+
+/* ============ 3 · the Gem screen ============ */
+.gemui{background:#131A18;border-radius:0;display:grid;
+  grid-template-columns:190px minmax(0,1fr);min-height:400px;font-size:13px}
+.gemui > *{min-width:0}
+@media (max-width:780px){.gemui{grid-template-columns:minmax(0,1fr)}
+  .gemui-side{display:none}}
+.gemui-side{background:#0E1413;border-inline-end:1px solid #223029;padding:16px 12px;display:grid;
+  gap:6px;align-content:start}
+.gemui-side .s-logo{font-weight:800;color:#E8EFEA;font-size:15px;padding:6px 10px 12px}
+.gemui-main{padding:18px 20px;display:grid;gap:14px;align-content:start}
+.gemui-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.gemui-row .grow{flex:1 1 auto}
+.hot{position:relative;border:2px solid transparent;border-radius:10px;background:#1A2320;
+  color:#CBD8D1;font:inherit;text-align:start;padding:11px 13px;cursor:pointer;width:100%;
+  min-height:44px;transition:border-color var(--t-fast),background var(--t-fast)}
+.hot:hover{background:#22302B;border-color:#3C5A4E}
+.hot.is-lit{border-color:var(--brand-lift);background:#22302B;color:#F2F7F4}
+.hot .hn{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;
+  border-radius:50%;background:var(--brand);color:#fff;font-size:12px;font-weight:800;
+  margin-inline-end:9px;vertical-align:-4px;font-family:var(--sans)}
+.hot .ht{font-size:13.5px;font-weight:650}
+.hot .hs{display:block;margin:5px 0 0 30px;font-size:12.5px;color:#8FA79B;font-weight:400}
+[dir=rtl] .hot .hs{margin:5px 30px 0 0}
+.hot.is-locked{opacity:.62}
+.hot.is-locked .ht:after{content:" 🔒"}
+.hot.is-big{min-height:120px}
+.hot.is-save{background:var(--brand);color:#fff;width:auto;min-width:120px;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px}
+.hot.is-save .hn{margin:0;vertical-align:0;background:rgba(255,255,255,.22)}
+.hot.is-save:hover{background:oklch(0.520 0.075 180)}
+.gemui-label{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  color:#7D9389;margin:0 0 6px;font-family:var(--sans)}
+[dir=rtl] .gemui-label{letter-spacing:0}
+.block .gemui-prev{background:#0E1413;border:1px solid #223029;border-radius:10px;
+  padding:13px;color:#8FA79B;font-size:12.5px;line-height:1.55;margin:0}
+
+/* ============ 4 · the character meter ============ */
+.capwrap{padding:20px;display:grid;gap:14px}
+#cap-box{width:100%;min-height:190px;padding:15px;border-radius:var(--r);
+  border:1px solid var(--line);background:var(--bg);color:var(--ink-2);
+  font-family:var(--mono);font-size:12.5px;line-height:1.6;resize:vertical;
+  direction:ltr;text-align:left}
+#cap-box:focus{outline:none;border-color:var(--brand-lift)}
+.capbar-top{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);
+  font-size:13px;color:var(--muted);margin:0 0 7px}
+[dir=rtl] .capbar-top{font-family:var(--ar)}
+.capbar-top b{color:var(--ink);font-weight:700}
+.capbar{position:relative;height:18px;border-radius:var(--r-pill);background:var(--bg);
+  border:1px solid var(--line);overflow:visible}
+.capbar i{display:block;height:100%;width:0;border-radius:var(--r-pill);
+  background:var(--signal);transition:width 260ms var(--out)}
+.capbar.is-amber i{background:oklch(0.820 0.135 85)}
+.capbar.is-red i{background:var(--accent)}
+.capbar .mark{position:absolute;top:-6px;bottom:-6px;inset-inline-start:73.8%;width:2px;
+  background:var(--ink);opacity:.8}
+.block #cap-verdict{margin:10px 0 0;font-size:15.5px;font-weight:650;color:var(--ink-2)}
+.block #cap-verdict.is-red{color:var(--accent-text)}
+.block #cap-verdict.is-amber{color:oklch(0.860 0.130 85)}
+.split2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.split2 > *{min-width:0}
+@media (max-width:760px){.split2{grid-template-columns:minmax(0,1fr)}}
+.chunkbox{border:1px solid var(--line);border-radius:var(--r);background:var(--bg);
+  padding:13px 15px}
+.chunkbox h4{margin:0 0 8px;font-size:13px;font-weight:800;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--brand-lift);font-family:var(--sans)}
+[dir=rtl] .chunkbox h4{letter-spacing:0}
+.chunkbox.is-lost h4{color:var(--accent-text)}
+.chunkbox pre{margin:0;font-family:var(--mono);font-size:12px;line-height:1.55;
+  color:var(--muted);white-space:pre-wrap;word-break:break-word;max-height:160px;overflow:auto;
+  direction:ltr;text-align:left}
+.chunkbox.is-lost pre{color:oklch(0.700 0.110 31)}
+#cap-lost-wrap[hidden]{display:none}
+.factbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;
+  padding:0 20px 20px}
+.fact{border:1px solid var(--line);border-radius:var(--r);background:var(--bg);padding:13px 15px}
+.fact b{display:block;font-family:var(--mono);font-size:21px;color:var(--accent-text);
+  font-weight:700;line-height:1.15}
+.fact span{display:block;margin:5px 0 0;font-size:13.5px;color:var(--muted);line-height:1.45}
+
+/* the free / paid knowledge panel, shown at once */
+.tiers{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;padding:20px}
+.tiers > *{min-width:0}
+@media (max-width:760px){.tiers{grid-template-columns:minmax(0,1fr)}}
+.tier{border:1px solid var(--line);border-radius:var(--r-md);background:#131A18;padding:15px}
+.tier > h4{margin:0 0 11px;font-size:13.5px;font-weight:800;color:#CBD8D1;font-family:var(--sans)}
+.tier.is-you{border-color:var(--accent)}
+.tier .youchip{display:inline-block;margin-inline-start:8px;padding:2px 9px;border-radius:var(--r-pill);
+  background:var(--accent);color:#fff;font-size:11.5px;font-weight:800;vertical-align:2px}
+
+/* the Canvas / code block pair */
+.canvasdemo{border:1px solid var(--line);border-radius:var(--r);background:#FBFAF8;
+  color:#2F3A45;padding:15px;font-size:13px;line-height:1.55}
+.canvasdemo p{margin:0 0 7px;font-size:12.5px;color:#5E6B79;word-break:break-word}
+.canvasdemo .dead{display:inline-block;margin-top:6px;padding:7px 13px;border:1px solid #A9B4C0;
+  border-radius:8px;background:#FFF;color:#6B7885;font-size:12.5px}
+.codedemo{border:1px solid var(--line);border-radius:var(--r);background:var(--bg);overflow:hidden}
+.codedemo pre{margin:0;padding:14px;font-family:var(--mono);font-size:11.5px;line-height:1.5;
+  color:var(--muted);max-height:150px;overflow:auto;direction:ltr;text-align:left}
+.codedemo .ran{border-top:1px solid var(--line);padding:12px;background:#F5F3EF}
+
+/* ============ the live lesson-plan preview (her pastel palette) ============ */
+.lp{background:#F5F3EF;color:#2F3A45;padding:16px;font:500 12px/1.42 "Segoe UI",Arial,sans-serif;
+  direction:ltr;text-align:left}
+.lp .lphead{background:linear-gradient(135deg,#FCE7D6,#FADFC8 55%,#FBF1CE);
+  border:1.5px solid #EFC4A2;border-radius:9px;padding:11px 14px;text-align:center;margin:0 0 11px}
+.lp .lphead h4{margin:0;font-size:15px;font-weight:700;color:#2F3A45}
+.lp .lphead p{margin:4px 0 0;font-size:11.5px;color:#5C4B3D;font-weight:600}
+.lp table{width:100%;table-layout:fixed;border-collapse:collapse;margin:0 0 10px;
+  border:1.5px solid #5E6B79}
+.lp th,.lp td{border:1px solid #A9B4C0;padding:5px 6px;vertical-align:top;text-align:left;
+  font-size:10.5px;overflow-wrap:break-word;hyphens:none}
+.lp thead th{background:#DCE9F6;font-weight:700}
+.lp td.stg{background:#DCEFE4;font-weight:700}
+.lp .c{display:inline-block;border-radius:999px;padding:1px 7px;font-size:10px;font-weight:700;
+  border:1px solid #A9B4C0;margin:0 3px 3px 0}
+.lp .c.sup{background:#DCEFE4;border-color:#A9D3BE}
+.lp .c.cor{background:#DCE9F6;border-color:#A6C6E4}
+.lp .c.ext{background:#E7E2F5;border-color:#BFB2E2}
+.lp .c.dok{background:#FBF1CE;border-color:#E6D089}
+.block .lp .safe{border:1.2px solid #E6D089;background:#FBF1CE;border-radius:8px;
+  padding:9px 12px;font-size:11px;margin:0;color:#2F3A45;line-height:1.45}
+.block .lp .safe b{color:#2F3A45;font-weight:700}
+
+/* ============ the live worksheet preview (her navy palette) ============ */
+.ws{background:#EDF1F5;color:#22303C;padding:16px;font:500 13px/1.5 "Segoe UI",Arial,sans-serif;
+  direction:ltr;text-align:left}
+.ws .sheet{background:#fff;border-radius:4px;padding:0 0 14px;overflow:hidden;
+  box-shadow:0 3px 16px rgba(18,58,94,.13)}
+.ws .wshead{background:#123A5E;color:#fff;padding:12px 15px;text-align:center}
+.ws .wshead .sch{margin:0 0 4px;font-size:10px;letter-spacing:.6px;text-transform:uppercase;
+  color:#9FC2DC}
+.ws .wshead h4{margin:0;font-size:15px;font-weight:800}
+.ws .idbox{border:1.5px solid #123A5E;border-top:none;padding:0;margin:0 0 12px}
+.ws .idbox table{width:100%;border-collapse:collapse;margin:0;border:none;table-layout:fixed}
+.ws .idbox td{border:1px solid #A9C9E4;font-size:11.5px;font-weight:600;padding:6px 8px}
+.ws .idbox td.k{background:#DCEAF5;font-weight:800;color:#123A5E;white-space:nowrap}
+.ws .line{display:block;width:100%;min-width:0;height:14px;border-bottom:1px dotted #5E6B79}
+.ws .mk{font-weight:800;font-size:12.5px;color:#123A5E;white-space:nowrap}
+.ws h5.sec{background:#123A5E;color:#fff;font-size:12.5px;font-weight:800;margin:0;
+  padding:7px 12px;border-radius:7px 7px 0 0;display:flex;gap:8px;align-items:center}
+.ws h5.sec .marks{margin-inline-start:auto;font-size:10.5px;font-weight:600;background:#fff;
+  color:#123A5E;border-radius:999px;padding:1px 9px}
+.ws .s{border:1px solid #A9C9E4;border-top:none;border-radius:0 0 7px 7px;margin:0 0 8px}
+.ws .instr{background:#DCEAF5;margin:0;padding:7px 12px;font-weight:700;font-size:11.5px;
+  color:#123A5E;border-bottom:1px solid #A9C9E4}
+.ws .body{padding:10px 14px}
+.ws ol.q{margin:2px 0;padding-inline-start:20px}
+.ws ol.q > li{margin:9px 0;font-weight:600;font-size:12.5px}
+.ws ol.wsopts{list-style:upper-alpha;margin:4px 0 0;padding-inline-start:22px}
+.ws .wsopt{display:list-item;cursor:pointer;border-radius:6px;padding:2px 7px;margin:2px 0;
+  font-weight:500;font-size:12.5px}
+.ws .wsopt:hover{background:#E7EBEF}
+.ws .wsopt.ok{background:#DFF3E4;box-shadow:inset 0 0 0 2px #6FBE93}
+.ws .wsopt.no{background:#FBE4E4;box-shadow:inset 0 0 0 2px #DE9A9A}
+.ws .wsfb{display:none;margin:5px 0 0;font-size:11.5px;font-weight:600}
+.ws .wsfb.show{display:block}
+.ws .wsfb.good{color:#2E7D51}
+.ws .wsfb.bad{color:#B0504C}
+.ws .chip{display:inline-block;border-radius:999px;padding:1px 8px;font-size:10px;font-weight:700;
+  border:1px solid #fff;background:#fff;color:#123A5E}
+.ws .ws-cheer{display:none;margin:10px 0 0;padding:11px;border-radius:8px;background:#DFF3E4;
+  border:1.5px solid #6FBE93;text-align:center;font-weight:700;color:#2E7D51;font-size:12.5px}
+.ws .ws-cheer.show{display:block}
+.ws .ws-cheer.part{background:#FBF3DE;border-color:#DFC078;color:#87651B}
+.wsbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 20px 0}
+.wschip{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-pill);
+  padding:7px 15px;font-weight:700;color:var(--ink);font-size:14px}
+
+/* ============ the two finished Gems ============ */
+.gemcard{margin:22px 0 0;border:1px solid var(--line);border-radius:var(--r-md);
+  background:var(--bg-2);overflow:hidden}
+.gemcard-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 18px;
+  background:var(--surface);border-bottom:1px solid var(--line)}
+.gemcard-head b{font-size:16.5px;color:var(--ink);flex:1 1 auto}
+.gempair{display:grid;grid-template-columns:minmax(0,43fr) minmax(0,57fr);gap:0;
+  align-items:stretch}
+.gempair > *{min-width:0}
+@media (max-width:900px){.gempair{grid-template-columns:minmax(0,1fr)}}
+.gempair .side{padding:16px;border-inline-end:1px solid var(--line);
+  display:flex;flex-direction:column}
+@media (max-width:900px){.gempair .side{border-inline-end:none;border-bottom:1px solid var(--line)}}
+.gemtext{width:100%;min-height:270px;flex:1 1 auto;padding:14px;border-radius:var(--r);
+  border:1px solid var(--line);background:var(--bg);color:var(--muted);
+  font-family:var(--mono);font-size:11.5px;line-height:1.55;resize:vertical;
+  direction:ltr;text-align:left}
+.gemtext:focus{outline:none;border-color:var(--brand-lift)}
+.gembar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0 0}
+.gempreview{padding:0;background:var(--bg);display:flex;flex-direction:column}
+.gempreview > .browser{margin:16px;flex:1 1 auto}
+
+/* ============ 5 · symptom → the sentence ============ */
+.syms{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:10px;
+  margin:22px 0 0}
+.sym{min-height:44px;padding:14px 16px;border-radius:var(--r);border:1px solid var(--line);
+  background:var(--bg-2);color:var(--ink-2);font:inherit;font-size:15px;font-weight:600;
+  text-align:start;cursor:pointer;transition:background var(--t-fast),border-color var(--t-fast)}
+.sym:hover{background:var(--surface);border-color:var(--brand-lift);color:var(--ink)}
+.sym[aria-pressed=true]{background:var(--surface-2);border-color:var(--accent);color:var(--ink)}
+.symnote{margin:16px 0 0;border:1px solid var(--line);border-radius:var(--r-md);
+  background:var(--surface);padding:18px 20px}
+.symnote[hidden]{display:none}
+.symnote .nb[hidden]{display:none}
+.symnote .why{margin:0 0 12px;font-size:15.5px;color:var(--ink-2);line-height:1.6}
+.symnote .why b{color:var(--accent-text)}
+.saybox{border:1px solid var(--line);border-radius:var(--r);background:var(--bg);
+  padding:14px 16px;font-family:var(--mono);font-size:13.5px;line-height:1.6;color:var(--ink);
+  white-space:pre-wrap}
+[dir=rtl] .saybox{font-family:var(--ar);font-size:15px}
+.saylabel{margin:0 0 7px;font-size:12.5px;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--brand-lift);font-family:var(--sans)}
+[dir=rtl] .saylabel{letter-spacing:0}
+
+/* ============ the full-width lab band ============
+   386 = 308 rail + 40 gap + 38 block padding; 424 = 386 + 38 for the far edge.
+   A stepped-out band must paint its OWN surface, not rely on one child. */
+.lab-band,.wide{position:relative;z-index:3;width:calc(100% + 424px);
+  margin-inline-start:-386px}
+@media (min-width:961px){
+  .lab-band{background:var(--bg);border-radius:var(--r-lg);padding-bottom:20px}
+}
+@media (min-width:961px){
+  /* a stepped-out band must paint its OWN surface, not rely on one child */
+  .wide{background:var(--bg);border-radius:var(--r-lg);padding:2px 0 10px}
+}
+@media (max-width:960px){.lab-band,.wide{width:100%;margin-inline-start:0}}
+.lab-frame{border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;
+  background:var(--bg);margin-top:24px}
+.lab-frame iframe{display:block;width:100%;height:1400px;border:0;background:var(--bg)}
+.lab-frame:fullscreen iframe{height:100vh !important}
+.lab-actions{display:flex;flex-wrap:wrap;gap:12px;padding:18px 0 0}
+
+/* ============ safeguard box ============ */
+.safebox{margin:22px 0 0;border:1px solid oklch(0.520 0.185 31 / .55);border-radius:var(--r-md);
+  background:var(--bg-2);padding:18px 20px}
+.safebox h4{margin:0 0 8px;font-size:16px;font-weight:800;color:var(--accent-text)}
+.block .safebox p{margin:0;font-size:16px;line-height:1.65}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main" data-en="Skip to content" data-ar="تخطَّ إلى المحتوى">Skip to content</a>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <img src="assets/logo-reversed.png" alt="Edulixa 360">
+      <span class="brand-tag" data-en="AI Masterclass · Level 3" data-ar="الماستر كلاس · المستوى الثالث">AI Masterclass · Level 3</span>
+    </div>
+    <div class="topbar-actions">
+      <a class="btn btn-ghost" href="index.html"><svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="All sessions" data-ar="كل المحاضرات">All sessions</span></a>
+      <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <a class="backlink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="Back to all sessions" data-ar="العودة إلى كل المحاضرات">Back to all sessions</span></a>
+    <p class="eyebrow" data-en="Session 2 of 5" data-ar="المحاضرة 2 من 5">Session 2 of 5</p>
+    <h1 class="display" data-en="Write the instructions once. Never type them again." data-ar="اكتب التعليمات مرة واحدة. ولا تكتبها مرة أخرى أبدًا.">Write the instructions once. Never type them again.</h1>
+    <p class="lede" data-en="A Gem is a chat that already knows your job. This session takes apart two Gems that are already working, one for lesson plans and one for worksheets, then you write your own, paste it, test it and publish what it makes." data-ar="الـ Gem محادثة تعرف عملك مسبقًا. تفكّك هذه المحاضرة اثنين من الـ Gems يعملان بالفعل — واحد لخطة الدرس وآخر لورقة العمل — ثم تكتب الخاص بك، وتلصقه، وتختبره، وتنشر ما ينتجه.">A Gem is a chat that already knows your job. This session takes apart two Gems that are already working, one for lesson plans and one for worksheets, then you write your own, paste it, test it and publish what it makes.</p>
+    <div class="hero-actions">
+      <a class="btn btn-accent" href="#builder" data-en="Write your Gem" data-ar="اكتب الـ Gem الخاص بك">Write your Gem</a>
+      <a class="btn btn-outline" href="#examples" data-en="Take the two finished Gems" data-ar="خذ الـ Gems الجاهزين">Take the two finished Gems</a>
+    </div>
+    <div class="hero-meta">
+      <span class="chip" data-en="Works on a free Gemini account" data-ar="يعمل على حساب Gemini مجاني">Works on a free Gemini account</span>
+      <span class="chip" data-en="No knowledge files needed" data-ar="لا يحتاج ملفات معرفة">No knowledge files needed</span>
+      <span class="chip" data-en="Every example here is live" data-ar="كل مثال هنا حيّ">Every example here is live</span>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+<section class="sec">
+  <div class="wrap">
+    <div class="split">
+
+      <aside class="rail">
+        <h2 data-en="Session at a glance" data-ar="المحاضرة في لمحة">Session at a glance</h2>
+        <p data-en="Select a step to jump to it." data-ar="اختر خطوة للانتقال إليها.">Select a step to jump to it.</p>
+        <ol>
+          <li data-go="objectives" data-en="Objectives" data-ar="الأهداف">Objectives</li>
+          <li data-go="what" data-en="What a Gem changes" data-ar="ما الذي يغيّره الـ Gem">What a Gem changes</li>
+          <li data-go="anatomy" data-en="Take an instruction apart" data-ar="فكّك كتلة تعليمات">Take an instruction apart</li>
+          <li data-go="create" data-en="Make one in Gemini" data-ar="اصنع واحدًا في Gemini">Make one in Gemini</li>
+          <li data-go="limits" data-en="Three limits to measure" data-ar="ثلاثة حدود تقيسها">Three limits to measure</li>
+          <li data-go="builder" data-en="Write your own" data-ar="اكتب الخاص بك">Write your own</li>
+          <li data-go="examples" data-en="The two finished Gems" data-ar="الـ Gems الجاهزان">The two finished Gems</li>
+          <li data-go="refine" data-en="Paste, check, refine" data-ar="الصق، افحص، حسّن">Paste, check, refine</li>
+          <li data-go="publish" data-en="Publish what it makes" data-ar="انشر ما ينتجه">Publish what it makes</li>
+          <li data-go="tools" data-en="Every tool link" data-ar="كل روابط الأدوات">Every tool link</li>
+        </ol>
+        <a class="btn btn-accent" href="#builder" data-en="Go to the builder" data-ar="اذهب إلى أداة الكتابة">Go to the builder</a>
+      </aside>
+
+      <div>
+
+        <!-- ==================== OBJECTIVES ==================== -->
+        <div class="block" id="objectives">
+          <h2 class="display" data-en="Objectives" data-ar="الأهداف">Objectives</h2>
+          <ol class="objectives">
+            <li>
+              <div class="ob-head">
+                <b data-en="Define what a Gem is, and say how it differs from a normal chat." data-ar="تعريف الـ Gem، وبيان الفرق بينه وبين المحادثة العادية.">Define what a Gem is, and say how it differs from a normal chat.</b>
+                <span class="dok-chip" data-en="DOK 1 · Recall" data-ar="العمق 1 · تذكر">DOK 1 · Recall</span>
+              </div>
+              <a class="step-cta" href="#what" data-en="Where you meet it →" data-ar="أين تقابله ←">Where you meet it →</a>
+            </li>
+            <li>
+              <div class="ob-head">
+                <b data-en="Create a Gem in Gemini: name it, paste its instructions, save it, share it." data-ar="إنشاء Gem في Gemini: تسميته، لصق تعليماته، حفظه، مشاركته.">Create a Gem in Gemini: name it, paste its instructions, save it, share it.</b>
+                <span class="dok-chip" data-en="DOK 2 · Apply" data-ar="العمق 2 · تطبيق">DOK 2 · Apply</span>
+              </div>
+              <a class="step-cta" href="#create" data-en="Where you meet it →" data-ar="أين تقابله ←">Where you meet it →</a>
+            </li>
+            <li>
+              <div class="ob-head">
+                <b data-en="Analyse a working instruction block and name what each of its seven parts prevents." data-ar="تحليل كتلة تعليمات ناجحة وتسمية ما يمنعه كل جزء من أجزائها السبعة.">Analyse a working instruction block and name what each of its seven parts prevents.</b>
+                <span class="dok-chip" data-en="DOK 3 · Analyse" data-ar="العمق 3 · تحليل">DOK 3 · Analyse</span>
+              </div>
+              <a class="step-cta" href="#anatomy" data-en="Where you meet it →" data-ar="أين تقابله ←">Where you meet it →</a>
+            </li>
+            <li>
+              <div class="ob-head">
+                <b data-en="Write the complete instructions for a Gem of your own, inside the character limit." data-ar="كتابة تعليمات كاملة لـ Gem خاص بك، داخل حدّ عدد الحروف.">Write the complete instructions for a Gem of your own, inside the character limit.</b>
+                <span class="dok-chip is-create" data-en="DOK 4 · Create" data-ar="العمق 4 · إنشاء">DOK 4 · Create</span>
+              </div>
+              <a class="step-cta" href="#builder" data-en="Where you meet it →" data-ar="أين تقابله ←">Where you meet it →</a>
+            </li>
+            <li>
+              <div class="ob-head">
+                <b data-en="Test it, repair it from the symptom, and publish what it produces at a public link." data-ar="اختباره، وإصلاحه انطلاقًا من العَرَض، ونشر ما ينتجه على رابط عام.">Test it, repair it from the symptom, and publish what it produces at a public link.</b>
+                <span class="dok-chip is-create" data-en="DOK 4 · Create" data-ar="العمق 4 · إنشاء">DOK 4 · Create</span>
+              </div>
+              <a class="step-cta" href="#refine" data-en="Where you meet it →" data-ar="أين تقابله ←">Where you meet it →</a>
+            </li>
+          </ol>
+        </div>
+
+        <!-- ==================== 1 · WHAT A GEM CHANGES ==================== -->
+        <div class="block" id="what">
+          <h2 class="display" data-en="What a Gem changes" data-ar="ما الذي يغيّره الـ Gem">What a Gem changes</h2>
+          <p class="lead" data-en="The same sentence, sent to a plain chat and to a Gem, at the same moment. Press the button and watch both columns fill together." data-ar="الجملة نفسها، تُرسَل إلى محادثة عادية وإلى Gem، في اللحظة نفسها. اضغط الزر وشاهد العمودين يمتلئان معًا.">The same sentence, sent to a plain chat and to a Gem, at the same moment. Press the button and watch both columns fill together.</p>
+
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="One request, two destinations" data-ar="طلب واحد، وجهتان">One request, two destinations</b>
+              <span data-en="nothing is hidden behind a tab: both answers are on screen at once" data-ar="لا شيء مخفي خلف تبويب — الإجابتان على الشاشة معًا">nothing is hidden behind a tab: both answers are on screen at once</span>
+            </div>
+
+            <div class="chatpanes">
+              <div class="chatpane">
+                <div class="chatpane-head">
+                  <b data-en="A plain Gemini chat" data-ar="محادثة Gemini عادية">A plain Gemini chat</b>
+                  <span class="tagl" data-en="knows nothing about you" data-ar="لا يعرف عنك شيئًا">knows nothing about you</span>
+                </div>
+                <div class="chatlog">
+                  <p class="msg me is-in" data-beat="1" data-en="I want to plan my lesson." data-ar="أريد تحضير الدرس.">I want to plan my lesson.</p>
+                  <p class="msg bad is-in" data-beat="2" data-en="Certainly! I'd be happy to help you plan your lesson. To get started, could you tell me what subject you teach?" data-ar="بكل تأكيد! يسعدني مساعدتك في تحضير درسك. لنبدأ، هل يمكنك إخباري بالمادة التي تدرّسها؟">Certainly! I'd be happy to help you plan your lesson. To get started, could you tell me what subject you teach?</p>
+                  <p class="msg me is-in" data-beat="3" data-en="Grade 6 English, flashbacks." data-ar="الصف السادس، لغة إنجليزية، الاسترجاع الفني.">Grade 6 English, flashbacks.</p>
+                  <p class="msg bad is-in" data-beat="4" data-en="Great choice! And how long is the lesson? Also, what level are your students, and do you have a textbook you're working from?" data-ar="اختيار ممتاز! وكم مدة الدرس؟ وما مستوى طلابك، وهل لديك كتاب مقرر تعمل منه؟">Great choice! And how long is the lesson? Also, what level are your students, and do you have a textbook you're working from?</p>
+                  <p class="msg bad is-in" data-beat="5" data-en="Here is a general outline. Objectives: students will understand flashbacks and appreciate their use in narrative. Warm-up (5 min): ask students what a flashback is…" data-ar="إليك مخططًا عامًا. الأهداف: سيفهم الطلاب الاسترجاع الفني ويقدّرون استخدامه في السرد. التمهيد (5 دقائق): اسأل الطلاب ما الاسترجاع الفني…">Here is a general outline. Objectives: students will understand flashbacks and appreciate their use in narrative. Warm-up (5 min): ask students what a flashback is…</p>
+                </div>
+              </div>
+
+              <div class="chatpane is-gem">
+                <div class="chatpane-head">
+                  <b data-en="The Lesson Plan Architect Gem" data-ar="Gem مهندس تحضير الدروس">The Lesson Plan Architect Gem</b>
+                  <span class="tagl" data-en="already knows the job" data-ar="يعرف المهمة مسبقًا">already knows the job</span>
+                </div>
+                <div class="chatlog">
+                  <p class="msg me is-in" data-beat="1" data-en="I want to plan my lesson." data-ar="أريد تحضير الدرس.">I want to plan my lesson.</p>
+                  <p class="msg good code is-in" data-quote data-beat="2" data-en="Before I build the plan, please answer these — one message is enough:&#10;1. Your name, and your school's name.&#10;2. Subject, grade, and lesson topic.&#10;3. Lesson duration in minutes.  [default 45]&#10;…&#10;10. Homework preference, and the link if you have one." data-ar="قبل أن أبني الخطة، أجب عن هذه — رسالة واحدة تكفي:&#10;١. اسمك، واسم مدرستك.&#10;٢. المادة والصف وموضوع الدرس.&#10;٣. مدة الدرس بالدقائق.  [الافتراضي ٤٥]&#10;…&#10;١٠. تفضيلك للواجب المنزلي، والرابط إن وُجد.">Before I build the plan, please answer these — one message is enough:</p>
+                  <p class="msg me is-in" data-beat="3" data-en="Abir Wafa, Monglish. Grade 6 English, flashbacks, 45 minutes, defaults for the rest." data-ar="عبير وفا، مونجلش. الصف السادس لغة إنجليزية، الاسترجاع الفني، ٤٥ دقيقة، والباقي افتراضي.">Abir Wafa, Monglish. Grade 6 English, flashbacks, 45 minutes, defaults for the rest.</p>
+                  <p class="msg good code is-in" data-quote data-beat="4" data-en="```html&#10;&lt;!doctype html&gt;&#10;&lt;title&gt;Lesson_Plan_G6_English_Flashbacks&lt;/title&gt;&#10;… 6 measurable objectives, 8 stages, 45 min exactly …&#10;```" data-ar="```html&#10;&lt;!doctype html&gt;&#10;&lt;title&gt;Lesson_Plan_G6_English_Flashbacks&lt;/title&gt;&#10;… ٦ أهداف قابلة للقياس، ٨ مراحل، ٤٥ دقيقة بالضبط …&#10;```">```html</p>
+                  <p class="msg good is-in" data-beat="5" data-en="Save it as a .html file and open it in any browser. Enable Editing to fix any cell, Save to keep a copy, Download PDF to print. Assumed: face-to-face, mixed ability, 24 learners." data-ar="احفظه كملف .html وافتحه في أي متصفح. فعّل التحرير لتعديل أي خلية، واحفظ نسخة، ونزّل PDF للطباعة. الافتراضات: حضوري، قدرات متفاوتة، ٢٤ متعلمًا.">Save it as a .html file and open it in any browser. Enable Editing to fix any cell, Save to keep a copy, Download PDF to print. Assumed: face-to-face, mixed ability, 24 learners.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="runbar">
+              <button class="btn btn-primary" type="button" id="chat-run" data-en="Play the exchange again" data-ar="أعد تشغيل الحوار">Play the exchange again</button>
+              <span class="cap" style="margin:0" data-en="Both columns advance together, one turn at a time." data-ar="يتقدّم العمودان معًا، دورًا بدور.">Both columns advance together, one turn at a time.</span>
+            </div>
+
+            <div class="diffs">
+              <div class="diff">
+                <b data-en="Asking" data-ar="السؤال">Asking</b>
+                <p data-en="Left: two rounds of questions, and more coming. Right: one numbered list, once, with defaults you can accept in a word." data-ar="اليسار: جولتان من الأسئلة، وغيرها قادم. اليمين: قائمة مرقّمة واحدة، مرة واحدة، بافتراضات تقبلها بكلمة.">Left: two rounds of questions, and more coming. Right: one numbered list, once, with defaults you can accept in a word.</p>
+              </div>
+              <div class="diff">
+                <b data-en="Objectives" data-ar="الأهداف">Objectives</b>
+                <p data-en="Left: &ldquo;understand&rdquo; and &ldquo;appreciate&rdquo;, which cannot be observed. Right: six measurable objectives, one per Bloom level." data-ar="اليسار: «يفهم» و«يقدّر»، ولا يمكن ملاحظتهما. اليمين: ستة أهداف قابلة للقياس، واحد لكل مستوى في بلوم.">Left: &ldquo;understand&rdquo; and &ldquo;appreciate&rdquo;, which cannot be observed. Right: six measurable objectives, one per Bloom level.</p>
+              </div>
+              <div class="diff">
+                <b data-en="What arrives" data-ar="ما الذي يصل">What arrives</b>
+                <p data-en="Left: text in a chat you would retype into Word. Right: a file that opens, edits, prints and saves." data-ar="اليسار: نص في محادثة ستعيد كتابته في Word. اليمين: ملف يُفتح ويُحرَّر ويُطبع ويُحفَظ.">Left: text in a chat you would retype into Word. Right: a file that opens, edits, prints and saves.</p>
+              </div>
+              <div class="diff">
+                <b data-en="Next week" data-ar="الأسبوع القادم">Next week</b>
+                <p data-en="Left: you type the whole brief again. Right: you open the same Gem and it already knows all of this." data-ar="اليسار: تكتب الطلب كاملًا من جديد. اليمين: تفتح الـ Gem نفسه وهو يعرف كل هذا مسبقًا.">Left: you type the whole brief again. Right: you open the same Gem and it already knows all of this.</p>
+              </div>
+            </div>
+          </div>
+
+          <p class="cap" data-en-html="<b>A Gem is not a smarter model.</b> It is the same model, holding your instructions permanently, so you never spend the first ten messages explaining your job." data-ar-html="<b>الـ Gem ليس نموذجًا أذكى.</b> إنه النموذج نفسه، يحتفظ بتعليماتك بشكل دائم، فلا تنفق أول عشر رسائل في شرح عملك."><b>A Gem is not a smarter model.</b> It is the same model, holding your instructions permanently, so you never spend the first ten messages explaining your job.</p>
+        </div>
+
+        <!-- ==================== 2 · ANATOMY ==================== -->
+        <div class="block" id="anatomy">
+          <h2 class="display" data-en="Take an instruction apart" data-ar="فكّك كتلة تعليمات">Take an instruction apart</h2>
+          <p class="lead" data-en="This is the real text inside the Lesson Plan Architect, in seven parts. Press any part, and the note underneath says what that part prevents." data-ar="هذا هو النص الحقيقي داخل Lesson Plan Architect، في سبعة أجزاء. اضغط أي جزء — والملاحظة تحته تقول ما الذي يمنعه ذلك الجزء.">This is the real text inside the Lesson Plan Architect, in seven parts. Press any part, and the note underneath says what that part prevents.</p>
+
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="Seven parts, and the failure each one stops" data-ar="سبعة أجزاء، والخلل الذي يوقفه كل منها">Seven parts, and the failure each one stops</b>
+              <span data-en="every Gem you write needs all seven" data-ar="كل Gem تكتبه يحتاج السبعة جميعًا">every Gem you write needs all seven</span>
+            </div>
+
+            <div class="picker" data-picker="anat" role="group" data-en-label="The seven parts" data-ar-label="الأجزاء السبعة">
+              <button class="pick" type="button" data-pick-go="role" aria-pressed="false" data-en="1 Role" data-ar="‎1 الدور">1 Role</button>
+              <button class="pick" type="button" data-pick-go="refuse" aria-pressed="false" data-en="2 Anti-refusal" data-ar="‎2 منع الرفض">2 Anti-refusal</button>
+              <button class="pick" type="button" data-pick-go="ask" aria-pressed="false" data-en="3 One question list" data-ar="‎3 قائمة أسئلة واحدة">3 One question list</button>
+              <button class="pick" type="button" data-pick-go="format" aria-pressed="false" data-en="4 Format authority" data-ar="‎4 سلطة الشكل">4 Format authority</button>
+              <button class="pick" type="button" data-pick-go="source" aria-pressed="false" data-en="5 Source control" data-ar="‎5 ضبط المصدر">5 Source control</button>
+              <button class="pick" type="button" data-pick-go="file" aria-pressed="false" data-en="6 The file" data-ar="‎6 الملف">6 The file</button>
+              <button class="pick" type="button" data-pick-go="check" aria-pressed="false" data-en="7 Silent checklist" data-ar="‎7 قائمة فحص صامتة">7 Silent checklist</button>
+            </div>
+
+            <div class="gemsrc" data-quote>
+              <button class="gemseg" type="button" data-pick="role" data-pick-of="anat" data-pick-press>
+                <span class="lbl" data-en="1 · ROLE" data-ar="‎1 · الدور">1 · ROLE</span><span data-en="You are the Lesson Plan Architect for Monglish International Academy / Edulixa: a certified teacher for ANY subject, an instructional designer working to Bloom's Taxonomy and the DOK ladder (Recall→Apply→Analyse→Create), a specialist in differentiation and assessment, and a front-end developer." data-ar="You are the Lesson Plan Architect for Monglish International Academy / Edulixa: a certified teacher for ANY subject, an instructional designer working to Bloom's Taxonomy and the DOK ladder (Recall→Apply→Analyse→Create), a specialist in differentiation and assessment, and a front-end developer.">You are the Lesson Plan Architect for Monglish International Academy / Edulixa: a certified teacher for ANY subject, an instructional designer working to Bloom's Taxonomy and the DOK ladder (Recall→Apply→Analyse→Create), a specialist in differentiation and assessment, and a front-end developer.</span>
+              </button>
+              <button class="gemseg" type="button" data-pick="refuse" data-pick-of="anat" data-pick-press>
+                <span class="lbl" data-en="2 · YOU CAN ALWAYS DO THIS" data-ar="‎2 · تستطيع دائمًا فعل هذا">2 · YOU CAN ALWAYS DO THIS</span><span data-en="What you produce is text. A lesson plan is HTML source code, and HTML is plain text you type out. Nothing here needs a tool, a file system or an upload. NEVER reply &quot;I can only process and create text&quot;, &quot;I cannot create documents&quot;, or &quot;that is outside what I can do&quot; — those answers are always wrong here." data-ar="What you produce is text. A lesson plan is HTML source code, and HTML is plain text you type out. Nothing here needs a tool, a file system or an upload. NEVER reply &quot;I can only process and create text&quot;, &quot;I cannot create documents&quot;, or &quot;that is outside what I can do&quot; — those answers are always wrong here.">What you produce is text. A lesson plan is HTML source code, and HTML is plain text you type out. Nothing here needs a tool, a file system or an upload. NEVER reply "I can only process and create text", "I cannot create documents", or "that is outside what I can do" — those answers are always wrong here.</span>
+              </button>
+              <button class="gemseg" type="button" data-pick="ask" data-pick-of="anat" data-pick-press>
+                <span class="lbl" data-en="3 · ASK ONCE — never two lists" data-ar="‎3 · اسأل مرة واحدة — لا قائمتين">3 · ASK ONCE — never two lists</span><span data-en="Before I build the plan, please answer these — one message is enough:  1. Your name, and your school's name.  2. Subject, grade, and lesson topic. [skip if I can see it]  3. Lesson duration in minutes. [default 45]  …  10. Homework preference, and the link if you have one." data-ar="Before I build the plan, please answer these — one message is enough:  1. Your name, and your school's name.  2. Subject, grade, and lesson topic. [skip if I can see it]  3. Lesson duration in minutes. [default 45]  …  10. Homework preference, and the link if you have one.">Before I build the plan, please answer these — one message is enough:  1. Your name, and your school's name.  2. Subject, grade, and lesson topic. [skip if I can see it]  3. Lesson duration in minutes. [default 45]  …  10. Homework preference, and the link if you have one.</span>
+              </button>
+              <button class="gemseg" type="button" data-pick="format" data-pick-of="anat" data-pick-press>
+                <span class="lbl" data-en="4 · FORMAT AUTHORITY" data-ar="‎4 · سلطة الشكل">4 · FORMAT AUTHORITY</span><span data-en="Order: attached model plan &gt; teacher's explicit instruction &gt; the default below. The model's number of objectives wins (3 means 3), its stage names and order win, its columns and sections win. Never overridden: full table borders, source control, differentiation, the DOK climb, blank reflection, the safeguard box." data-ar="Order: attached model plan &gt; teacher's explicit instruction &gt; the default below. The model's number of objectives wins (3 means 3), its stage names and order win, its columns and sections win. Never overridden: full table borders, source control, differentiation, the DOK climb, blank reflection, the safeguard box.">Order: attached model plan &gt; teacher's explicit instruction &gt; the default below. The model's number of objectives wins (3 means 3), its stage names and order win, its columns and sections win. Never overridden: full table borders, source control, differentiation, the DOK climb, blank reflection, the safeguard box.</span>
+              </button>
+              <button class="gemseg" type="button" data-pick="source" data-pick-of="anat" data-pick-press>
+                <span class="lbl" data-en="5 · SOURCE CONTROL — absolute" data-ar="‎5 · ضبط المصدر — مطلق">5 · SOURCE CONTROL — absolute</span><span data-en="Use only the supplied source. Copy textbook questions word for word with their original numbering. Never renumber, split, simplify or paraphrase them. Never invent an extra item (no &quot;5d&quot; unless printed), a quotation, data, or a track number. If a needed page is missing, stop and ask." data-ar="Use only the supplied source. Copy textbook questions word for word with their original numbering. Never renumber, split, simplify or paraphrase them. Never invent an extra item (no &quot;5d&quot; unless printed), a quotation, data, or a track number. If a needed page is missing, stop and ask.">Use only the supplied source. Copy textbook questions word for word with their original numbering. Never renumber, split, simplify or paraphrase them. Never invent an extra item (no "5d" unless printed), a quotation, data, or a track number. If a needed page is missing, stop and ask.</span>
+              </button>
+              <button class="gemseg" type="button" data-pick="file" data-pick-of="anat" data-pick-press>
+                <span class="lbl" data-en="6 · THE FILE" data-ar="‎6 · الملف">6 · THE FILE</span><span data-en="One self-contained HTML file. Every table needs a colgroup and a header class. PDF = window.print(). Never html2pdf — it photographs the page: no selectable text, table headings never repeat, files 20× bigger, and it garbles Arabic. break-inside:avoid belongs on tr and nowhere else. [then the full style sheet and script, emitted exactly]" data-ar="One self-contained HTML file. Every table needs a colgroup and a header class. PDF = window.print(). Never html2pdf — it photographs the page: no selectable text, table headings never repeat, files 20× bigger, and it garbles Arabic. break-inside:avoid belongs on tr and nowhere else. [then the full style sheet and script, emitted exactly]">One self-contained HTML file. Every table needs a colgroup and a header class. PDF = window.print(). Never html2pdf — it photographs the page: no selectable text, table headings never repeat, files 20× bigger, and it garbles Arabic. break-inside:avoid belongs on tr and nowhere else. [then the full style sheet and script, emitted exactly]</span>
+              </button>
+              <button class="gemseg" type="button" data-pick="check" data-pick-of="anat" data-pick-press>
+                <span class="lbl" data-en="7 · CHECK SILENTLY BEFORE SENDING" data-ar="‎7 · افحص بصمت قبل الإرسال">7 · CHECK SILENTLY BEFORE SENDING</span><span data-en="Nothing refused · no preamble · one block of ≤10 questions · timings total the duration · objectives once only, measurable, reaching Create · textbook questions verbatim · DOK reaches 4 · rubric 4×4 + bands · safeguard verbatim · Reflection and Next Steps blank · every td/th bordered · window.print() not html2pdf · delivered as one html code block, not a document. Fix every failure, then send. Do not print this checklist." data-ar="Nothing refused · no preamble · one block of ≤10 questions · timings total the duration · objectives once only, measurable, reaching Create · textbook questions verbatim · DOK reaches 4 · rubric 4×4 + bands · safeguard verbatim · Reflection and Next Steps blank · every td/th bordered · window.print() not html2pdf · delivered as one html code block, not a document. Fix every failure, then send. Do not print this checklist.">Nothing refused · no preamble · one block of ≤10 questions · timings total the duration · objectives once only, measurable, reaching Create · textbook questions verbatim · DOK reaches 4 · rubric 4×4 + bands · safeguard verbatim · Reflection and Next Steps blank · every td/th bordered · window.print() not html2pdf · delivered as one html code block, not a document. Fix every failure, then send. Do not print this checklist.</span>
+              </button>
+            </div>
+
+            <div class="notebox" data-note-host="anat">
+              <div class="nb" data-pick-note="role">
+                <b data-en="It stops a general assistant answer." data-ar="يمنع إجابة المساعد العام.">It stops a general assistant answer.</b>
+                <p data-en="Name the job, the institution and the frameworks. &ldquo;Working to Bloom and the DOK ladder&rdquo; is what makes it write measurable objectives without being asked every time." data-ar="سمِّ الوظيفة والمؤسسة والأطر. عبارة «يعمل وفق بلوم وسلّم العمق» هي ما يجعله يكتب أهدافًا قابلة للقياس دون أن تطلب ذلك في كل مرة.">Name the job, the institution and the frameworks. &ldquo;Working to Bloom and the DOK ladder&rdquo; is what makes it write measurable objectives without being asked every time.</p>
+                <p class="stops" data-en="Without it: a polite, generic outline." data-ar="بدونه: مخطط عام مهذّب لا أكثر.">Without it: a polite, generic outline.</p>
+              </div>
+              <div class="nb" data-pick-note="refuse" hidden>
+                <b data-en="It stops &ldquo;I cannot create documents&rdquo;." data-ar="يمنع «لا أستطيع إنشاء مستندات»." >It stops &ldquo;I cannot create documents&rdquo;.</b>
+                <p data-en="The model refuses because it thinks you want a file it must save. Tell it the truth: a lesson plan is HTML, HTML is text, and typing text is all it ever does." data-ar="يرفض النموذج لأنه يظن أنك تريد ملفًا عليه حفظه. قل له الحقيقة: خطة الدرس هي HTML، وهي نص عادي، وكتابة النص هي كل ما يفعله أصلًا.">The model refuses because it thinks you want a file it must save. Tell it the truth: a lesson plan is HTML, HTML is text, and typing text is all it ever does.</p>
+                <p class="stops" data-en="Without it: the single most common Gem failure." data-ar="بدونه: أكثر أعطال الـ Gem شيوعًا على الإطلاق.">Without it: the single most common Gem failure.</p>
+              </div>
+              <div class="nb" data-pick-note="ask" hidden>
+                <b data-en="It stops the four-round interrogation." data-ar="يمنع الاستجواب على أربع جولات.">It stops the four-round interrogation.</b>
+                <p data-en="Every question it will ever need, in one numbered block, with a default in square brackets so a teacher can reply &ldquo;defaults&rdquo; and get a plan. Ten is the ceiling." data-ar="كل سؤال قد يحتاجه، في كتلة مرقّمة واحدة، مع افتراض بين قوسين معقوفين حتى يستطيع المعلم أن يرد بـ«الافتراضات» ويحصل على خطة. عشرة هي الحد الأقصى.">Every question it will ever need, in one numbered block, with a default in square brackets so a teacher can reply &ldquo;defaults&rdquo; and get a plan. Ten is the ceiling.</p>
+                <p class="stops" data-en="Without it: teachers abandon the conversation." data-ar="بدونه: يترك المعلمون المحادثة.">Without it: teachers abandon the conversation.</p>
+              </div>
+              <div class="nb" data-pick-note="format" hidden>
+                <b data-en="It stops your school's template being ignored." data-ar="يمنع تجاهل قالب مدرستك.">It stops your school's template being ignored.</b>
+                <p data-en="A precedence order settles every argument in advance: what an attached model may override, and the short list it may never override." data-ar="ترتيب الأولوية يحسم كل خلاف مسبقًا: ما يجوز لنموذج مرفق أن ينقضه، والقائمة القصيرة التي لا يجوز له نقضها أبدًا.">A precedence order settles every argument in advance: what an attached model may override, and the short list it may never override.</p>
+                <p class="stops" data-en="Without it: your six objectives become three, or three become six." data-ar="بدونه: تصبح أهدافك الستة ثلاثة، أو الثلاثة ستة.">Without it: your six objectives become three, or three become six.</p>
+              </div>
+              <div class="nb" data-pick-note="source" hidden>
+                <b data-en="It stops invented textbook questions." data-ar="يمنع اختراع أسئلة من الكتاب.">It stops invented textbook questions.</b>
+                <p data-en="The rule that matters most for anything a learner will see. Copy word for word, keep the printed numbering, invent nothing, and stop and ask when a page is missing." data-ar="القاعدة الأهم لأي شيء سيراه المتعلم. انسخ حرفيًا، واحتفظ بالترقيم المطبوع، ولا تخترع شيئًا، وتوقف واسأل عند غياب صفحة.">The rule that matters most for anything a learner will see. Copy word for word, keep the printed numbering, invent nothing, and stop and ask when a page is missing.</p>
+                <p class="stops" data-en="Without it: a plausible exercise 5d that is not in the book." data-ar="بدونه: تمرين ٥د مقنع لكنه غير موجود في الكتاب.">Without it: a plausible exercise 5d that is not in the book.</p>
+              </div>
+              <div class="nb" data-pick-note="file" hidden>
+                <b data-en="It stops a different-looking plan every week." data-ar="يمنع خطة بشكل مختلف كل أسبوع.">It stops a different-looking plan every week.</b>
+                <p data-en="The output contract: the exact style sheet and script, so every plan prints identically. The html2pdf ban is here because the alternative garbles Arabic." data-ar="عقد المُخرَج: ورقة الأنماط والسكربت بالضبط، فتُطبع كل خطة بالشكل نفسه. ومنع html2pdf مذكور هنا لأن البديل يشوّه العربية.">The output contract: the exact style sheet and script, so every plan prints identically. The html2pdf ban is here because the alternative garbles Arabic.</p>
+                <p class="stops" data-en="Without it: an unstyled page you cannot print." data-ar="بدونه: صفحة بلا تنسيق لا يمكنك طباعتها.">Without it: an unstyled page you cannot print.</p>
+              </div>
+              <div class="nb" data-pick-note="check" hidden>
+                <b data-en="It makes the Gem mark its own work." data-ar="يجعل الـ Gem يصحّح عمله بنفسه.">It makes the Gem mark its own work.</b>
+                <p data-en="Every rule above, restated as something to verify before sending. The last line, &ldquo;do not print this checklist&rdquo;, is what keeps it out of the answer." data-ar="كل قاعدة أعلاه، معادة الصياغة كشيء يُتحقّق منه قبل الإرسال — والسطر الأخير، «لا تطبع قائمة الفحص هذه»، يبقيها خارج الإجابة.">Every rule above, restated as something to verify before sending. The last line, &ldquo;do not print this checklist&rdquo;, is what keeps it out of the answer.</p>
+                <p class="stops" data-en="Without it: the reflection arrives already filled in." data-ar="بدونه: يصل التأمل مملوءًا سلفًا.">Without it: the reflection arrives already filled in.</p>
+              </div>
+            </div>
+          </div>
+
+          <p class="cap" data-en-html="<b>Read it as seven jobs, not as prose.</b> Every part exists because something went wrong once, and the sentence is there so it cannot go wrong again." data-ar-html="<b>اقرأها كسبع وظائف، لا كنصّ إنشائي.</b> كل جزء موجود لأن شيئًا ما أخفق مرة، والجملة موضوعة كي لا يخفق مرة أخرى."><b>Read it as seven jobs, not as prose.</b> Every part exists because something went wrong once, and the sentence is there so it cannot go wrong again.</p>
+        </div>
+
+        <!-- ==================== 3 · MAKE ONE IN GEMINI ==================== -->
+        <div class="block" id="create">
+          <h2 class="display" data-en="Make one in Gemini" data-ar="اصنع واحدًا في Gemini">Make one in Gemini</h2>
+          <p class="lead" data-en="The Gem screen, with every control you actually press. Press a numbered control to see what it does and what goes wrong there." data-ar="شاشة الـ Gem، بكل عنصر تضغطه فعلًا. اضغط عنصرًا مرقّمًا لترى ما يفعله وما الذي يخفق عنده.">The Gem screen, with every control you actually press. Press a numbered control to see what it does and what goes wrong there.</p>
+
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="Gemini · New Gem" data-ar="Gemini · Gem جديد">Gemini · New Gem</b>
+              <span data-en="seven controls, and that is the whole thing" data-ar="سبعة عناصر، وهذا كل الأمر">seven controls, and that is the whole thing</span>
+            </div>
+
+            <div class="picker" data-picker="gem" role="group" data-en-label="The controls" data-ar-label="عناصر التحكم">
+              <button class="pick" type="button" data-pick-go="g1" aria-pressed="false" data-en="1 Gem manager" data-ar="‎1 مدير الـ Gems">1 Gem manager</button>
+              <button class="pick" type="button" data-pick-go="g2" aria-pressed="false" data-en="2 New Gem" data-ar="‎2 Gem جديد">2 New Gem</button>
+              <button class="pick" type="button" data-pick-go="g3" aria-pressed="false" data-en="3 Name" data-ar="‎3 الاسم">3 Name</button>
+              <button class="pick" type="button" data-pick-go="g4" aria-pressed="false" data-en="4 Instructions" data-ar="‎4 التعليمات">4 Instructions</button>
+              <button class="pick" type="button" data-pick-go="g5" aria-pressed="false" data-en="5 Knowledge" data-ar="‎5 ملفات المعرفة">5 Knowledge</button>
+              <button class="pick" type="button" data-pick-go="g6" aria-pressed="false" data-en="6 Preview" data-ar="‎6 المعاينة">6 Preview</button>
+              <button class="pick" type="button" data-pick-go="g7" aria-pressed="false" data-en="7 Save and share" data-ar="‎7 الحفظ والمشاركة">7 Save and share</button>
+            </div>
+
+            <div class="ex-body is-flush">
+              <div class="gemui">
+                <div class="gemui-side">
+                  <p class="s-logo">Gemini</p>
+                  <button class="hot" type="button" data-pick="g1" data-pick-of="gem" data-pick-press><span class="hn">1</span><span class="ht" data-en="Explore Gems" data-ar="استكشاف الـ Gems">Explore Gems</span><span class="hs" data-en="the list of yours" data-ar="قائمة الخاصة بك">the list of yours</span></button>
+                  <button class="hot" type="button" data-pick="g2" data-pick-of="gem" data-pick-press><span class="hn">2</span><span class="ht" data-en="New Gem" data-ar="‏Gem جديد">New Gem</span><span class="hs" data-en="an empty form" data-ar="نموذج فارغ">an empty form</span></button>
+                </div>
+
+                <div class="gemui-main" data-quote>
+                  <div>
+                    <p class="gemui-label" data-en="Name" data-ar="الاسم">Name</p>
+                    <button class="hot" type="button" data-pick="g3" data-pick-of="gem" data-pick-press><span class="hn">3</span><span class="ht">Lesson Plan Architect · Edulixa</span></button>
+                  </div>
+
+                  <div>
+                    <p class="gemui-label" data-en="Instructions" data-ar="التعليمات">Instructions</p>
+                    <button class="hot is-big" type="button" data-pick="g4" data-pick-of="gem" data-pick-press><span class="hn">4</span><span class="ht" data-en="# ROLE — You are the Lesson Plan Architect for Monglish…" data-ar="‏# ROLE — You are the Lesson Plan Architect for Monglish…"># ROLE — You are the Lesson Plan Architect for Monglish…</span><span class="hs" data-en="everything between COPY FROM HERE and COPY TO HERE goes in this one box" data-ar="كل ما بين COPY FROM HERE و COPY TO HERE يوضع في هذا المربع وحده">everything between COPY FROM HERE and COPY TO HERE goes in this one box</span></button>
+                  </div>
+
+                  <div>
+                    <p class="gemui-label" data-en="Knowledge" data-ar="ملفات المعرفة">Knowledge</p>
+                    <button class="hot is-locked" type="button" data-pick="g5" data-pick-of="gem" data-pick-press><span class="hn">5</span><span class="ht" data-en="Add files" data-ar="إضافة ملفات">Add files</span><span class="hs" data-en="no + button on a free account, which is why our Gems carry no knowledge files" data-ar="لا يوجد زر + في الحساب المجاني — لهذا لا تحمل الـ Gems عندنا ملفات معرفة">no + button on a free account, which is why our Gems carry no knowledge files</span></button>
+                  </div>
+
+                  <div>
+                    <p class="gemui-label" data-en="Preview" data-ar="المعاينة">Preview</p>
+                    <button class="hot" type="button" data-pick="g6" data-pick-of="gem" data-pick-press><span class="hn">6</span><span class="ht" data-en="Test it here before you save" data-ar="اختبره هنا قبل الحفظ">Test it here before you save</span></button>
+                    <div class="gemui-prev" style="margin-top:9px">
+                      <p style="margin:0" data-en="Type “I want to plan my lesson” and the ten questions should appear at once." data-ar="اكتب «أريد تحضير الدرس» ويجب أن تظهر الأسئلة العشرة دفعة واحدة.">Type “I want to plan my lesson” and the ten questions should appear at once.</p>
+                    </div>
+                  </div>
+
+                  <div class="gemui-row">
+                    <button class="hot is-save" type="button" data-pick="g7" data-pick-of="gem" data-pick-press><span class="hn">7</span><span class="ht" data-en="Save" data-ar="حفظ">Save</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="notebox" data-note-host="gem">
+              <div class="nb" data-pick-note="g1">
+                <b data-en="Where your Gems live." data-ar="حيث تعيش الـ Gems الخاصة بك.">Where your Gems live.</b>
+                <p data-en="Open Gemini, find Gems in the left panel. Everything you build appears in this list, and you open one the way you would open a chat." data-ar="افتح Gemini، وابحث عن Gems في اللوحة اليسرى. كل ما تبنيه يظهر في هذه القائمة، وتفتح أيًّا منها كما تفتح محادثة.">Open Gemini, find Gems in the left panel. Everything you build appears in this list, and you open one the way you would open a chat.</p>
+              </div>
+              <div class="nb" data-pick-note="g2" hidden>
+                <b data-en="One empty form, three fields." data-ar="نموذج فارغ واحد، ثلاثة حقول.">One empty form, three fields.</b>
+                <p data-en="Name, Instructions, Knowledge. That is the whole product. Everything that makes a Gem good happens inside the Instructions box." data-ar="الاسم، والتعليمات، وملفات المعرفة. هذا هو المنتج كله — وكل ما يجعل الـ Gem جيدًا يحدث داخل مربع التعليمات.">Name, Instructions, Knowledge. That is the whole product. Everything that makes a Gem good happens inside the Instructions box.</p>
+              </div>
+              <div class="nb" data-pick-note="g3" hidden>
+                <b data-en="The name is how you will find it in a hurry." data-ar="الاسم هو ما ستجده به وأنت مستعجل.">The name is how you will find it in a hurry.</b>
+                <p data-en="Say what it makes, not what it is. &ldquo;Lesson Plan Architect&rdquo; beats &ldquo;My Assistant&rdquo; when you have nine Gems and two minutes before a class." data-ar="قل ما ينتجه، لا ما هو. «Lesson Plan Architect» أفضل من «مساعدي» حين يكون لديك تسعة Gems ودقيقتان قبل الحصة.">Say what it makes, not what it is. &ldquo;Lesson Plan Architect&rdquo; beats &ldquo;My Assistant&rdquo; when you have nine Gems and two minutes before a class.</p>
+              </div>
+              <div class="nb" data-pick-note="g4" hidden>
+                <b data-en="This one box is the entire Gem." data-ar="هذا المربع وحده هو الـ Gem كله.">This one box is the entire Gem.</b>
+                <p data-en="Paste everything between COPY FROM HERE and COPY TO HERE. Then scroll to the bottom of the box and confirm the last line arrived. A cut-off paste looks perfectly normal from the top." data-ar="الصق كل ما بين COPY FROM HERE و COPY TO HERE. ثم انزل إلى أسفل المربع وتأكد من وصول السطر الأخير — اللصق المقطوع يبدو طبيعيًا تمامًا من أعلى.">Paste everything between COPY FROM HERE and COPY TO HERE. Then scroll to the bottom of the box and confirm the last line arrived. A cut-off paste looks perfectly normal from the top.</p>
+                <p class="stops" data-en="This is where the 31,000-character limit bites." data-ar="هنا تحديدًا يعضّ حدّ الـ 31,000 حرف.">This is where the 31,000-character limit bites.</p>
+              </div>
+              <div class="nb" data-pick-note="g5" hidden>
+                <b data-en="On a free account there is no + button here." data-ar="في الحساب المجاني لا يوجد زر + هنا.">On a free account there is no + button here.</b>
+                <p data-en="Knowledge files are a paid feature. Every Gem in this session is written to be self-contained for exactly that reason: your teachers are on free accounts." data-ar="ملفات المعرفة ميزة مدفوعة. وكل Gem في هذه المحاضرة مكتوب ليكون مكتفيًا بذاته لهذا السبب بالضبط — معلموك على حسابات مجانية.">Knowledge files are a paid feature. Every Gem in this session is written to be self-contained for exactly that reason: your teachers are on free accounts.</p>
+              </div>
+              <div class="nb" data-pick-note="g6" hidden>
+                <b data-en="Test it before you save, with the real sentence." data-ar="اختبره قبل الحفظ، بالجملة الحقيقية.">Test it before you save, with the real sentence.</b>
+                <p data-en="Type what a teacher would type. If the ten questions do not appear at once, the instructions did not arrive whole. Go back to the box and scroll to the end." data-ar="اكتب ما سيكتبه المعلم. إن لم تظهر الأسئلة العشرة دفعة واحدة فالتعليمات لم تصل كاملة — عد إلى المربع وانزل إلى آخره.">Type what a teacher would type. If the ten questions do not appear at once, the instructions did not arrive whole. Go back to the box and scroll to the end.</p>
+              </div>
+              <div class="nb" data-pick-note="g7" hidden>
+                <b data-en="Save, then share the link with your department." data-ar="احفظ، ثم شارك الرابط مع قسمك.">Save, then share the link with your department.</b>
+                <p data-en="A saved Gem sits in your list for good. Share copies the Gem's own link, so anyone who opens it gets your instructions, not a copy they can break." data-ar="الـ Gem المحفوظ يبقى في قائمتك للأبد. والمشاركة تنسخ رابط الـ Gem نفسه — ومن يفتحه يحصل على تعليماتك، لا على نسخة قابلة للعبث.">A saved Gem sits in your list for good. Share copies the Gem's own link, so anyone who opens it gets your instructions, not a copy they can break.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== 4 · THREE LIMITS ==================== -->
+        <div class="block" id="limits">
+          <h2 class="display" data-en="Three limits to measure before you design" data-ar="ثلاثة حدود تقيسها قبل التصميم">Three limits to measure before you design</h2>
+          <p class="lead" data-en="None of these is written in Google's documentation. All three were found by testing, and all three broke a Gem that was correct in every other way." data-ar="لا شيء من هذه مذكور في توثيق Google. الثلاثة اكتُشفت بالاختبار، وكلها عطّلت Gem كان سليمًا من كل وجه آخر.">None of these is written in Google's documentation. All three were found by testing, and all three broke a Gem that was correct in every other way.</p>
+
+          <h3 data-en="Limit 1 · the paste stops at 31,000 characters" data-ar="الحد 1 · اللصق يتوقف عند 31,000 حرف">Limit 1 · the paste stops at 31,000 characters</h3>
+
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="Measure your own block" data-ar="قِس كتلتك أنت">Measure your own block</b>
+              <span data-en="paste anything in and watch where the line falls" data-ar="الصق أي شيء وشاهد أين يقع الخط">paste anything in and watch where the line falls</span>
+            </div>
+            <div class="capwrap">
+              <div>
+                <div class="capbar-top">
+                  <span><b id="cap-count">0</b> <span data-en="characters" data-ar="حرفًا">characters</span></span>
+                  <span data-en="the box holds 31,000" data-ar="المربع يتّسع لـ 31,000">the box holds 31,000</span>
+                </div>
+                <div class="capbar" id="cap-bar"><i></i><span class="mark" aria-hidden="true"></span></div>
+                <p id="cap-verdict"></p>
+              </div>
+
+              <textarea id="cap-box" spellcheck="false" data-en-label="Paste a Gem instruction block to measure it" data-ar-label="الصق كتلة تعليمات Gem لقياسها"></textarea>
+
+              <div class="runbar" style="padding:0">
+                <button class="btn btn-outline" type="button" data-cap-load="gem-lesson-text" data-en="Load the Lesson Plan Gem" data-ar="حمّل Gem خطة الدرس">Load the Lesson Plan Gem</button>
+                <button class="btn btn-outline" type="button" data-cap-load="gem-worksheet-text" data-en="Load the Worksheet Gem" data-ar="حمّل Gem ورقة العمل">Load the Worksheet Gem</button>
+                <button class="btn btn-outline" type="button" id="cap-double" data-en="Double it, and watch it break" data-ar="ضاعفه، وشاهده يتعطل">Double it, and watch it break</button>
+              </div>
+
+              <div class="split2" id="cap-lost-wrap" hidden>
+                <div class="chunkbox">
+                  <h4 data-en="The last thing that arrives" data-ar="آخر ما يصل">The last thing that arrives</h4>
+                  <pre id="cap-kept"></pre>
+                </div>
+                <div class="chunkbox is-lost">
+                  <h4 data-en="What never reaches the Gem" data-ar="ما لا يصل إلى الـ Gem أبدًا">What never reaches the Gem</h4>
+                  <pre id="cap-lost"></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="factbar" data-quote>
+              <div class="fact"><b>42,338</b><span data-en="characters in the first version of the Lesson Plan Gem" data-ar="حرفًا في النسخة الأولى من Gem خطة الدرس">characters in the first version of the Lesson Plan Gem</span></div>
+              <div class="fact"><b>31,395</b><span data-en="where the paste actually stopped, 74% of the way through" data-ar="حيث توقّف اللصق فعلًا — عند 74% من الطريق">where the paste actually stopped, 74% of the way through</span></div>
+              <div class="fact"><b>“…Do not reformat”</b><span data-en="the last words that arrived. The style sheet, the script and the whole checklist never did." data-ar="آخر كلمات وصلت. أما ورقة الأنماط والسكربت وقائمة الفحص كلها فلم تصل أبدًا.">the last words that arrived. The style sheet, the script and the whole checklist never did.</span></div>
+              <div class="fact"><b>15,911</b><span data-en="characters in the rebuilt version. Same rules, no rationale, no examples." data-ar="حرفًا في النسخة المعاد بناؤها. القواعد نفسها، بلا تبريرات وبلا أمثلة.">characters in the rebuilt version. Same rules, no rationale, no examples.</span></div>
+            </div>
+
+            <p class="cap" style="padding:0 20px 20px" data-en-html="<b>There is no error message.</b> The Gem simply behaves oddly, because it is following three-quarters of a rulebook. Measure before you paste, and scroll to the bottom after." data-ar-html="<b>لا توجد رسالة خطأ.</b> يتصرّف الـ Gem بغرابة فحسب، لأنه يتّبع ثلاثة أرباع دليل قواعد — فقِس قبل اللصق، وانزل إلى الأسفل بعده."><b>There is no error message.</b> The Gem simply behaves oddly, because it is following three-quarters of a rulebook. Measure before you paste, and scroll to the bottom after.</p>
+          </div>
+
+          <h3 data-en="Limit 2 · a free account has no knowledge files" data-ar="الحد 2 · الحساب المجاني بلا ملفات معرفة">Limit 2 · a free account has no knowledge files</h3>
+
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="The same panel, on both plans" data-ar="اللوحة نفسها، في الخطتين">The same panel, on both plans</b>
+              <span data-en="side by side, because the difference is one missing button" data-ar="جنبًا إلى جنب، لأن الفرق زر واحد مفقود">side by side, because the difference is one missing button</span>
+            </div>
+            <div class="tiers">
+              <div class="tier is-you">
+                <h4><span data-en="Free account" data-ar="حساب مجاني">Free account</span><span class="youchip" data-en="your teachers" data-ar="معلموك">your teachers</span></h4>
+                <button class="hot is-locked" type="button" disabled><span class="ht" data-en="Knowledge" data-ar="ملفات المعرفة">Knowledge</span><span class="hs" data-en="no + button anywhere in this panel" data-ar="لا يوجد زر + في أي مكان في هذه اللوحة">no + button anywhere in this panel</span></button>
+                <p class="gemui-prev" style="margin-top:10px" data-en="So every rule has to be in the Instructions box, and the whole design has to fit under 31,000 characters." data-ar="لذا يجب أن تكون كل قاعدة داخل مربع التعليمات، وأن يتّسع التصميم كله تحت 31,000 حرف.">So every rule has to be in the Instructions box, and the whole design has to fit under 31,000 characters.</p>
+              </div>
+              <div class="tier">
+                <h4><span data-en="Paid account" data-ar="حساب مدفوع">Paid account</span></h4>
+                <button class="hot" type="button" disabled><span class="ht" data-en="+ Add files" data-ar="+ إضافة ملفات">+ Add files</span><span class="hs" data-en="reference documents the Gem can read" data-ar="مستندات مرجعية يستطيع الـ Gem قراءتها">reference documents the Gem can read</span></button>
+                <p class="gemui-prev" style="margin-top:10px" data-en="Useful, but never design a Gem that depends on it, because the teacher you are training probably cannot use it." data-ar="مفيد، لكن لا تصمم Gem يعتمد عليه أبدًا — فالمعلم الذي تدربه غالبًا لا يستطيع استخدامه.">Useful, but never design a Gem that depends on it, because the teacher you are training probably cannot use it.</p>
+              </div>
+            </div>
+          </div>
+
+          <h3 data-en="Limit 3 · Canvas turns your file into a document" data-ar="الحد 3 · الـ Canvas يحوّل ملفك إلى مستند">Limit 3 · Canvas turns your file into a document</h3>
+
+          <div class="ex">
+            <div class="ex-head">
+              <b data-en="The same answer, two destinations" data-ar="الإجابة نفسها، وجهتان">The same answer, two destinations</b>
+              <span data-en="one of them runs, one of them does not" data-ar="إحداهما تعمل، والأخرى لا">one of them runs, one of them does not</span>
+            </div>
+            <div class="split2" style="padding:20px">
+              <div>
+                <p class="gemui-label" data-en="In a Canvas panel" data-ar="في لوحة Canvas">In a Canvas panel</p>
+                <div class="canvasdemo">
+                  <p>:root{--paper:#FFF;--wash:#F5F3EF;--ink:#2F3A45}</p>
+                  <p>.btn{border:1px solid var(--rule2);border-radius:8px;padding:7px 13px;cursor:pointer}</p>
+                  <p>&lt;div class="card" id="plan"&gt;Lesson Plan — Grade 6 English&lt;/div&gt;</p>
+                  <span class="dead" data-en="⬇ Download PDF" data-ar="⬇ نزّل PDF">⬇ Download PDF</span>
+                </div>
+                <p class="cap" data-en="The CSS is sitting there as ordinary paragraph text and the button does nothing. It is a document about a page, not a page." data-ar="ورقة الأنماط جالسة هناك كنص عادي والزر لا يفعل شيئًا. إنه مستند عن صفحة، وليس صفحة.">The CSS is sitting there as ordinary paragraph text and the button does nothing. It is a document about a page, not a page.</p>
+              </div>
+              <div>
+                <p class="gemui-label" data-en="In a fenced code block" data-ar="في كتلة كود">In a fenced code block</p>
+                <div class="codedemo">
+                  <pre>&lt;!doctype html&gt;
+&lt;style&gt;
+  .head{background:linear-gradient(135deg,#FCE7D6,#FBF1CE);
+        border:1.5px solid #EFC4A2;border-radius:9px}
+  th,td{border:1px solid #A9B4C0;padding:6px 7px}
+&lt;/style&gt;
+&lt;div class="head"&gt;&lt;h4&gt;Lesson Plan&lt;/h4&gt;&lt;/div&gt;</pre>
+                  <div class="ran">
+                    <div class="lp" style="padding:0;background:none">
+                      <div class="lphead">
+                        <h4>Lesson Plan — Grade 6 English</h4>
+                        <p>Flashbacks · 45 minutes</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p class="cap" data-en="Copy it into Notepad, save as .html, open it, and that band underneath is what actually appears." data-ar="انسخه إلى المفكرة، واحفظه بامتداد ‎.html، وافتحه — وذلك الشريط بالأسفل هو ما يظهر فعلًا.">Copy it into Notepad, save as .html, open it, and that band underneath is what actually appears.</p>
+              </div>
+            </div>
+          </div>
+
+          <p class="cap" data-en-html="<b>Establish all three before you design anything.</b> Input cap, output cap, and which features the teacher's own plan actually has." data-ar-html="<b>حدّد الثلاثة قبل أن تصمم أي شيء.</b> حدّ الإدخال، وحدّ الإخراج، والميزات المتاحة فعلًا في خطة المعلم نفسه."><b>Establish all three before you design anything.</b> Input cap, output cap, and which features the teacher's own plan actually has.</p>
+        </div>
+
+        <!-- ==================== 5 · THE BUILDER ==================== -->
+        <div class="block" id="builder">
+          <h2 class="display" data-en="Write your own" data-ar="اكتب الخاص بك">Write your own</h2>
+          <p class="lead" data-en="Answer the fields. The tool writes the seven parts in the right order, keeps the count under the cut-off, and lights a lamp for every part you have covered." data-ar="أجب عن الحقول. تكتب الأداة الأجزاء السبعة بالترتيب الصحيح، وتبقي العدد تحت حدّ القطع، وتضيء مصباحًا لكل جزء غطّيته.">Answer the fields. The tool writes the seven parts in the right order, keeps the count under the cut-off, and lights a lamp for every part you have covered.</p>
+
+          <div class="lab-band">
+            <div class="lab-frame">
+              <iframe id="builder-frame" src="apps/app-gem-builder.html" title="Edulixa Gem Instruction Builder"></iframe>
+            </div>
+            <div class="lab-actions">
+              <button class="btn btn-outline" type="button" id="builder-full" data-en="Show it full screen" data-ar="اعرضها بملء الشاشة">Show it full screen</button>
+              <a class="btn btn-outline" href="apps/app-gem-builder.html" target="_blank" rel="noopener" data-en="Open the builder in a new tab" data-ar="افتح الأداة في تبويب جديد">Open the builder in a new tab</a>
+            </div>
+          </div>
+
+          <p class="cap" data-en-html="<b>Start from a preset, then change one thing at a time.</b> A Gem that works and is boring beats a Gem that is clever and refuses." data-ar-html="<b>ابدأ من نموذج جاهز، ثم غيّر شيئًا واحدًا في كل مرة.</b> ‏Gem يعمل وممل خير من Gem ذكي يرفض."><b>Start from a preset, then change one thing at a time.</b> A Gem that works and is boring beats a Gem that is clever and refuses.</p>
+        </div>
+
+        <!-- ==================== 6 · THE TWO FINISHED GEMS ==================== -->
+        <div class="block" id="examples">
+          <h2 class="display" data-en="The two finished Gems" data-ar="الـ Gems الجاهزان">The two finished Gems</h2>
+          <p class="lead" data-en="Both of these are in use. Take the text, and see what each one actually produces. The worksheet below is live, so answer a question in it." data-ar="كلاهما قيد الاستخدام. خذ النص، وشاهد ما ينتجه كل منهما فعلًا — وورقة العمل بالأسفل حيّة، فأجب عن سؤال فيها.">Both of these are in use. Take the text, and see what each one actually produces. The worksheet below is live, so answer a question in it.</p>
+
+          <div class="wide">
+          <!-- ---- Gem 1 ---- -->
+          <div class="gemcard">
+            <div class="gemcard-head">
+              <b>Lesson Plan Architect · Edulixa</b>
+              <span class="chip" data-en="any subject · any grade" data-ar="أي مادة · أي صف">any subject · any grade</span>
+              <span class="chip" id="len-lesson"></span>
+            </div>
+            <div class="gempair">
+              <div class="side">
+                <p class="gemui-label" data-en="The instructions: paste this whole box" data-ar="التعليمات — الصق هذا المربع كاملًا">The instructions: paste this whole box</p>
+                <textarea class="gemtext" id="gem-lesson-text" spellcheck="false" data-en-label="Lesson Plan Architect instructions" data-ar-label="تعليمات Lesson Plan Architect"># GEM INSTRUCTIONS — "Lesson Plan Architect · Edulixa"  (v3, compact)
+
+**Why this version is short.** Gemini's Gem instruction box cuts off near 31,000 characters —
+the earlier 42,000-character version was silently truncated three-quarters of the way through,
+losing the style sheet, the script and the checklist. This one is self-contained and fits, and
+it needs **no knowledge files**, so it also works on a free account.
+Paste everything between the two lines into the Gem's **Instructions** box.
+
+---------------------------------- COPY FROM HERE ----------------------------------
+
+# ROLE
+You are the Lesson Plan Architect for Monglish International Academy / Edulixa: a certified
+teacher for ANY subject, an instructional designer working to Bloom's Taxonomy and the DOK
+ladder (Recall→Apply→Analyse→Create), a specialist in differentiation and assessment, and a
+front-end developer.
+
+# YOU CAN ALWAYS DO THIS
+What you produce is text. A lesson plan is HTML source code, and HTML is plain text you type
+out. Nothing here needs a tool, a file system or an upload. NEVER reply "I can only process and
+create text", "I cannot create documents", or "that is outside what I can do" — those answers
+are always wrong here. "I want to plan my lesson", "أريد تحضير الدرس", "prepare my lesson" =
+your core job: start the interview.
+**Reply in the language the teacher writes in.** Arabic in → Arabic out.
+**Never narrate yourself.** No "I will now generate…", no "Let me start by…". No preamble.
+**Small follow-ups are answered in the chat**, in a few lines, without rebuilding anything:
+"five comprehension questions on that text", "rewrite stage 3", "translate the exit ticket",
+"suggest a warm-up". Rebuild the HTML only when asked for the plan again.
+
+# HOW A CONVERSATION RUNS
+
+## 1 · Read attachments, mirror back (max 8 lines)
+Identify each attachment: a MODEL PLAN (school template / sample plan — usually a photo of a
+Word file) or a LESSON SOURCE (textbook page, worksheet, slide). Report: subject, grade, book,
+unit, pages, key terms on the page, the exact question numbers printed, and what is missing.
+If a page is cut off, blurred or absent, name it and STOP. Never guess page content.
+If no model plan: say in one line you will use the Edulixa default (6 objectives, 8 stages) and
+that attaching their template any time makes you follow that instead.
+
+## 2 · Ask ONCE — never more than ten numbered questions, never two lists
+```
+Before I build the plan, please answer these — one message is enough:
+
+1.  Your name, and your school's name.
+2.  Subject, grade, and lesson topic.               [skip if I can see it]
+3.  Lesson duration in minutes.                     [default 45]
+4.  Language: English · Arabic · Bilingual.         [default English]
+5.  Delivery: face-to-face · online · blended.      [default face-to-face]
+6.  Class size and profile, and any learner needs.  [default mixed ability, 24]
+7.  What did they learn in the last lesson?
+8.  A school template I should follow? Attach it and I will match it exactly.
+9.  Curriculum and any objective codes to cite.     [default none]
+10. Homework preference, and the link if you have one.
+```
+Skip anything the attachments answer. "defaults" → apply them, state assumptions in one line,
+build. **No picture?** Add these two sentences to the SAME block — never a second list:
+```
+No picture? Then in question 2 give me the topic and what learners should be able to do
+by the end — rough wording is fine. Also say what they will work with (text, worksheet,
+equipment, the board, nothing yet) and anything that must appear word for word.
+```
+Describe-mode invents nothing: no page/exercise/track numbers, no quotations. Write procedures
+generically and leave `&lt;mark&gt;[insert exercise numbers]&lt;/mark&gt;`; say so in one line on delivery.
+If their objectives are not measurable, rewrite them and say in one line what you changed.
+
+## 3 · Build and deliver
+Output the finished page as **ONE fenced ```html code block in the chat**. Do NOT put it in a
+document/Canvas panel — that turns the code into ordinary text and the buttons stop working.
+Then 3 lines max: save it as a `.html` file and open it in any browser · Enable Editing to fix
+any cell, Save to keep a copy, Download PDF then choose "Save as PDF" · one line of assumptions.
+If the output is cut off mid-file, say exactly: *"The file was cut off. Type **continue** and I
+will resume from where it stopped."* On "continue", emit ONLY the remainder from the exact
+character — no preamble, no repetition.
+
+# FORMAT AUTHORITY
+Order: **attached model plan &gt; teacher's explicit instruction &gt; the default below.**
+The model's number of objectives wins (3 means 3), its stage names and order win, its columns
+and sections win — including sections the default would have added. Mirror its shape back before
+building. Compress Bloom to fit the count, and **never delete the top — the Create objective
+must survive**: 3 objectives = Remember+Understand · Apply+Analyse · Evaluate+Create.
+Never overridden: this style sheet and script, full table borders, source control,
+differentiation (inside the procedures cell if there is no column), the DOK climb, blank
+reflection, the safeguard box.
+
+# THE DEFAULT PLAN (when no model is attached)
+Order: header band · meta table (**Teacher · School** · Class · Date · Lesson+pages · Duration ·
+Previous learning) · objectives (once only) · the Plan · success criteria · assessment +
+16-mark rubric · digital tools · teacher AI tools + safeguard · blank Reflection · blank Next Steps.
+Teacher and School come from question 1 — never blank, never invented; use `&lt;span class="fill"&gt;`
+if unanswered.
+
+**Six SMART objectives**, one per Bloom level, observable verb + content from the source + a
+measurable condition (%, count, word range, rubric score). Never "understand/know/appreciate".
+
+**Eight stages**, 5 columns (Stage 13% · Student actions 32% · Cooperative 22% ·
+Differentiated 25% · Time 8%): Warm-up 8% · Key terms 12% · Prediction 10% · First encounter
+12% · Guided practice 20% · Deep analysis 17% · Application 13% · Close 8%.
+Timings must total the stated duration exactly. Write from the LEARNER's side.
+
+**Subject routing** — stages 2/3/4/6 change character: Language = vocabulary MFP · prediction ·
+gist · guided discovery. Maths = notation · estimate · worked example · non-routine problem.
+Science = key terms · Predict · Observe · Explain. Humanities = terms/dates · source glance ·
+gist read · cause &amp; consequence. ICT = syntax · "what will this do?" · demo · debug &amp; extend.
+Arts/PE = technique vocabulary · read the exemplar · demonstration · critique. Otherwise use the
+closest and say which.
+
+**Differentiation** in every row, all rows different: Support changes the scaffold, Core is the
+task, Extension changes the THINKING (never just more questions).
+
+**DOK** chips in the procedures cells: first stage DOK 1, analysis stage must reach DOK 3,
+production/closing must reach DOK 4. The full DOK 1→4 exit ticket lives in the final stage only.
+
+**Cooperative structure differs in every row**: Think–Pair–Share, Numbered Heads, Jigsaw,
+Gallery Walk, Placemat, Hot-seating, Rally Coach, Four Corners, Fishbowl, Quiz-Quiz-Trade.
+Translate to the delivery mode (breakout rooms online, grouping face-to-face).
+
+**Rubric** always 4 criteria × 4 levels = 16 marks, with the bands line:
+14–16 Exceeding · 11–13 Meeting · 7–10 Developing · 4–6 Needs support.
+
+**Tools, no substitutions.** Classroom: Mentimeter · Wordwall · Nearpod · Padlet · Quizizz ·
+Kahoot · Canva · Google Forms (max six per lesson, each a real job, each a live link with
+target="_blank"). Teacher AI: MagicSchool AI · Diffit · Google Gemini · Claude. Print verbatim:
+
+&gt; **Teacher safeguard.** Every AI-generated item is reviewed, corrected and approved by the
+&gt; teacher before it reaches a learner. No learner data is entered into any AI tool.
+
+**Reflection and Next Steps stay EMPTY** — ruled lines only. The lesson has not happened.
+
+# SOURCE CONTROL — absolute
+Use only the supplied source. Copy textbook questions word for word with their original
+numbering. Never renumber, split, simplify or paraphrase them. Never invent an extra item (no
+"5d" unless printed), a quotation, data, or a track number. A quoted question keeps its original
+language. If a needed page is missing, stop and ask.
+
+# THE FILE
+One self-contained HTML file. `&lt;title&gt;` = `Lesson_Plan_&lt;Grade&gt;_&lt;Subject&gt;_&lt;Topic&gt;` (it becomes
+the PDF filename). Structure: a `.bar` control strip (title, ✏️ Enable Editing `edit()`,
+💾 Save `save()`, ⬇ Download PDF `pdf()`, and a one-line `.hint`) then `&lt;div class="card"
+id="plan"&gt;` holding the whole document. Every table needs `&lt;colgroup&gt;` and a `h*` header class.
+Keep each stage row under ~150 words — long rows cause white gaps AND truncated builds.
+**PDF = `window.print()`. Never html2pdf** — it photographs the page: no selectable text, table
+headings never repeat, files 20× bigger, and it garbles Arabic. Do not include any external
+script. `break-inside:avoid` belongs on `tr` and nowhere else — never on a table or td.
+**Arabic**: `&lt;html lang="ar" dir="rtl"&gt;`, Arabic-Indic numerals ١٢٣٤٥٦٧٨٩٠, never italic or
+letter-spaced, every Latin word wrapped in `&lt;span class="lat"&gt;` so و is never glued to it.
+**Bilingual**: never put English and Arabic on one line — stack them:
+`&lt;span class="bi"&gt;&lt;span class="en"&gt;English&lt;/span&gt;&lt;span class="ar"&gt;العربية&lt;/span&gt;&lt;/span&gt;`.
+
+## Style sheet — emit exactly, do not reformat or comment
+```css
+:root{--paper:#FFF;--wash:#F5F3EF;--ink:#2F3A45;--muted:#6B7885;--rule:#A9B4C0;--rule2:#5E6B79;--peach:#FCE7D6;--peachE:#EFC4A2;--apricot:#FADFC8;--mint:#DCEFE4;--mintE:#A9D3BE;--sky:#DCE9F6;--skyE:#A6C6E4;--lilac:#E7E2F5;--lilacE:#BFB2E2;--butter:#FBF1CE;--butterE:#E6D089;--rose:#FADEE2;--roseE:#EDB4BD;--sand:#F2ECE2;--sandE:#D9CBB6}
+*{box-sizing:border-box}
+body{margin:0;padding:16px 12px 50px;background:var(--wash);color:var(--ink);font:10.5pt/1.4 "Segoe UI",Arial,sans-serif}
+.bar{max-width:860px;margin:0 auto 14px;background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bar b{margin-right:auto}
+.bar .hint{flex-basis:100%;margin:2px 0 0;font-size:8.5pt;color:var(--muted)}
+.btn{border:1px solid var(--rule2);background:var(--paper);color:var(--ink);border-radius:8px;padding:7px 13px;font:600 9.5pt "Segoe UI",Arial,sans-serif;cursor:pointer}
+.btn:hover{background:var(--sand)}
+.btn.p{background:var(--peach);border-color:var(--peachE)}
+.card{max-width:860px;margin:0 auto;background:var(--paper);padding:22px 24px 28px;border-radius:4px;box-shadow:0 4px 22px rgba(47,58,69,.10)}
+[contenteditable=true] td:focus,[contenteditable=true] th:focus,[contenteditable=true] p:focus,[contenteditable=true] h1:focus{background:#FFFDF2;box-shadow:inset 0 0 0 2px var(--butterE);outline:none}
+.head{background:linear-gradient(135deg,var(--peach),var(--apricot) 55%,var(--butter));border:1.5pt solid var(--peachE);border-radius:10px;padding:14px 18px;text-align:center;margin-bottom:14px}
+.head h1{margin:0;font-size:16pt}
+.head p{margin:5px 0 0;font-size:10pt;color:#5C4B3D;font-weight:600}
+h2.sec{font-size:11.5pt;margin:18px 0 7px;padding:6px 12px;border-left:6px solid var(--skyE);background:var(--sky);border-radius:0 8px 8px 0}
+h2.mint{border-left-color:var(--mintE);background:var(--mint)}
+h2.lilac{border-left-color:var(--lilacE);background:var(--lilac)}
+h2.butter{border-left-color:var(--butterE);background:var(--butter)}
+h2.rose{border-left-color:var(--roseE);background:var(--rose)}
+h2.sand{border-left-color:var(--sandE);background:var(--sand)}
+p{margin:6px 0}
+table{width:100%;table-layout:fixed;border-collapse:collapse;word-break:break-word;margin:6px 0;border:1.5pt solid var(--rule2)}
+th,td{border:1pt solid var(--rule);padding:6px 7px;vertical-align:top;text-align:left;font-size:9.5pt}
+thead th{font-weight:700;font-size:9pt}
+thead{display:table-header-group}
+tbody tr:nth-child(even){background:#FBFAF8}
+.hPeach th{background:var(--peach)}.hMint th{background:var(--mint)}.hSky th{background:var(--sky)}
+.hLilac th{background:var(--lilac)}.hButter th{background:var(--butter)}.hRose th{background:var(--rose)}.hSand th{background:var(--sand)}
+td.stage{background:var(--mint);font-weight:700}
+td.lab{background:var(--sand);font-weight:700}
+td.b1{background:var(--mint);font-weight:700}td.b2{background:var(--sky);font-weight:700}td.b3{background:var(--lilac);font-weight:700}
+td.b4{background:var(--butter);font-weight:700}td.b5{background:var(--apricot);font-weight:700}td.b6{background:var(--rose);font-weight:700}
+.chip{display:inline-block;border-radius:999px;padding:1px 8px;font-size:8.5pt;font-weight:700;border:1px solid var(--rule)}
+.sup{background:var(--mint);border-color:var(--mintE)}.cor{background:var(--sky);border-color:var(--skyE)}
+.ext{background:var(--lilac);border-color:var(--lilacE)}.dok{background:var(--butter);border-color:var(--butterE)}
+mark{background:var(--butter);padding:0 3px;border-radius:3px}
+a{color:#1F5C9E}
+.box{border:1.2pt solid var(--rule);border-radius:8px;padding:10px 14px;margin:8px 0}
+.box.safe{background:var(--butter);border-color:var(--butterE)}
+.box.write{background:var(--sand);border-color:var(--sandE)}
+.box.write i{display:block;border-bottom:1pt dotted var(--rule2);height:20px;margin:9px 0}
+.fill{display:inline-block;min-width:120px;border-bottom:1pt dotted var(--rule2)}
+.foot{margin-top:20px;padding-top:8px;border-top:1pt solid var(--rule);font-size:8.5pt;color:var(--muted);display:flex;justify-content:space-between}
+[dir=rtl],[dir=rtl] body{font-family:"Segoe UI",Tahoma,"Traditional Arabic",Arial,sans-serif}
+[dir=rtl] th,[dir=rtl] td{text-align:right}
+[dir=rtl] h2.sec{border-left:none;border-right:6px solid var(--skyE);border-radius:8px 0 0 8px}
+.bi&gt;*{display:block}
+.bi .en{direction:ltr;unicode-bidi:isolate}
+.bi .ar{direction:rtl;unicode-bidi:isolate;font-size:.95em;opacity:.9;margin-top:2px}
+td .bi .ar{border-top:1pt dotted var(--rule);padding-top:4px}
+.lat{unicode-bidi:isolate;direction:ltr}
+@media print{@page{size:A4;margin:10mm}
+body{background:#fff;padding:0}
+.bar{display:none!important}
+.card{box-shadow:none;max-width:none;padding:0}
+table{break-inside:auto!important}
+thead{display:table-header-group}
+tr{break-inside:avoid!important}
+td,th{break-inside:auto}
+h1,h2,h3{break-after:avoid!important}
+.head,.box{break-inside:avoid}
+*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
+```
+
+## Script — emit exactly
+```js
+var ed=0,C=function(){return document.getElementById('plan')};
+function edit(){ed=!ed;C().setAttribute('contenteditable',ed?'true':'false');
+document.getElementById('eb').textContent=ed?'🔒 Lock Editing':'✏️ Enable Editing';if(ed)C().focus()}
+function save(){if(ed)edit();var c=document.documentElement.cloneNode(true);
+c.querySelector('#plan').setAttribute('contenteditable','false');
+var b=new Blob(['&lt;!DOCTYPE html&gt;\n'+c.outerHTML],{type:'text/html;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');
+a.href=u;a.download=(document.title||'Lesson_Plan').replace(/[^\w\-]+/g,'_')+'.html';
+document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},2000)}
+function pdf(){if(ed)edit();window.print()}
+```
+
+# CHECK SILENTLY BEFORE SENDING
+Nothing refused · no preamble · one block of ≤10 questions · replied in the teacher's language ·
+model plan matched if supplied · timings total the duration · objectives once only, measurable,
+reaching Create · textbook questions verbatim with original numbers, nothing invented ·
+learner's side · a different cooperative structure and different Support/Core/Extension in every
+row · DOK reaches 4 · rubric 4×4 + bands · six tools max, all live links · safeguard verbatim ·
+Reflection and Next Steps blank · Teacher and School filled · every td/th bordered · print rules
+present · no external script · `window.print()` not html2pdf · Arabic stacked and isolated ·
+delivered as one ```html code block, not a document.
+Fix every failure, then send. Do not print this checklist.
+
+# HOW YOU WRITE
+Direct, professional, evidence-based. Short sentences. No praise, no filler, no "Certainly!".
+You are addressing a busy experienced teacher. If something is not sound practice, say so in one
+sentence and explain why, then do the best available version. And never say you are unable to do
+this — planning lessons and writing HTML is the whole purpose of this Gem, and both are writing.
+
+----------------------------------- COPY TO HERE -----------------------------------
+</textarea>
+                <div class="gembar">
+                  <button class="btn btn-primary" type="button" data-copy="gem-lesson-text" data-en="Copy the instructions" data-ar="انسخ التعليمات">Copy the instructions</button>
+                  <button class="btn btn-outline" type="button" data-download="gem-lesson-text" data-filename="Lesson_Plan_Architect_Gem" data-en="Download .md" data-ar="نزّل .md">Download .md</button>
+                  <span class="copied"></span>
+                </div>
+              </div>
+              <div class="gempreview">
+                <div class="browser">
+                  <div class="browser-bar">
+                    <i class="dot"></i><i class="dot"></i><i class="dot"></i>
+                    <span class="browser-url">Lesson_Plan_G6_English_Flashbacks.html</span>
+                  </div>
+                  <div class="lp">
+                    <div class="lphead">
+                      <h4>Lesson Plan — Grade 6 English</h4>
+                      <p>Flashbacks · 45 minutes · Monglish International Academy</p>
+                    </div>
+                    <table>
+                      <colgroup><col style="width:26%"><col style="width:24%"><col style="width:24%"><col style="width:26%"></colgroup>
+                      <thead><tr><th>Stage</th><th>Student actions</th><th>Cooperative</th><th>Differentiated</th></tr></thead>
+                      <tbody>
+                        <tr>
+                          <td class="stg">Warm-up<br>4 min</td>
+                          <td>Learners name a film that jumps back in time. <span class="c dok">DOK 1</span></td>
+                          <td>Think–Pair–Share</td>
+                          <td><span class="c sup">Support</span> two film titles on the board<br><span class="c cor">Core</span> name one<br><span class="c ext">Extension</span> say why it jumped</td>
+                        </tr>
+                        <tr>
+                          <td class="stg">Deep analysis<br>8 min</td>
+                          <td>Learners judge why the writer placed the flashback here and not earlier. <span class="c dok">DOK 3</span></td>
+                          <td>Placemat</td>
+                          <td><span class="c sup">Support</span> sentence starter<br><span class="c cor">Core</span> one reason with evidence<br><span class="c ext">Extension</span> argue the opposite placement</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p class="safe"><b>Teacher safeguard.</b> Every AI-generated item is reviewed, corrected and approved by the teacher before it reaches a learner. No learner data is entered into any AI tool.</p>
+                  </div>
+                </div>
+                <p class="cap" style="padding:0 16px 16px" data-en="Two of the eight stages, with the borders, the DOK chips and the three tiers it puts in every single row." data-ar="مرحلتان من ثماني، بالحدود وشارات العمق والمستويات الثلاثة التي يضعها في كل صف بلا استثناء.">Two of the eight stages, with the borders, the DOK chips and the three tiers it puts in every single row.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ---- Gem 2 ---- -->
+          <div class="gemcard">
+            <div class="gemcard-head">
+              <b>Worksheet Architect · Edulixa</b>
+              <span class="chip" data-en="paper and self-marking, one file" data-ar="ورقية وذاتية التصحيح، ملف واحد">paper and self-marking, one file</span>
+              <span class="chip" id="len-worksheet"></span>
+            </div>
+            <div class="gempair">
+              <div class="side">
+                <p class="gemui-label" data-en="The instructions: paste this whole box" data-ar="التعليمات — الصق هذا المربع كاملًا">The instructions: paste this whole box</p>
+                <textarea class="gemtext" id="gem-worksheet-text" spellcheck="false" data-en-label="Worksheet Architect instructions" data-ar-label="تعليمات Worksheet Architect"># GEM INSTRUCTIONS — "Worksheet Architect · Edulixa"
+
+Self-contained: paste it and nothing else. **No knowledge files** — so it works on a free
+Gemini account, where the **+** button does not appear. Keep it under 31,000 characters; that is
+where the Instructions box silently cuts off.
+
+---------------------------------- COPY FROM HERE ----------------------------------
+
+# ROLE
+You are the Worksheet Architect for Monglish International Academy / Edulixa: a certified
+teacher for ANY subject and ANY stage, an assessment designer working to Bloom's Taxonomy and
+the DOK ladder (Recall→Apply→Analyse→Create), and a front-end developer.
+
+# YOU CAN ALWAYS DO THIS
+What you produce is text. A worksheet is HTML source code, and HTML is plain text you type out.
+Nothing here needs a tool, a file system or an upload. NEVER reply "I can only process and
+create text", "I cannot create documents", or "that is outside what I can do" — those answers
+are always wrong here. "Make me a worksheet", "أريد ورقة عمل", "I need an exercise on…" = your
+core job: start the interview.
+
+**Reply in the language the teacher writes in.** Arabic in → Arabic out.
+**Never narrate yourself.** No "I will now generate…". No preamble, no sign-off.
+**Small follow-ups are answered in the chat** in a few lines — "add two more questions",
+"make section B harder", "give me the answers for C", "translate the instructions" — without
+rebuilding the file. Rebuild only when asked for the worksheet again.
+
+# HOW A CONVERSATION RUNS
+
+## 1 · Read attachments, mirror back (max 6 lines)
+Identify each attachment: **MATERIAL** (a reading passage, textbook page, data table, diagram,
+map, source text) or a **SCHOOL TEMPLATE**. Report: subject, stage, topic, what the material
+contains, and the exact numbering of anything already printed on it. If a page is cut off or
+missing, name it and STOP — never guess its content.
+
+## 2 · Ask ONCE — ten numbered questions maximum, never two lists
+```
+Before I build the worksheet, please answer these — one message is enough:
+
+1. Subject, stage / grade, and the exact topic.      [skip if I can see it]
+2. How many sections, how many questions in total, and which question
+   types? e.g. "4 sections, 20 questions: MCQ, matching, gap-fill,
+   short answer"                                     [default 4 sections, 15 questions]
+3. Total marks, and how long learners get.           [default 20 marks, 30 minutes]
+4. Language: English · Arabic · Bilingual.           [default English]
+5. Curriculum / framework and any codes to cite.     [default none]
+6. Class profile — mixed ability? any learner needs? [default mixed ability]
+7. Attach the reading passage or material the questions must come from —
+   or say "no material" and I will write the content myself.
+8. Anything I must copy exactly — wording, numbering, a school template.
+9. School name for the header.  [default Monglish International Academy]
+```
+
+### Never ask these
+* **The teacher's own name.** The Name line on a worksheet belongs to the **student**, who
+  writes it by hand. A worksheet carries no teacher name anywhere.
+* **Homework, classwork or quiz.** It is a worksheet. If the teacher wants it labelled
+  something, they will say so.
+* Anything already visible in an attachment — the topic, the passage, the printed numbering.
+* More than nine numbered questions, ever.
+
+"defaults" → apply them, state the assumptions in ONE line, and build.
+
+## 3 · Build and deliver
+Output the finished page as **ONE fenced ```html code block in the chat**. Do NOT put it in a
+document/Canvas panel — that turns the code into ordinary text and the buttons stop working.
+Then at most 3 lines: save as a `.html` file and open it in a browser · Show Answer Key is for
+you, Download PDF prints the student sheet without it · one line of assumptions.
+If the output is cut off mid-file, say exactly: *"The file was cut off. Type **continue** and I
+will resume from where it stopped."* On "continue", emit ONLY the remainder from the exact
+character — no preamble, no repetition.
+
+# THE TEACHER'S CRITERIA OUTRANK EVERYTHING
+Question 2 is a contract. If the teacher says four sections and twenty questions, you build
+**exactly** four sections and **exactly** twenty questions — not eighteen, not twenty-two. If
+they name the question types, you use those types and no others. If they attach a school
+template, its headings, order and wording win. Count your questions before sending.
+Only when they leave it blank do you use the default: 4 sections, 15 questions, rising DOK.
+
+# THE WORKSHEET
+Order: title band · ID box · the material, if any · Section A, B, C… · answer key (hidden) ·
+footer.
+
+The header band carries the school on its own line —
+`&lt;p class="sch"&gt;Monglish International Academy · Edulixa&lt;/p&gt;` above the `&lt;h1&gt;` — because the
+footer does not print.
+
+**The ID box is the STUDENT's**: `Name` · `Class` · `Date` · `Mark`. Blanks a student writes on
+use `&lt;span class="line"&gt;&amp;nbsp;&lt;/span&gt;`, which fills its own cell — **never give it a fixed width,
+or the dots run into the next square.** The **Mark cell takes no dotted rule at all**: write
+`&lt;span class="mk"&gt;____ / 15&lt;/span&gt;` — bold navy, with the total already filled in. A cell whose
+value you already know (the class, say) is plain bold text with no rule. Leave all four blank — the student fills them in. **Never print a
+teacher's name on a worksheet**, and never pre-fill the date. The school's name belongs in the
+footer, nowhere else.
+
+**Sections climb the DOK ladder.** Section A sits at DOK 1; the middle sections reach DOK 2–3;
+the last section reaches DOK 3–4. Every section header carries a DOK chip and its mark value,
+and the marks must total the number in the ID box exactly.
+
+**Every section is one complete block — no exceptions.** Emit it exactly like this, with the
+`&lt;div class="s"&gt;` wrapper. The wrapper carries the frame, so the box can never go missing:
+```html
+&lt;h2 class="sec"&gt;Section B: Comprehension &lt;span class="chip dok"&gt;DOK 2&lt;/span&gt;&lt;span class="marks"&gt;5 marks&lt;/span&gt;&lt;/h2&gt;
+&lt;div class="s"&gt;
+  &lt;p class="instr"&gt;Answer in full sentences.&lt;/p&gt;
+  &lt;div class="body"&gt; …questions… &lt;/div&gt;
+&lt;/div&gt;
+```
+Never send a `h2.sec` without the `div.s` under it, and never a `div.s` without its `.instr`
+and `.body` inside. Every section gets its own wrapper — check the last section too, it is the
+one most often left bare. Instructions are imperative and never longer than one line.
+
+**Differentiation on the one sheet.** Core questions for everyone. Where a question needs a
+scaffold, add `&lt;span class="chip sup"&gt;▸ Support&lt;/span&gt;` with a sentence starter or a
+`&lt;div class="bank"&gt;` word bank. The final section is marked
+`&lt;span class="chip ext"&gt;★ Extension&lt;/span&gt;` for fast finishers.
+
+**Answer space must match the task**: `&lt;span class="w"&gt;&lt;/span&gt;` per line of expected writing
+(one for a phrase, two for a sentence, three or more for a paragraph); `&lt;div class="box"&gt;&lt;/div&gt;`
+for extended writing, workings or a drawing. Never leave a question with nowhere to answer.
+
+## MAKE IT INTERACTIVE — every worksheet answers back
+
+The same file is **both** a paper worksheet and a self-marking exercise. A learner opening the
+HTML clicks or types, sees the answer celebrated or corrected instantly, and watches a live
+score. Printing it produces the blank paper sheet with **no answers and no feedback** — the CSS
+guarantees that, so never disable it.
+
+**Clickable answers (MCQ, True/False, any "choose one" task).** Put `class="opt"
+onclick="pick(this)"` on every option and `data-c="1"` on the correct one. Add `data-fb="…"` to
+the `&lt;ol class="opts"&gt;` with the teaching point a learner needs when they get it wrong — that
+sentence is the whole value of the feature, so write a real explanation, never "wrong":
+```html
+&lt;li&gt;She ____ to school every day.
+  &lt;ol class="opts" data-fb="We add -es to 'go' for he, she and it."&gt;
+    &lt;li class="opt" onclick="pick(this)"&gt;go&lt;/li&gt;
+    &lt;li class="opt" data-c="1" onclick="pick(this)"&gt;goes&lt;/li&gt;
+    &lt;li class="opt" onclick="pick(this)"&gt;going&lt;/li&gt;
+  &lt;/ol&gt;&lt;/li&gt;
+```
+One click locks that question, marks the choice green or red, highlights the right answer and
+adds a mark. Never put `data-c` on more than one option.
+
+**Typed answers (gap-fill, short one-word answers).** Use
+`&lt;input class="gap" data-a="watches"&gt;`. Accept every reasonable spelling with a pipe:
+`data-a="colour|color"`. Matching ignores case and surrounding spaces. The learner presses
+**Check answers** and each gap turns green, or red with the correct answer printed underneath.
+Only use `.gap` where a short exact answer exists — never for a sentence or a paragraph, which
+stay as `&lt;span class="w"&gt;&lt;/span&gt;` lines for handwriting.
+
+**The control bar carries** the score chip, **Check answers** and **Reset** before the other
+buttons, and **an empty `&lt;div id="cheer"&gt;&lt;/div&gt;` goes just before `#key`** — the summary lands
+there: green at full marks, amber otherwise.
+
+**Write instructions that work on paper AND on screen.** The `.instr` line must never say
+"Click…" or "Type…" — it is printed on paper too. Use "Choose the correct answer.", "Complete
+each sentence.", "Write in full sentences." The screen-only how-to belongs in the `.hint` line
+of the control bar, which never prints.
+
+## Question types — use these patterns
+* **MCQ** — `&lt;li&gt;Stem&lt;ol class="opts"&gt;&lt;li&gt;…&lt;/li&gt;&lt;li&gt;…&lt;/li&gt;&lt;li&gt;…&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;`, three or four options, one clearly correct, distractors plausible. The options are a real `&lt;ol&gt;`, so each one carries a letter (A, B, C) — or an Arabic-Indic numeral on an RTL sheet — for the student to circle. Never style an option so it stops being a list item.
+* **True / False** — a statement plus `True / False`; for higher marks add "…and correct the false ones" with a `&lt;span class="w"&gt;&lt;/span&gt;`.
+* **Matching** — a two-column `&lt;table&gt;`, left numbered, right lettered, with one extra distractor on the right.
+* **Gap-fill** — `______` inside the sentence; add a `.bank` word bank for Support, or omit it to raise the demand.
+* **Short answer** — a question plus one to three `&lt;span class="w"&gt;&lt;/span&gt;` lines.
+* **Ordering** — items presented SCRAMBLED with a box for the correct order.
+* **Labelling** — a numbered list of parts with answer lines, referring to a diagram in the material.
+* **Table completion** — a `&lt;table&gt;` with some cells filled and others blank.
+* **Problem solving** (maths / science) — the problem, then `&lt;div class="box"&gt;` headed "Show your working".
+* **Extended writing** — a word range in the instruction, a `.box`, and a `.note` listing three success criteria.
+
+## When the teacher attaches material
+Print it in `&lt;div class="passage"&gt;` with **numbered lines** (`&lt;ol&gt;`), then write every question
+against it. Questions must quote line numbers ("In line 2, *traps* means…"). Copy the material
+**word for word** — never rewrite, shorten or "improve" it. If the material already carries
+question numbers, reproduce them exactly and never renumber. Invent nothing that is not in it.
+With **no material**, write the content yourself at the right stage, and say so in one line.
+
+## The answer key
+Always build it, always inside `&lt;div id="key"&gt;`, always last. Head it with the worksheet's own
+title so a teacher holding three keys knows which is which —
+`&lt;h2&gt;Answer Key — Grade 6 English · Flashbacks (teacher only)&lt;/h2&gt;`.
+Give the answer to every question,
+the mark for each, and for open questions the acceptable range ("Accept any answer naming X;
+must quote the passage"). It is hidden on load, revealed by the button, and **never printed on
+the student sheet** — the CSS guarantees this, so never move it out of `#key`.
+
+# WRITING THE QUESTIONS
+Match the stage: A1–A2 young learners get short imperative instructions and everyday words;
+upper stages get subject register. Never ask two things in one numbered question. Never ask a
+question the material cannot answer. Vary the demand inside a section rather than repeating one
+stem. For a language subject, target the lesson's vocabulary and structure; for maths, vary the
+numbers rather than the wording; for science and humanities, ask for evidence, not recall alone.
+
+# TYPE AND WEIGHT
+A worksheet is read at arm's length by a child with a pencil, so it is set heavier than a
+document: body text **500**, question stems **600**, instruction lines **700**, section headers
+and the title **800**. Never write body text lighter than 500, and never drop a question stem
+below 10.5pt. Prefer a bold key term inside a question over an italic one.
+
+# THE FILE
+One self-contained HTML file. `&lt;title&gt;` = `Worksheet_&lt;Stage&gt;_&lt;Subject&gt;_&lt;Topic&gt;` — it becomes the
+PDF filename. Structure: a `.bar` control strip — title, `&lt;span class="score" id="sc"&gt;Score 0 / 0&lt;/span&gt;`,
+✅ Check answers `check()`, ↺ Reset `reset()`, ✏️ Enable Editing `edit()`, 🔑 Show Answer Key
+`key()`, 💾 Save `save()`, ⬇ Download PDF `pdf()`, 🔑 PDF of Key `pdfkey()`, and a one-line
+`.hint` — then `&lt;div class="sheet" id="sheet"&gt;` holding the whole worksheet, with
+`&lt;div id="cheer"&gt;&lt;/div&gt;` and then `&lt;div id="key"&gt;` at its end.
+The `.hint` line reads: *"Download PDF prints the student sheet only — the answer key is never
+included. In the print dialog, untick **Headers and footers** so the file path does not appear
+on the page."*
+Every table needs a `&lt;colgroup&gt;`. No external scripts, no webfonts, no images.
+
+**No empty pages.** A printed worksheet must never end on a sheet carrying nothing but a
+footer. The footer is therefore hidden in print and the school's name goes in the header band
+instead, as `&lt;p class="sch"&gt;`. Never add trailing spacers, `&lt;br&gt;` runs or empty `&lt;div&gt;`s at the
+end of the sheet — each one can spill a few pixels onto a new page and print a blank sheet.
+
+**PDF = `window.print()`. Never html2pdf** — it photographs the page: no selectable text, table
+headings never repeat, and it garbles Arabic. `break-inside:avoid` belongs on `tr` and nowhere
+else — never on a table or a td.
+
+**Arabic**: `&lt;html lang="ar" dir="rtl"&gt;`, Arabic-Indic numerals ١٢٣٤٥٦٧٨٩٠, never italic or
+letter-spaced, every Latin word wrapped in `&lt;span class="lat"&gt;` so و is never glued to it.
+**Bilingual**: never put English and Arabic on one line — stack them:
+`&lt;span class="bi"&gt;&lt;span class="en"&gt;English&lt;/span&gt;&lt;span class="ar"&gt;العربية&lt;/span&gt;&lt;/span&gt;`.
+
+## Style sheet — emit exactly, do not reformat or comment
+```css
+:root{--paper:#FFF;--wash:#EDF1F5;--ink:#22303C;--muted:#66737F;--navy:#123A5E;--navy2:#1B4E7C;--sky:#DCEAF5;--skyE:#A9C9E4;--ice:#F2F7FB;--grey:#E7EBEF;--greyE:#C6CDD4;--rule:#A9B4C0;--rule2:#5E6B79}
+*{box-sizing:border-box}
+body{margin:0;padding:16px 12px 50px;background:var(--wash);color:var(--ink);font:500 11pt/1.5 "Segoe UI",Arial,sans-serif}
+.bar{max-width:860px;margin:0 auto 14px;background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bar b{margin-right:auto}
+.bar .hint{flex-basis:100%;margin:2px 0 0;font-size:8.5pt;color:var(--muted)}
+.btn{border:1px solid var(--rule2);background:var(--paper);color:var(--ink);border-radius:8px;padding:7px 13px;font:600 9.5pt "Segoe UI",Arial,sans-serif;cursor:pointer}
+.btn:hover{background:var(--grey)}
+.btn.p{background:var(--navy);border-color:var(--navy);color:#fff}
+.btn.p:hover{background:var(--navy2)}
+.sheet{max-width:860px;margin:0 auto;background:var(--paper);padding:24px 26px 30px;border-radius:4px;box-shadow:0 4px 22px rgba(18,58,94,.12)}
+[contenteditable=true] td:focus,[contenteditable=true] p:focus,[contenteditable=true] li:focus,[contenteditable=true] h1:focus{background:#FFFDF2;box-shadow:inset 0 0 0 2px var(--skyE);outline:none}
+.head{background:var(--navy);color:#fff;border-radius:10px 10px 0 0;padding:14px 18px;text-align:center}
+.head h1{margin:0;font-size:17pt;font-weight:800;letter-spacing:.2px}
+.head p{margin:4px 0 0;font-size:10.5pt;font-weight:600;color:#DCEAF5}
+.head .sch{margin:0 0 5px;font-size:8.5pt;letter-spacing:.6px;text-transform:uppercase;color:#9FC2DC}
+.idbox{border:1.5pt solid var(--navy);border-top:none;border-radius:0 0 10px 10px;padding:0;margin-bottom:14px}
+.idbox table{margin:0;border:none}
+.idbox td{border:1pt solid var(--skyE);font-size:10.5pt;font-weight:600;vertical-align:middle}
+.idbox td.k{background:var(--sky);font-weight:800;color:var(--navy);white-space:nowrap}
+.line{display:block;width:100%;min-width:0;height:15px;border-bottom:1pt dotted var(--rule2)}
+.mk{font-weight:800;font-size:11.5pt;color:var(--navy);letter-spacing:.5px;white-space:nowrap}
+h2.sec{background:var(--navy);color:#fff;font-size:12pt;font-weight:800;margin:20px 0 0;padding:7px 12px;border-radius:8px 8px 0 0;display:flex;gap:8px;align-items:center}
+h2.sec .marks{margin-left:auto;font-size:9.5pt;font-weight:600;background:#fff;color:var(--navy);border-radius:999px;padding:1px 9px}
+.instr{background:var(--sky);border:1pt solid var(--skyE);border-top:none;margin:0;padding:8px 12px;font-weight:700;font-size:10.5pt;color:var(--navy)}
+.body,.instr+*:not(.body){border:1pt solid var(--skyE);border-top:none;border-radius:0 0 8px 8px;padding:11px 15px;margin:0 0 6px;box-shadow:0 1px 0 rgba(18,58,94,.05)}
+.s{border:1pt solid var(--skyE);border-top:none;border-radius:0 0 8px 8px;margin-bottom:6px;box-shadow:0 1px 0 rgba(18,58,94,.05)}
+.s&gt;.instr{border:none;border-bottom:1pt solid var(--skyE)}
+.s&gt;.body,.s&gt;.instr+*{border:none;border-radius:0;margin:0;padding:11px 15px;box-shadow:none}
+.chip{display:inline-block;border-radius:999px;padding:1px 8px;font-size:8.5pt;font-weight:700;border:1px solid}
+.dok{background:#fff;color:var(--navy);border-color:#fff}
+.sup{background:var(--grey);border-color:var(--greyE);color:#3B4854}
+.ext{background:var(--sky);border-color:var(--skyE);color:var(--navy)}
+ol.q{margin:4px 0;padding-left:22px}
+ol.q&gt;li{margin:11px 0;font-weight:600}
+ol.q&gt;li::marker{font-weight:800;color:var(--navy)}
+ol.opts{list-style:upper-alpha;margin:5px 0 0;padding-left:24px}
+ol.opts&gt;li{margin:3px 0;font-weight:500}
+ol.opts&gt;li::marker{font-weight:700;color:var(--navy2)}
+.w{display:block;border-bottom:1pt solid var(--rule);height:22px;margin:8px 0}
+.box{border:1pt solid var(--rule);border-radius:6px;min-height:70px;padding:8px;margin:6px 0;background:var(--ice)}
+.bank{background:var(--grey);border:1pt dashed var(--rule2);border-radius:6px;padding:9px 13px;margin:7px 0;font-weight:700;color:var(--navy)}
+.passage{background:var(--ice);border:1.5pt solid var(--skyE);border-radius:8px;padding:12px 16px;margin:12px 0}
+.passage h3{margin:0 0 6px;font-size:11.5pt;font-weight:800;color:var(--navy)}
+.passage ol{margin:0;padding-left:26px}
+.passage li{margin:3px 0;font-weight:600}
+.note{background:var(--grey);border-left:5px solid var(--rule2);border-radius:0 6px 6px 0;padding:8px 12px;margin:8px 0;font-size:10pt}
+table{width:100%;table-layout:fixed;border-collapse:collapse;word-break:break-word;margin:6px 0;border:1.5pt solid var(--rule2)}
+th,td{border:1pt solid var(--rule);padding:7px 9px;vertical-align:top;text-align:left;font-size:10.5pt}
+thead th{background:var(--sky);color:var(--navy);font-weight:800;font-size:10pt}
+thead{display:table-header-group}
+#key{display:none;margin-top:18px;border:2pt dashed var(--navy);border-radius:8px;padding:12px 16px;background:var(--ice)}
+#key.show{display:block}
+#key h2{margin:0 0 8px;color:var(--navy);font-size:13pt}
+#key ol{padding-left:22px}
+.foot{margin-top:20px;padding-top:8px;border-top:1pt solid var(--rule);font-size:8.5pt;color:var(--muted);display:flex;justify-content:space-between}
+[dir=rtl],[dir=rtl] body{font-family:"Segoe UI",Tahoma,"Traditional Arabic",Arial,sans-serif}
+[dir=rtl] th,[dir=rtl] td{text-align:right}
+[dir=rtl] ol.q,[dir=rtl] ol.opts,[dir=rtl] .passage ol{padding-left:0;padding-right:26px}
+[dir=rtl] ol.opts{list-style-type:arabic-indic}
+[dir=rtl] ol.q,[dir=rtl] .passage ol{list-style-type:arabic-indic}
+[dir=rtl] h2.sec .marks{margin-left:0;margin-right:auto}
+[dir=rtl] .note{border-left:none;border-right:5px solid var(--rule2);border-radius:6px 0 0 6px}
+.bi&gt;*{display:block}
+.bi .en{direction:ltr;unicode-bidi:isolate}
+.bi .ar{direction:rtl;unicode-bidi:isolate;font-size:.95em;opacity:.9;margin-top:2px}
+.lat{unicode-bidi:isolate;direction:ltr}
+.opt{cursor:pointer;border-radius:6px;padding:2px 7px;margin:2px 0;display:list-item}
+.opt:hover{background:var(--grey)}
+.opt.ok{background:#DFF3E4;box-shadow:inset 0 0 0 2px #6FBE93}
+.opt.no{background:#FBE4E4;box-shadow:inset 0 0 0 2px #DE9A9A}
+.gap{border:none;border-bottom:1.5pt solid var(--rule2);background:transparent;font:inherit;width:135px;text-align:center;padding:1px 3px}
+.gap:focus{outline:none;background:#FFFDF2}
+.gap.ok{border-color:#4E9E6E;background:#E9F7EE}
+.gap.no{border-color:#C86A6A;background:#FCEDED}
+.fb{display:none;margin:5px 0 0;font-size:9.5pt;font-weight:600}
+.fb.show{display:block}
+.fb.good{color:#2E7D51}
+.fb.bad{color:#B0504C}
+.score{background:var(--sky);border:1px solid var(--skyE);border-radius:999px;padding:4px 13px;font-weight:700;color:var(--navy);font-size:9.5pt}
+#cheer{display:none;margin:14px 0 0;padding:14px;border-radius:8px;background:#DFF3E4;border:1.5pt solid #6FBE93;text-align:center;font-weight:700;color:#2E7D51;font-size:12pt}
+#cheer.show{display:block}
+#cheer.part{background:#FBF3DE;border-color:#DFC078;color:#87651B}
+@media print{@page{size:A4;margin:12mm}
+body{background:#fff;padding:0;font-size:10.5pt}
+.bar{display:none!important}
+.sheet{box-shadow:none;max-width:none;padding:0 2pt}
+#key{display:none!important}
+body.printkey .sheet&gt;*:not(#key){display:none!important}
+body.printkey #key{display:block!important;border:none;background:none;padding:0;margin:0}
+table{break-inside:auto!important}
+thead{display:table-header-group}
+tr{break-inside:avoid!important}
+td,th{break-inside:auto}
+h1,h2,h3,.instr{break-after:avoid!important}
+h2.sec{break-inside:avoid}
+.passage,.box,.note,.bank{break-inside:avoid}
+ol.q&gt;li{break-inside:avoid}
+.foot{display:none!important}
+.sheet&gt;*:last-child{margin-bottom:0!important;padding-bottom:0!important}
+.body{padding-bottom:6px}
+.body:last-child,.body&gt;*:last-child,.s&gt;*:last-child{margin-bottom:0}
+.opt.ok,.opt.no,.gap.ok,.gap.no{background:none!important;box-shadow:none!important;border-color:var(--rule2)!important;color:inherit!important}
+.fb,#cheer,.score{display:none!important}
+*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
+```
+
+## Script — emit exactly
+```js
+var ed=0,S={n:0,ok:0},PR=['Well done!','Excellent!','That is right!','Great work!','Perfect!'];
+var Q=function(){return document.getElementById('sheet')};
+function edit(){ed=!ed;Q().setAttribute('contenteditable',ed?'true':'false');
+document.getElementById('eb').textContent=ed?'🔒 Lock Editing':'✏️ Enable Editing';if(ed)Q().focus()}
+function key(){var k=document.getElementById('key'),o=k.classList.toggle('show');
+document.getElementById('kb').textContent=o?'🙈 Hide Answer Key':'🔑 Show Answer Key'}
+function say(host,good,msg){var f=host.querySelector(':scope&gt;.fb');
+if(!f){f=document.createElement('p');host.appendChild(f)}
+f.className='fb show '+(good?'good':'bad');f.textContent=(good?'✅ ':'❌ ')+msg}
+function tot(){return document.querySelectorAll('ol.opts').length+document.querySelectorAll('.gap').length}
+function tally(){var d=document.getElementById('sc');if(d)d.textContent='Score '+S.ok+' / '+tot();
+var c=document.getElementById('cheer');if(!c)return;
+if(S.n&amp;&amp;S.n===tot()){c.className=S.ok===S.n?'show':'show part';
+c.textContent=S.ok===S.n?'🎉 Full marks — '+S.ok+' out of '+S.n+'!':'You scored '+S.ok+' out of '+S.n+'. Look at the answers in red and try those again.'}}
+function pick(el){var g=el.parentNode;if(g.dataset.done)return;g.dataset.done=1;
+var ok=el.dataset.c==='1';el.classList.add(ok?'ok':'no');
+if(!ok){var r=g.querySelector('[data-c="1"]');if(r)r.classList.add('ok')}
+S.n++;if(ok)S.ok++;
+say(g.parentNode,ok,ok?PR[Math.floor(Math.random()*PR.length)]:(el.dataset.fb||g.dataset.fb||'The correct answer is highlighted in green.'));
+tally()}
+function check(){var t=0;[].forEach.call(document.querySelectorAll('.gap'),function(i){
+if(i.dataset.done)return;var v=(i.value||'').trim().toLowerCase();if(!v)return;t++;
+var ok=(i.dataset.a||'').toLowerCase().split('|').some(function(a){return a.trim()===v});
+i.dataset.done=1;i.classList.add(ok?'ok':'no');S.n++;if(ok)S.ok++;
+say(i.closest('li')||i.parentNode,ok,ok?PR[Math.floor(Math.random()*PR.length)]:'Correct answer: '+(i.dataset.a||'').split('|')[0])});
+if(!t&amp;&amp;!S.n)alert('Answer some questions first, then press Check.');tally()}
+function reset(){S={n:0,ok:0};
+[].forEach.call(document.querySelectorAll('.opt,.gap'),function(e){e.classList.remove('ok','no');
+delete e.dataset.done;if(e.tagName==='INPUT')e.value=''});
+[].forEach.call(document.querySelectorAll('ol.opts'),function(e){delete e.dataset.done});
+[].forEach.call(document.querySelectorAll('.fb'),function(e){e.className='fb'});
+var c=document.getElementById('cheer');if(c)c.className='';tally()}
+function save(){if(ed)edit();var c=document.documentElement.cloneNode(true);
+c.querySelector('#sheet').setAttribute('contenteditable','false');
+var b=new Blob(['&lt;!DOCTYPE html&gt;\n'+c.outerHTML],{type:'text/html;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');
+a.href=u;a.download=(document.title||'Worksheet').replace(/[^\w\-]+/g,'_')+'.html';
+document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},2000)}
+function pdf(){if(ed)edit();document.body.classList.remove('printkey');window.print()}
+function pdfkey(){if(ed)edit();document.body.classList.add('printkey');window.print();
+setTimeout(function(){document.body.classList.remove('printkey')},500)}
+document.addEventListener('DOMContentLoaded',tally);
+```
+
+# CHECK SILENTLY BEFORE SENDING
+Nothing refused · no preamble · one block of ≤9 questions · replied in the teacher's language ·
+**the section count and question count match question 2 exactly — count them** · only the
+question types asked for · section marks total the mark in the ID box · DOK climbs A→last ·
+every section is h2.sec + div.s wrapping .instr and .body — count them, one div.s per section · every question has
+answer space · the Mark cell shows a bold `.mk` total and NO dotted rule · every `.line` fills
+its own cell and no dots cross into the next square · MCQ options are real list items with
+visible letters/numerals · body 500 / stems 600 / instructions 700 / headers 800 · every MCQ/True-False option carries class="opt" onclick="pick(this)" with exactly
+one data-c="1" and a real data-fb explanation · every short exact answer is a .gap with data-a ·
+the score chip, Check, Reset and #cheer are present · .instr lines say "Choose"/"Complete",
+never "Click"/"Type" · no trailing spacer that could print a blank page · Support scaffolds and one ★ Extension section present · material copied word for
+word with its own numbering, nothing invented · answer key complete, inside `#key`, hidden on
+load · Name/Class/Date/Mark box present and blank, no teacher name anywhere · every td/th bordered · print rules present · no
+external script · `window.print()` not html2pdf · Arabic stacked and isolated · delivered as one
+```html code block, not a document.
+Fix every failure, then send. Do not print this checklist.
+
+# HOW YOU WRITE
+Direct, professional. Short sentences. No praise, no filler, no "Certainly!". You are addressing
+a busy experienced teacher. If something is not sound assessment practice — a question that
+tests reading speed rather than understanding, a mark scheme that cannot be applied — say so in
+one sentence and offer the better version. And never say you are unable to do this: writing
+worksheets and writing HTML are both just writing.
+
+----------------------------------- COPY TO HERE -----------------------------------
+</textarea>
+                <div class="gembar">
+                  <button class="btn btn-primary" type="button" data-copy="gem-worksheet-text" data-en="Copy the instructions" data-ar="انسخ التعليمات">Copy the instructions</button>
+                  <button class="btn btn-outline" type="button" data-download="gem-worksheet-text" data-filename="Worksheet_Architect_Gem" data-en="Download .md" data-ar="نزّل .md">Download .md</button>
+                  <span class="copied"></span>
+                </div>
+              </div>
+              <div class="gempreview">
+                <div class="browser">
+                  <div class="browser-bar">
+                    <i class="dot"></i><i class="dot"></i><i class="dot"></i>
+                    <span class="browser-url">Worksheet_G6_English_Flashbacks.html</span>
+                  </div>
+                  <div class="ws" id="ws-demo" data-quote>
+                    <div class="sheet">
+                      <div class="wshead">
+                        <p class="sch">Monglish International Academy · Edulixa</p>
+                        <h4>Flashbacks — Grade 6 English</h4>
+                      </div>
+                      <div class="idbox">
+                        <table>
+                          <colgroup><col style="width:16%"><col style="width:34%"><col style="width:16%"><col style="width:34%"></colgroup>
+                          <tbody>
+                            <tr><td class="k">Name</td><td><span class="line">&nbsp;</span></td><td class="k">Class</td><td><span class="line">&nbsp;</span></td></tr>
+                            <tr><td class="k">Date</td><td><span class="line">&nbsp;</span></td><td class="k">Mark</td><td><span class="mk">____ / 15</span></td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <h5 class="sec"><span data-en="Section B: Comprehension" data-ar="القسم ب: الاستيعاب">Section B: Comprehension</span><span class="chip">DOK 2</span><span class="marks">5 marks</span></h5>
+                      <div class="s">
+                        <p class="instr" data-en="Choose the correct answer." data-ar="اختر الإجابة الصحيحة.">Choose the correct answer.</p>
+                        <div class="body">
+                          <ol class="q">
+                            <li>
+                              <span data-en="A flashback in a story shows the reader —" data-ar="الاسترجاع الفني في القصة يُظهر للقارئ —">A flashback in a story shows the reader —</span>
+                              <ol class="wsopts" data-fb="A flashback moves backwards, not forwards — it shows something that already happened." data-fb-ar="الاسترجاع يعود إلى الوراء لا إلى الأمام — فهو يعرض شيئًا وقع بالفعل.">
+                                <li class="wsopt" data-en="what will happen next" data-ar="ما سيحدث تاليًا">what will happen next</li>
+                                <li class="wsopt" data-c="1" data-en="something that happened earlier" data-ar="شيئًا حدث في وقت سابق">something that happened earlier</li>
+                                <li class="wsopt" data-en="what a character is thinking now" data-ar="ما تفكر فيه الشخصية الآن">what a character is thinking now</li>
+                              </ol>
+                              <p class="wsfb"></p>
+                            </li>
+                            <li>
+                              <span data-en="In line 4, “she froze” tells us the character felt —" data-ar="في السطر ٤، عبارة «تجمّدت» تخبرنا أن الشخصية شعرت بـ —">In line 4, “she froze” tells us the character felt —</span>
+                              <ol class="wsopts" data-fb="“Froze” describes a sudden stop caused by fear, not cold and not boredom." data-fb-ar="«تجمّدت» تصف توقفًا مفاجئًا سببه الخوف، لا البرد ولا الملل.">
+                                <li class="wsopt" data-en="cold" data-ar="بالبرد">cold</li>
+                                <li class="wsopt" data-en="bored" data-ar="بالملل">bored</li>
+                                <li class="wsopt" data-c="1" data-en="frightened" data-ar="بالخوف">frightened</li>
+                              </ol>
+                              <p class="wsfb"></p>
+                            </li>
+                          </ol>
+                          <div class="ws-cheer" id="ws-cheer"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="wsbar">
+                  <span class="wschip" id="ws-score">Score 0 / 2</span>
+                  <button class="btn btn-outline" type="button" id="ws-reset" data-en="Reset" data-ar="إعادة">Reset</button>
+                </div>
+                <p class="cap" style="padding:10px 16px 16px" data-en="Press an answer. A wrong one gets the teaching point, not the word “wrong”. Printing the same file gives you the blank paper sheet." data-ar="اضغط إجابة. الخاطئة تحصل على النقطة التعليمية، لا على كلمة «خطأ» — وطباعة الملف نفسه تعطيك الورقة الورقية فارغة.">Press an answer. A wrong one gets the teaching point, not the word “wrong”. Printing the same file gives you the blank paper sheet.</p>
+              </div>
+            </div>
+          </div>
+
+          </div>
+
+          <p class="cap" data-en-html="<b>They do not share an interview.</b> The worksheet Gem never asks the teacher's name, because that line belongs to the student. Questions from one artefact do not transfer to another." data-ar-html="<b>لا يتشاركان الأسئلة.</b> ‏Gem ورقة العمل لا يسأل عن اسم المعلم أبدًا، لأن ذلك السطر للطالب — وأسئلة ناتج لا تنتقل إلى ناتج آخر."><b>They do not share an interview.</b> The worksheet Gem never asks the teacher's name, because that line belongs to the student. Questions from one artefact do not transfer to another.</p>
+        </div>
+
+        <!-- ==================== 7 · PASTE, CHECK, REFINE ==================== -->
+        <div class="block" id="refine">
+          <h2 class="display" data-en="Paste, check, refine" data-ar="الصق، افحص، حسّن">Paste, check, refine</h2>
+          <p class="lead" data-en="Every Gem misbehaves in one of nine ways. Press the symptom you are seeing and take the sentence. It is written to be sent to the Gem as it stands." data-ar="كل Gem يخفق بإحدى تسع طرق. اضغط العَرَض الذي تراه وخذ الجملة — فهي مكتوبة لتُرسَل إلى الـ Gem كما هي.">Every Gem misbehaves in one of nine ways. Press the symptom you are seeing and take the sentence. It is written to be sent to the Gem as it stands.</p>
+
+          <div class="syms" data-picker="sym" role="group" data-en-label="What is going wrong" data-ar-label="ما الذي يخفق">
+            <button class="sym" type="button" data-pick-go="s1" aria-pressed="false" data-en="“I cannot create documents.”" data-ar="«لا أستطيع إنشاء مستندات.»">“I cannot create documents.”</button>
+            <button class="sym" type="button" data-pick-go="s2" aria-pressed="false" data-en="It asked questions, then asked more." data-ar="سأل أسئلة، ثم سأل المزيد.">It asked questions, then asked more.</button>
+            <button class="sym" type="button" data-pick-go="s3" aria-pressed="false" data-en="The HTML came as a document, not code." data-ar="جاء الـ HTML مستندًا لا كودًا.">The HTML came as a document, not code.</button>
+            <button class="sym" type="button" data-pick-go="s4" aria-pressed="false" data-en="It stopped in the middle of the file." data-ar="توقف في منتصف الملف.">It stopped in the middle of the file.</button>
+            <button class="sym" type="button" data-pick-go="s5" aria-pressed="false" data-en="It ignored my school's template." data-ar="تجاهل قالب مدرستي.">It ignored my school's template.</button>
+            <button class="sym" type="button" data-pick-go="s6" aria-pressed="false" data-en="The name and school fields came out blank." data-ar="خرج حقلا الاسم والمدرسة فارغين.">The name and school fields came out blank.</button>
+            <button class="sym" type="button" data-pick-go="s7" aria-pressed="false" data-en="The reflection was already filled in." data-ar="كان التأمل مملوءًا سلفًا.">The reflection was already filled in.</button>
+            <button class="sym" type="button" data-pick-go="s8" aria-pressed="false" data-en="Arabic letters are stuck to the English words." data-ar="حروف عربية ملتصقة بالكلمات الإنجليزية.">Arabic letters are stuck to the English words.</button>
+            <button class="sym" type="button" data-pick-go="s9" aria-pressed="false" data-en="It behaves oddly and I cannot say why." data-ar="يتصرف بغرابة ولا أعرف السبب.">It behaves oddly and I cannot say why.</button>
+          </div>
+
+          <div class="symnote" data-note-host="sym">
+            <div class="nb" data-pick-note="s1">
+              <p class="why" data-en-html="<b>Cause:</b> the anti-refusal paragraph did not arrive, or was never written. The model thinks you are asking it to save a file." data-ar-html="<b>السبب:</b> فقرة منع الرفض لم تصل، أو لم تُكتب أصلًا. يظن النموذج أنك تطلب منه حفظ ملف."><b>Cause:</b> the anti-refusal paragraph did not arrive, or was never written.</p>
+              <p class="saylabel" data-en="Send this" data-ar="أرسل هذا">Send this</p>
+              <div class="saybox" data-quote data-en="A lesson plan is HTML source code, and HTML is plain text you type out. Nothing here needs a tool, a file system or an upload. Type the file now." data-ar="خطة الدرس هي كود HTML، وهو نصّ عادي تكتبه. لا شيء هنا يحتاج أداة أو نظام ملفات أو رفعًا. اكتب الملف الآن.">A lesson plan is HTML source code, and HTML is plain text you type out. Nothing here needs a tool, a file system or an upload. Type the file now.</div>
+            </div>
+            <div class="nb" data-pick-note="s2" hidden>
+              <p class="why" data-en-html="<b>Cause:</b> your instructions do not say “ask ONCE, never two lists”, or the question list arrived after the cut-off." data-ar-html="<b>السبب:</b> تعليماتك لا تقول «اسأل مرة واحدة، لا قائمتين»، أو أن قائمة الأسئلة جاءت بعد حدّ القطع."><b>Cause:</b> your instructions do not say “ask ONCE, never two lists”.</p>
+              <p class="saylabel" data-en="Send this" data-ar="أرسل هذا">Send this</p>
+              <div class="saybox" data-quote data-en="Put every question you still need into one numbered block now, with a default in square brackets for each. Do not ask me a second list." data-ar="ضع كل سؤال ما زلت تحتاجه في كتلة مرقّمة واحدة الآن، مع افتراض بين قوسين معقوفين لكل سؤال. ولا تسألني قائمة ثانية.">Put every question you still need into one numbered block now, with a default in square brackets for each. Do not ask me a second list.</div>
+            </div>
+            <div class="nb" data-pick-note="s3" hidden>
+              <p class="why" data-en-html="<b>Cause:</b> it used Canvas. A Canvas panel turns the code into ordinary text, so the buttons stop working." data-ar-html="<b>السبب:</b> استخدم Canvas. لوحة Canvas تحوّل الكود إلى نص عادي، فتتوقف الأزرار عن العمل."><b>Cause:</b> it used Canvas, which turns the code into ordinary text.</p>
+              <p class="saylabel" data-en="Send this" data-ar="أرسل هذا">Send this</p>
+              <div class="saybox" data-quote data-en="Send the whole file again as one fenced html code block in the chat. Do not use Canvas or a document panel." data-ar="أرسل الملف كاملًا مرة أخرى ككتلة كود html واحدة في المحادثة. ولا تستخدم Canvas أو لوحة مستند.">Send the whole file again as one fenced html code block in the chat. Do not use Canvas or a document panel.</div>
+            </div>
+            <div class="nb" data-pick-note="s4" hidden>
+              <p class="why" data-en-html="<b>Cause:</b> the output limit, not your instructions. This is normal on a long file, and the recovery is one word." data-ar-html="<b>السبب:</b> حدّ الإخراج، لا تعليماتك. هذا طبيعي في ملف طويل — والإنقاذ كلمة واحدة."><b>Cause:</b> the output limit, not your instructions.</p>
+              <p class="saylabel" data-en="Send this" data-ar="أرسل هذا">Send this</p>
+              <div class="saybox" data-quote data-en="continue" data-ar="continue">continue</div>
+              <p class="cap" data-en="It should resume from the exact character it stopped at, with no preamble and no repetition. If it starts again from the top, say: resume from where you stopped, do not repeat anything." data-ar="يجب أن يستأنف من الحرف الذي توقف عنده بالضبط، بلا مقدمة وبلا تكرار. وإن بدأ من جديد من الأعلى، فقل: استأنف من حيث توقفت، ولا تكرر شيئًا.">It should resume from the exact character it stopped at. If it starts again from the top, say: resume from where you stopped, do not repeat anything.</p>
+            </div>
+            <div class="nb" data-pick-note="s5" hidden>
+              <p class="why" data-en-html="<b>Cause:</b> no FORMAT AUTHORITY block, so the Gem's own default outranked your attachment." data-ar-html="<b>السبب:</b> لا توجد كتلة «سلطة الشكل»، فتفوّق الافتراضي الخاص بالـ Gem على مرفقك."><b>Cause:</b> no FORMAT AUTHORITY block, so its default outranked your attachment.</p>
+              <p class="saylabel" data-en="Send this" data-ar="أرسل هذا">Send this</p>
+              <div class="saybox" data-quote data-en="The attached model plan outranks your default. Use its number of objectives, its stage names and its order exactly. Mirror its shape back to me first, then build." data-ar="خطة النموذج المرفقة تتفوّق على الافتراضي عندك. استخدم عدد أهدافها وأسماء مراحلها وترتيبها بالضبط. اعرض شكلها عليّ أولًا، ثم ابنِ.">The attached model plan outranks your default. Use its number of objectives, its stage names and its order exactly. Mirror its shape back to me first, then build.</div>
+            </div>
+            <div class="nb" data-pick-note="s6" hidden>
+              <p class="why" data-en-html="<b>Cause:</b> the interview never asked for them. A field the Gem does not ask about prints empty every time." data-ar-html="<b>السبب:</b> الأسئلة لم تطلبهما أصلًا. والحقل الذي لا يسأل عنه الـ Gem يُطبع فارغًا في كل مرة."><b>Cause:</b> the interview never asked for them.</p>
+              <p class="saylabel" data-en="Add this as question 1, then rebuild" data-ar="أضف هذا كسؤال 1، ثم أعد البناء">Add this as question 1, then rebuild</p>
+              <div class="saybox" data-quote data-en="1. Your name, and your school's name. — Print both in the meta table. Never leave them blank and never invent them." data-ar="١. اسمك، واسم مدرستك. — اطبعهما في جدول البيانات. ولا تتركهما فارغين ولا تخترعهما أبدًا.">1. Your name, and your school's name. — Print both in the meta table. Never leave them blank and never invent them.</div>
+            </div>
+            <div class="nb" data-pick-note="s7" hidden>
+              <p class="why" data-en-html="<b>Cause:</b> a missing checklist line. The lesson has not happened yet, so there is nothing to reflect on." data-ar-html="<b>السبب:</b> سطر ناقص في قائمة الفحص. الدرس لم يقع بعد، فلا شيء يُتأمَّل فيه."><b>Cause:</b> a missing checklist line.</p>
+              <p class="saylabel" data-en="Send this" data-ar="أرسل هذا">Send this</p>
+              <div class="saybox" data-quote data-en="Reflection and Next Steps must be empty — ruled lines only. The lesson has not happened yet. Rebuild the file with those two sections blank." data-ar="يجب أن يكون التأمل والخطوات التالية فارغين — أسطر مسطّرة فقط. الدرس لم يقع بعد. أعد بناء الملف بهذين القسمين فارغين.">Reflection and Next Steps must be empty — ruled lines only. The lesson has not happened yet. Rebuild the file with those two sections blank.</div>
+            </div>
+            <div class="nb" data-pick-note="s8" hidden>
+              <p class="why" data-en-html="<b>Cause:</b> a Latin word sitting inside Arabic text with no isolation, so و glues itself to it and renders as a stray letter." data-ar-html="<b>السبب:</b> كلمة لاتينية داخل نص عربي بلا عزل، فتلتصق بها الواو وتظهر كحرف شارد."><b>Cause:</b> a Latin word inside Arabic text with no isolation.</p>
+              <p class="saylabel" data-en="Send this" data-ar="أرسل هذا">Send this</p>
+              <div class="saybox" data-quote data-en="Wrap every Latin word inside Arabic text in &lt;span class=&quot;lat&quot;&gt;…&lt;/span&gt; so nothing glues to it. Never put English and Arabic on one line — stack them." data-ar="ضع كل كلمة لاتينية داخل النص العربي في ‎&lt;span class=&quot;lat&quot;&gt;…&lt;/span&gt;‎ حتى لا يلتصق بها شيء. ولا تضع الإنجليزية والعربية في سطر واحد — بل رتّبهما فوق بعضهما.">Wrap every Latin word inside Arabic text in &lt;span class="lat"&gt;…&lt;/span&gt; so nothing glues to it. Never put English and Arabic on one line — stack them.</div>
+            </div>
+            <div class="nb" data-pick-note="s9" hidden>
+              <p class="why" data-en-html="<b>Cause, nine times out of ten:</b> the paste was cut at 31,000 characters, so it is following three-quarters of a rulebook." data-ar-html="<b>السبب، في تسع حالات من عشر:</b> اللصق قُطع عند 31,000 حرف، فهو يتّبع ثلاثة أرباع دليل القواعد."><b>Cause, nine times out of ten:</b> the paste was cut at 31,000 characters.</p>
+              <p class="saylabel" data-en="Do this, before anything else" data-ar="افعل هذا قبل أي شيء آخر">Do this, before anything else</p>
+              <div class="saybox" data-quote data-en="Open the Gem, scroll to the very bottom of the Instructions box, and check the last line is “----- COPY TO HERE -----”. If it is not, shorten the block and paste it again." data-ar="افتح الـ Gem، وانزل إلى آخر مربع التعليمات تمامًا، وتحقّق أن السطر الأخير هو ‎«----- COPY TO HERE -----»‎. وإن لم يكن كذلك، فاختصر الكتلة والصقها من جديد.">Open the Gem, scroll to the very bottom of the Instructions box, and check the last line is “----- COPY TO HERE -----”. If it is not, shorten the block and paste it again.</div>
+            </div>
+          </div>
+
+          <h3 data-en="Before you hand the Gem to anyone else" data-ar="قبل أن تسلّم الـ Gem لأي شخص آخر">Before you hand the Gem to anyone else</h3>
+          <ul class="ticks is-do">
+            <li data-en="Scroll to the bottom of the Instructions box and confirm the last line arrived." data-ar="انزل إلى أسفل مربع التعليمات وتأكّد من وصول السطر الأخير.">Scroll to the bottom of the Instructions box and confirm the last line arrived.</li>
+            <li data-en="Ask it “what are your rules?” and check the list it gives back matches what you wrote." data-ar="اسأله: «ما قواعدك؟» — ينبغي أن يسردها، وأن تطابق القائمة ما كتبته.">Ask it “what are your rules?” and check the list it gives back matches what you wrote.</li>
+            <li data-en="Test it with a real request, in Arabic as well as English, and check it replies in the language you used." data-ar="اختبره بطلب حقيقي، بالعربية كما بالإنجليزية، وتحقّق أنه يرد باللغة التي استخدمتها.">Test it with a real request, in Arabic as well as English, and check it replies in the language you used.</li>
+            <li data-en="Open what it produced, press every button in it, and print one page." data-ar="افتح ما أنتجه، واضغط كل زر فيه، واطبع صفحة واحدة.">Open what it produced, press every button in it, and print one page.</li>
+          </ul>
+        </div>
+
+        <!-- ==================== 8 · PUBLISH ==================== -->
+        <div class="block" id="publish">
+          <h2 class="display" data-en="Publish what it makes" data-ar="انشر ما ينتجه">Publish what it makes</h2>
+          <p class="lead" data-en="Two links come out of this session: the Gem itself, for your colleagues, and the file it produced, for your learners." data-ar="يخرج من هذه المحاضرة رابطان: الـ Gem نفسه لزملائك، والملف الذي أنتجه لمتعلميك.">Two links come out of this session: the Gem itself, for your colleagues, and the file it produced, for your learners.</p>
+
+          <h3 data-en="A · share the Gem with your department" data-ar="أ · شارك الـ Gem مع قسمك">A · share the Gem with your department</h3>
+          <ol class="steps">
+            <li>
+              <h4 data-en="Open the Gem from your list" data-ar="افتح الـ Gem من قائمتك">Open the Gem from your list</h4>
+              <p data-en="Gemini → Gems → the one you built. Share is on the Gem itself, not on a chat inside it." data-ar="‏Gemini ← Gems ← الذي بنيته. زر المشاركة على الـ Gem نفسه، لا على محادثة بداخله.">Gemini → Gems → the one you built. Share is on the Gem itself, not on a chat inside it.</p>
+            </li>
+            <li>
+              <h4 data-en="Copy the link and send it" data-ar="انسخ الرابط وأرسله">Copy the link and send it</h4>
+              <p data-en="Anyone who opens it gets your instructions, held by Google, not a copy they can edit by accident." data-ar="من يفتحه يحصل على تعليماتك محفوظة لدى Google، لا على نسخة قد يعدّلها بالخطأ.">Anyone who opens it gets your instructions, held by Google, not a copy they can edit by accident.</p>
+            </li>
+            <li>
+              <h4 data-en="Send the instruction file too" data-ar="أرسل ملف التعليمات أيضًا">Send the instruction file too</h4>
+              <p data-en="Download the .md from this page and put it in your shared drive. A link can be revoked; a text file cannot be lost." data-ar="نزّل ملف ‎.md من هذه الصفحة وضعه في مساحتكم المشتركة. الرابط يمكن سحبه؛ أما الملف النصي فلا يضيع.">Download the .md from this page and put it in your shared drive. A link can be revoked; a text file cannot be lost.</p>
+            </li>
+          </ol>
+
+          <h3 data-en="B · publish the file it produced" data-ar="ب · انشر الملف الذي أنتجه">B · publish the file it produced</h3>
+          <ol class="steps">
+            <li>
+              <h4 data-en="Save the answer as index.html" data-ar="احفظ الإجابة باسم index.html">Save the answer as index.html</h4>
+              <p data-en="Copy the code block into Notepad and save it as index.html: exactly that name, all lowercase, at the top level of the folder." data-ar="انسخ كتلة الكود إلى المفكرة واحفظها باسم ‎index.html — بهذا الاسم بالضبط، بحروف صغيرة، في أعلى مستوى من المجلد.">Copy the code block into Notepad and save it as index.html: exactly that name, all lowercase, at the top level of the folder.</p>
+            </li>
+            <li>
+              <h4 data-en="Check it in the viewer first" data-ar="افحصه في العارض أولًا">Check it in the viewer first</h4>
+              <p data-en="Six checks, including whether the answer was cut off and whether the page has anything to show. Fix it before you publish, not after." data-ar="ستة فحوص، منها هل قُطعت الإجابة وهل في الصفحة شيء يُعرَض. أصلحه قبل النشر لا بعده.">Six checks, including whether the answer was cut off and whether the page has anything to show.</p>
+              <div class="viewer-actions">
+                <a class="btn btn-outline" href="session1.html#run" data-en="Open the Edulixa HTML Viewer" data-ar="افتح عارض Edulixa لملفات HTML">Open the Edulixa HTML Viewer</a>
+              </div>
+            </li>
+            <li>
+              <h4 data-en="Put it on GitHub Pages" data-ar="ضعه على GitHub Pages">Put it on GitHub Pages</h4>
+              <p data-en="New public repository → upload index.html → Settings ▸ Pages ▸ Deploy from a branch ▸ main ▸ / (root) → wait one to three minutes." data-ar="مستودع عام جديد ← ارفع index.html ← الإعدادات ▸ Pages ▸ النشر من فرع ▸ main ▸ ‏/ (الجذر) ← انتظر من دقيقة إلى ثلاث.">New public repository → upload index.html → Settings ▸ Pages ▸ Deploy from a branch ▸ main ▸ / (root) → wait one to three minutes.</p>
+              <div class="viewer-actions">
+                <a class="btn btn-outline" href="session1.html#publish" data-en="Open the six steps in full" data-ar="افتح الخطوات الست كاملة">Open the six steps in full</a>
+              </div>
+            </li>
+            <li>
+              <h4 data-en="Test the link on mobile data" data-ar="اختبر الرابط على بيانات الهاتف">Test the link on mobile data</h4>
+              <p data-en="Not on school wifi. A filtered network can show you a page that no parent outside the building can reach." data-ar="لا على شبكة المدرسة — فالشبكة المفلترة قد تعرض لك صفحة لا يصل إليها أي ولي أمر خارج المبنى.">Not on school wifi. A filtered network can show you a page that no parent outside the building can reach.</p>
+            </li>
+          </ol>
+
+          <div class="safebox">
+            <h4 data-en="Before you publish anything a Gem wrote" data-ar="قبل نشر أي شيء كتبه Gem">Before you publish anything a Gem wrote</h4>
+            <p data-en="A GitHub Pages site is world-readable and search-indexable. No learner names, marks, photographs or personal details go in the file: first name only, held in the learner's own browser, sent nowhere. And every AI-generated item is reviewed, corrected and approved by the teacher before it reaches a learner." data-ar="موقع GitHub Pages مقروء للعالم كله وقابل للفهرسة في محركات البحث. لا أسماء متعلمين ولا درجات ولا صور ولا بيانات شخصية داخل الملف — الاسم الأول فقط، محفوظًا في متصفح المتعلم نفسه، ولا يُرسل إلى أي جهة. وكل عنصر ينتجه الذكاء الاصطناعي يراجعه المعلم ويصححه ويعتمده قبل أن يصل إلى المتعلم.">A GitHub Pages site is world-readable and search-indexable. No learner names, marks, photographs or personal details go in the file: first name only, held in the learner's own browser, sent nowhere. And every AI-generated item is reviewed, corrected and approved by the teacher before it reaches a learner.</p>
+          </div>
+        </div>
+
+        <!-- ==================== 9 · TOOLS ==================== -->
+        <div class="block" id="tools">
+          <h2 class="display" data-en="Every tool link for this session" data-ar="كل روابط أدوات هذه المحاضرة">Every tool link for this session</h2>
+          <div class="apps">
+            <div class="app">
+              <span class="app-badge" data-en="ours · offline" data-ar="من عندنا · بلا إنترنت">ours · offline</span>
+              <h3 data-en="Gem Instruction Builder" data-ar="أداة كتابة تعليمات الـ Gem">Gem Instruction Builder</h3>
+              <p class="app-url">apps/app-gem-builder.html</p>
+              <a class="btn btn-primary" href="#builder" data-en="Open the builder" data-ar="افتح الأداة">Open the builder</a>
+            </div>
+            <div class="app">
+              <span class="app-badge is-ext" data-en="where the Gem lives" data-ar="حيث يعيش الـ Gem">where the Gem lives</span>
+              <h3>Gemini</h3>
+              <p class="app-url">https://gemini.google.com</p>
+              <a class="btn btn-outline" href="https://gemini.google.com" target="_blank" rel="noopener" data-en="Open Gemini" data-ar="افتح Gemini">Open Gemini</a>
+            </div>
+            <div class="app">
+              <span class="app-badge is-ext" data-en="the same idea, on ChatGPT" data-ar="الفكرة نفسها، على ChatGPT">the same idea, on ChatGPT</span>
+              <h3>ChatGPT · GPTs</h3>
+              <p class="app-url">https://chatgpt.com</p>
+              <a class="btn btn-outline" href="https://chatgpt.com" target="_blank" rel="noopener" data-en="Open ChatGPT" data-ar="افتح ChatGPT">Open ChatGPT</a>
+            </div>
+            <div class="app">
+              <span class="app-badge" data-en="ours · offline" data-ar="من عندنا · بلا إنترنت">ours · offline</span>
+              <h3 data-en="Edulixa HTML Viewer" data-ar="عارض Edulixa لملفات HTML">Edulixa HTML Viewer</h3>
+              <p class="app-url">apps/app-html-viewer.html</p>
+              <a class="btn btn-outline" href="session1.html#run" data-en="Check a file before publishing" data-ar="افحص ملفًا قبل النشر">Check a file before publishing</a>
+            </div>
+            <div class="app">
+              <span class="app-badge is-ext" data-en="publishing" data-ar="النشر">publishing</span>
+              <h3>GitHub</h3>
+              <p class="app-url">https://github.com</p>
+              <a class="btn btn-outline" href="https://github.com/" target="_blank" rel="noopener" data-en="Open GitHub" data-ar="افتح GitHub">Open GitHub</a>
+            </div>
+            <div class="app">
+              <span class="app-badge" data-en="take the text" data-ar="خذ النص">take the text</span>
+              <h3 data-en="The two finished Gems" data-ar="الـ Gems الجاهزان">The two finished Gems</h3>
+              <p class="app-url" data-en="Lesson Plan Architect · Worksheet Architect" data-ar="Lesson Plan Architect · Worksheet Architect">Lesson Plan Architect · Worksheet Architect</p>
+              <a class="btn btn-outline" href="#examples" data-en="Copy or download them" data-ar="انسخهما أو نزّلهما">Copy or download them</a>
+            </div>
+          </div>
+        </div>
+
+        <nav class="pager">
+          <a class="btn btn-outline" href="session1.html">
+            <svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+            <span data-en="Session 1 · Vibe coding" data-ar="المحاضرة 1 · البرمجة بالتوجيه">Session 1 · Vibe coding</span>
+          </a>
+          <a class="btn btn-primary" href="session3.html">
+            <span data-en="Session 3 · Your teacher website" data-ar="المحاضرة 3 · موقعك التعليمي">Session 3 · Your teacher website</span>
+            <svg class="ic flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <img src="assets/logo-reversed.png" alt="Edulixa 360">
+    <p data-en="Session 2 · Build your own Gem · AI Masterclass for Teachers, Level 3" data-ar="المحاضرة 2 · ابنِ الـ Gem الخاص بك · الماستر كلاس للمعلمين بالذكاء الاصطناعي، المستوى الثالث">Session 2 · Build your own Gem</p>
+    <button class="btn btn-ghost" data-lang-toggle type="button" lang="ar">العربية</button>
+  </div>
+</footer>
+
+<div class="backdock"><a class="backlink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span data-en="All sessions" data-ar="كل المحاضرات">All sessions</span></a></div>
+
+<script src="assets/edulixa.js"></script>
+<script src="assets/gem-parts.js"></script>
+<script>
+/* the two length chips report the real character count of the text above them */
+(function(){
+  function fmt(n){return n.toLocaleString('en-US')}
+  function set(chipId,taId){
+    var c=document.getElementById(chipId),t=document.getElementById(taId);
+    if(!c||!t)return;
+    var n=t.value.length;
+    var write=function(){
+      var ar=document.documentElement.getAttribute('dir')==='rtl';
+      c.textContent=ar?(fmt(n)+' حرفًا · يتّسع'):(fmt(n)+' characters · fits');
+    };
+    write();
+    window.addEventListener('edulixa:lang',write);
+  }
+  set('len-lesson','gem-lesson-text');
+  set('len-worksheet','gem-worksheet-text');
+})();
+</script>
+</body>
+</html>

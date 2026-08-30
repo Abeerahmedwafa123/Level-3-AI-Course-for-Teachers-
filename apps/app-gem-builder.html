@@ -1,0 +1,845 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-en="Edulixa Gem Instruction Builder" data-ar="أداة كتابة تعليمات الـ Gem من Edulixa">Edulixa Gem Instruction Builder</title>
+<script>try{if(window.self!==window.top)document.documentElement.className+=' is-framed';}catch(e){document.documentElement.className+=' is-framed';}</script>
+<style>
+:root{
+  --brand:#0F695D; --brand-lift:oklch(0.735 0.088 180);
+  --bg:oklch(0.165 0.020 185); --bg-2:oklch(0.200 0.024 185);
+  --surface:oklch(0.230 0.026 185); --surface-2:oklch(0.272 0.028 185);
+  --line:oklch(0.335 0.028 185); --line-soft:oklch(0.283 0.026 185);
+  --ink:oklch(0.968 0.008 185); --ink-2:oklch(0.884 0.012 185);
+  --muted:oklch(0.822 0.018 185);
+  --accent:#EE3A23; --accent-text:oklch(0.790 0.160 34);
+  --on-accent:oklch(0.170 0.032 185);
+  --signal:oklch(0.790 0.140 168);
+  --warn:oklch(0.820 0.135 85);
+  --sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --ar:Cairo,"Segoe UI",Tahoma,system-ui,sans-serif;
+  --r-sm:8px; --r:12px; --r-md:14px; --r-lg:18px; --r-pill:999px;
+  --t:220ms; --out:cubic-bezier(0.22,1,0.36,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased}
+[dir=rtl] body{font-family:var(--ar)}
+.shell{max-width:1180px;margin:0 auto;padding:26px 20px 40px}
+html.is-framed .shell{max-width:none;padding:16px 16px 22px}
+h1{font-size:27px;margin:0 0 6px;font-weight:800;letter-spacing:-.01em}
+.lede{margin:0 0 22px;color:var(--muted);font-size:17px;max-width:70ch}
+html.is-framed h1, html.is-framed .lede, html.is-framed .app-lang{display:none}
+button,input,select,textarea{font:inherit;color:inherit}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;
+  padding:11px 18px;border-radius:var(--r-pill);border:1px solid var(--line);
+  background:var(--surface);color:var(--ink);font-weight:650;font-size:15px;cursor:pointer;
+  transition:background var(--t),border-color var(--t),transform var(--t)}
+.btn:hover{background:var(--surface-2);border-color:var(--brand-lift)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;background:var(--bg-2);border-color:var(--line-soft)}
+.btn.p{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.p:hover{background:oklch(0.520 0.075 180)}
+.btn.a{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.a:hover{background:oklch(0.560 0.195 31)}
+.btn.sm{min-height:38px;padding:7px 14px;font-size:14px}
+
+/* ---------- layout ---------- */
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+/* the form is far taller than the output, so the block follows you down it
+   instead of leaving a column of dead space */
+.cols > .out-col{position:sticky;top:14px}
+@media (max-width:900px){.cols > .out-col{position:static}}
+.cols > *{min-width:0}
+@media (max-width:900px){.cols{grid-template-columns:minmax(0,1fr)}}
+
+.card{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r-lg);
+  padding:20px 22px;margin:0 0 16px}
+.card > h2{margin:0 0 4px;font-size:13px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;
+  color:var(--brand-lift);font-family:var(--mono)}
+[dir=rtl] .card > h2{font-family:var(--ar);letter-spacing:0}
+.card > .why{margin:0 0 16px;font-size:14.5px;color:var(--muted)}
+
+/* ---------- presets ---------- */
+.presets{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 18px}
+.preset{min-height:44px;padding:10px 16px;border-radius:var(--r-pill);border:1px solid var(--line);
+  background:var(--bg-2);color:var(--ink-2);font-weight:650;font-size:14.5px;cursor:pointer;
+  transition:background var(--t),border-color var(--t),color var(--t)}
+.preset:hover{border-color:var(--brand-lift);color:var(--ink)}
+.preset[aria-pressed=true]{background:var(--brand);border-color:var(--brand);color:#fff}
+
+/* ---------- fields ---------- */
+.f{margin:0 0 16px}
+.f > label,.f > .lab{display:block;margin:0 0 6px;font-size:14.5px;font-weight:700;color:var(--ink)}
+.f .tip{display:block;margin:0 0 8px;font-size:13.5px;color:var(--muted);font-weight:400}
+input[type=text],textarea,select{width:100%;min-height:44px;padding:11px 13px;border-radius:var(--r);
+  border:1px solid var(--line);background:var(--bg-2);color:var(--ink);font-size:15.5px}
+textarea{min-height:88px;resize:vertical;line-height:1.55}
+input[type=text]:focus,textarea:focus,select:focus{outline:none;border-color:var(--brand-lift);
+  background:var(--bg)}
+select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),
+  linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 19px) 20px,calc(100% - 13px) 20px;
+  background-size:6px 6px,6px 6px;background-repeat:no-repeat;padding-inline-end:38px}
+[dir=rtl] select{background-position:19px 20px,13px 20px}
+
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:9px 15px;
+  border-radius:var(--r-pill);border:1px solid var(--line);background:var(--bg-2);
+  font-size:14.5px;font-weight:600;color:var(--ink-2);cursor:pointer;transition:all var(--t)}
+.opt input{width:16px;height:16px;accent-color:var(--brand-lift);margin:0}
+.opt:has(input:checked){background:var(--surface-2);border-color:var(--brand-lift);color:var(--ink)}
+
+/* ---------- repeating lists ---------- */
+.list{display:grid;gap:8px;margin:0 0 10px}
+.row{display:grid;grid-template-columns:26px minmax(0,1fr) 44px;gap:8px;align-items:center}
+.row .n{font-family:var(--mono);font-size:13px;color:var(--muted);text-align:center}
+.row input{min-height:44px}
+.x{min-height:44px;width:44px;border-radius:var(--r);border:1px solid var(--line);
+  background:var(--bg-2);color:var(--muted);cursor:pointer;font-size:18px;line-height:1}
+.x:hover{border-color:var(--accent);color:var(--accent-text)}
+.listbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.count{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.count.is-over{color:var(--accent-text);font-weight:700}
+
+/* ---------- colours ---------- */
+.swatches{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:10px}
+.sw{display:grid;gap:6px;padding:10px;border:1px solid var(--line);border-radius:var(--r);
+  background:var(--bg-2)}
+.sw span{font-size:12.5px;color:var(--muted);font-family:var(--mono)}
+.sw input[type=color]{width:100%;height:38px;padding:0;border:1px solid var(--line);
+  border-radius:var(--r-sm);background:none;cursor:pointer}
+
+/* ---------- output ---------- */
+.out-head{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:0 0 12px}
+.out-head h2{margin:0;flex:1 1 auto}
+.meter{margin:0 0 14px}
+.meter-top{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);
+  font-size:13px;color:var(--muted);margin:0 0 6px}
+.meter-top b{color:var(--ink);font-weight:700}
+.bar{position:relative;height:16px;border-radius:var(--r-pill);background:var(--bg-2);
+  border:1px solid var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--signal);transition:width var(--t) var(--out)}
+.bar.is-amber i{background:var(--warn)}
+.bar.is-red i{background:var(--accent)}
+.bar .cap-mark{position:absolute;top:-4px;bottom:-4px;inset-inline-start:73.8%;width:2px;
+  background:var(--ink);opacity:.75}
+.meter-note{margin:8px 0 0;font-size:14px;color:var(--muted)}
+.meter-note.is-red{color:var(--accent-text);font-weight:650}
+
+pre.out{margin:0;padding:18px 16px;border:1px solid var(--line);border-radius:var(--r-md);
+  background:var(--bg-2);font-family:var(--mono);font-size:12.5px;line-height:1.62;
+  color:var(--ink-2);max-height:520px;overflow:auto;white-space:pre-wrap;word-break:break-word;
+  direction:ltr;text-align:left}
+html.is-framed pre.out{max-height:430px}
+
+/* ---------- the seven lamps ---------- */
+.lamps{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:8px}
+.lamps li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:11px;align-items:start;
+  font-size:14.5px;color:var(--muted);line-height:1.5}
+.lamps li:before{content:"";width:14px;height:14px;margin-top:5px;border-radius:50%;
+  border:2px solid var(--line);background:transparent;transition:all var(--t)}
+.lamps li.on{color:var(--ink-2)}
+.lamps li.on:before{background:var(--signal);border-color:var(--signal);
+  box-shadow:0 0 0 4px oklch(0.790 0.140 168 / .16)}
+.lamps li b{color:var(--ink);font-weight:700}
+
+.note{margin:14px 0 0;padding:14px 16px;border:1px solid var(--line);border-radius:var(--r);
+  background:var(--bg-2);font-size:14.5px;color:var(--ink-2);line-height:1.6}
+.note b{color:var(--accent-text)}
+.copied{font-size:14px;color:var(--signal);font-weight:700;min-height:1.2em}
+.app-lang{position:absolute;inset-inline-end:20px;top:22px}
+.wrapper{position:relative}
+</style>
+</head>
+<body>
+<div class="shell wrapper">
+
+  <button class="btn sm app-lang" type="button" id="lang" lang="ar">العربية</button>
+
+  <h1 data-en="Gem Instruction Builder" data-ar="أداة كتابة تعليمات الـ Gem">Gem Instruction Builder</h1>
+  <p class="lede" data-en="Answer the fields on the left. The complete instruction block appears on the right, ready to paste into a Gem — with a live count against the 31,000-character cut-off." data-ar="أجب عن الحقول على اليسار. تظهر كتلة التعليمات الكاملة على اليمين، جاهزة للصقها في الـ Gem — مع عدّاد حيّ مقابل حدّ القطع عند 31,000 حرف.">Answer the fields on the left. The complete instruction block appears on the right, ready to paste into a Gem — with a live count against the 31,000-character cut-off.</p>
+
+  <div class="presets" role="group" data-en-label="Start from" data-ar-label="ابدأ من">
+    <button class="preset" type="button" data-preset="lesson" aria-pressed="false" data-en="Start from the Lesson Plan Architect" data-ar="ابدأ من Lesson Plan Architect">Start from the Lesson Plan Architect</button>
+    <button class="preset" type="button" data-preset="worksheet" aria-pressed="false" data-en="Start from the Worksheet Architect" data-ar="ابدأ من Worksheet Architect">Start from the Worksheet Architect</button>
+    <button class="preset" type="button" data-preset="blank" aria-pressed="true" data-en="Start blank" data-ar="ابدأ من فارغ">Start blank</button>
+  </div>
+
+  <div class="cols">
+
+    <!-- ================= LEFT: the form ================= -->
+    <div>
+
+      <div class="card">
+        <h2 data-en="1 · Who it is" data-ar="‎1 · من هو">1 · Who it is</h2>
+        <p class="why" data-en="A Gem with no stated role answers like a general assistant." data-ar="الـ Gem بلا دور محدد يجيب مثل مساعد عام.">A Gem with no stated role answers like a general assistant.</p>
+
+        <div class="f">
+          <label for="f-name" data-en="Gem name" data-ar="اسم الـ Gem">Gem name</label>
+          <input type="text" id="f-name" data-en-ph="Lesson Plan Architect · Edulixa" data-ar-ph="Lesson Plan Architect · Edulixa" placeholder="Lesson Plan Architect · Edulixa">
+        </div>
+        <div class="f">
+          <label for="f-job" data-en="Its job title" data-ar="مسمّاه الوظيفي">Its job title</label>
+          <input type="text" id="f-job" data-en-ph="the Lesson Plan Architect" data-ar-ph="مهندس تحضير الدروس" placeholder="the Lesson Plan Architect">
+        </div>
+        <div class="f">
+          <label for="f-org" data-en="Who it works for" data-ar="لحساب من يعمل">Who it works for</label>
+          <input type="text" id="f-org" value="Monglish International Academy / Edulixa">
+        </div>
+        <div class="f">
+          <label for="f-expert" data-en="What it is expert in — one line" data-ar="فيمَ هو خبير — سطر واحد">What it is expert in — one line</label>
+          <input type="text" id="f-expert" data-en-ph="a certified teacher for ANY subject, an instructional designer, and a front-end developer" data-ar-ph="معلم معتمد لأي مادة، ومصمم تعليمي، ومطور واجهات" placeholder="a certified teacher for ANY subject, an instructional designer, and a front-end developer">
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 data-en="2 · What it makes" data-ar="‎2 · ماذا ينتج">2 · What it makes</h2>
+        <p class="why" data-en="This decides the anti-refusal paragraph and how the answer is delivered." data-ar="هذا يحدّد فقرة منع الرفض وطريقة تسليم الإجابة.">This decides the anti-refusal paragraph and how the answer is delivered.</p>
+
+        <div class="f">
+          <label for="f-artefact" data-en="The artefact, named the way a teacher says it" data-ar="الناتج، بالاسم الذي يقوله المعلم">The artefact, named the way a teacher says it</label>
+          <input type="text" id="f-artefact" data-en-ph="a lesson plan" data-ar-ph="خطة درس" placeholder="a lesson plan">
+        </div>
+        <div class="f">
+          <label for="f-delivery" data-en="How it is delivered" data-ar="كيف يُسلَّم">How it is delivered</label>
+          <select id="f-delivery">
+            <option value="html" data-en="One self-contained HTML file, in a fenced code block" data-ar="ملف HTML واحد مكتفٍ بذاته، داخل كتلة كود">One self-contained HTML file, in a fenced code block</option>
+            <option value="doc" data-en="Formatted text in the chat" data-ar="نص منسّق في المحادثة">Formatted text in the chat</option>
+            <option value="table" data-en="A table in the chat" data-ar="جدول في المحادثة">A table in the chat</option>
+          </select>
+        </div>
+        <div class="f">
+          <span class="lab" data-en="Trigger phrases that must never be refused" data-ar="عبارات لا يجوز رفضها أبدًا">Trigger phrases that must never be refused</span>
+          <span class="tip" data-en="What a teacher actually types when they want this. Include the Arabic." data-ar="ما يكتبه المعلم فعلًا عندما يريد هذا. أضف العربية.">What a teacher actually types when they want this. Include the Arabic.</span>
+          <div class="list" id="l-triggers"></div>
+          <div class="listbar">
+            <button class="btn sm" type="button" data-add="triggers" data-en="Add a phrase" data-ar="أضف عبارة">Add a phrase</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 data-en="3 · The one question list" data-ar="‎3 · قائمة الأسئلة الواحدة">3 · The one question list</h2>
+        <p class="why" data-en="Everything it needs, asked once. Ten is the ceiling — past that teachers abandon the conversation." data-ar="كل ما يحتاجه، يُسأل مرة واحدة. عشرة هي الحد الأقصى — بعدها يترك المعلمون المحادثة.">Everything it needs, asked once. Ten is the ceiling — past that teachers abandon the conversation.</p>
+        <div class="list" id="l-questions"></div>
+        <div class="listbar">
+          <button class="btn sm" type="button" data-add="questions" data-en="Add a question" data-ar="أضف سؤالًا">Add a question</button>
+          <span class="count" id="q-count">0 / 10</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 data-en="4 · Never ask these" data-ar="‎4 · لا تسأل عن هذه أبدًا">4 · Never ask these</h2>
+        <p class="why" data-en="A question that does not belong to this artefact. Without this block, questions from another Gem creep back in." data-ar="سؤال لا يخصّ هذا الناتج. بدون هذه الكتلة تتسلّل أسئلة Gem آخر من جديد.">A question that does not belong to this artefact. Without this block, questions from another Gem creep back in.</p>
+        <div class="list" id="l-never"></div>
+        <div class="listbar">
+          <button class="btn sm" type="button" data-add="never" data-en="Add one" data-ar="أضف واحدًا">Add one</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 data-en="5 · What it works to" data-ar="‎5 · إلامَ يستند">5 · What it works to</h2>
+        <p class="why" data-en="Named frameworks change the questions it asks and the shape of what it builds." data-ar="الأطر المسمّاة تغيّر الأسئلة التي يطرحها وشكل ما يبنيه.">Named frameworks change the questions it asks and the shape of what it builds.</p>
+        <div class="f">
+          <div class="opts" id="f-frameworks">
+            <label class="opt"><input type="checkbox" value="Bloom's Taxonomy" checked><span>Bloom</span></label>
+            <label class="opt"><input type="checkbox" value="the DOK ladder (Recall→Apply→Analyse→Create)" checked><span>DOK</span></label>
+            <label class="opt"><input type="checkbox" value="CEFR levels A1–C2"><span>CEFR</span></label>
+            <label class="opt"><input type="checkbox" value="the IB inquiry framework"><span>IB</span></label>
+            <label class="opt"><input type="checkbox" value="three-tier differentiation (Support · Core · Extension)" checked><span data-en="Differentiation" data-ar="التمايز">Differentiation</span></label>
+            <label class="opt"><input type="checkbox" value="UDL and accessibility"><span>UDL</span></label>
+          </div>
+        </div>
+        <div class="f">
+          <span class="lab" data-en="Rules that are never overridden" data-ar="قواعد لا تُنقَض أبدًا">Rules that are never overridden</span>
+          <span class="tip" data-en="The things that must survive even when a teacher attaches their own template." data-ar="الأشياء التي يجب أن تبقى حتى عندما يرفق المعلم قالبه الخاص.">The things that must survive even when a teacher attaches their own template.</span>
+          <div class="list" id="l-rules"></div>
+          <div class="listbar">
+            <button class="btn sm" type="button" data-add="rules" data-en="Add a rule" data-ar="أضف قاعدة">Add a rule</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 data-en="6 · How it speaks and looks" data-ar="‎6 · كيف يتكلم ويبدو">6 · How it speaks and looks</h2>
+        <div class="f">
+          <label for="f-lang" data-en="Language behaviour" data-ar="سلوك اللغة">Language behaviour</label>
+          <select id="f-lang">
+            <option value="mirror" data-en="Reply in the language the teacher writes in" data-ar="الرد بلغة المعلم">Reply in the language the teacher writes in</option>
+            <option value="en" data-en="English only" data-ar="الإنجليزية فقط">English only</option>
+            <option value="bi" data-en="Always bilingual, English stacked above Arabic" data-ar="ثنائي اللغة دائمًا، الإنجليزية فوق العربية">Always bilingual, English stacked above Arabic</option>
+          </select>
+        </div>
+        <div class="f">
+          <label for="f-tone" data-en="Tone" data-ar="النبرة">Tone</label>
+          <input type="text" id="f-tone" value="Direct, professional, evidence-based. Short sentences. No praise, no filler.">
+        </div>
+        <div class="f">
+          <span class="lab" data-en="Palette — becomes the CSS variables in the file" data-ar="لوحة الألوان — تصبح متغيرات CSS في الملف">Palette — becomes the CSS variables in the file</span>
+          <div class="swatches">
+            <label class="sw"><span>--ink</span><input type="color" id="c-ink" value="#22303C"></label>
+            <label class="sw"><span>--main</span><input type="color" id="c-main" value="#123A5E"></label>
+            <label class="sw"><span>--soft</span><input type="color" id="c-soft" value="#DCEAF5"></label>
+            <label class="sw"><span>--wash</span><input type="color" id="c-wash" value="#EDF1F5"></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 data-en="7 · The silent checklist" data-ar="‎7 · قائمة الفحص الصامتة">7 · The silent checklist</h2>
+        <p class="why" data-en="It checks these before it sends, and never prints them. Leave it empty and the builder writes one from your rules." data-ar="يفحصها قبل الإرسال، ولا يطبعها أبدًا. اتركها فارغة وستكتبها الأداة من قواعدك.">It checks these before it sends, and never prints them. Leave it empty and the builder writes one from your rules.</p>
+        <div class="list" id="l-checks"></div>
+        <div class="listbar">
+          <button class="btn sm" type="button" data-add="checks" data-en="Add a check" data-ar="أضف فحصًا">Add a check</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= RIGHT: the output ================= -->
+    <div class="out-col">
+      <div class="card">
+        <div class="out-head">
+          <h2 data-en="Your instruction block" data-ar="كتلة تعليماتك">Your instruction block</h2>
+          <button class="btn sm p" type="button" id="copy" data-en="Copy" data-ar="انسخ">Copy</button>
+          <button class="btn sm" type="button" id="dl" data-en="Download .md" data-ar="نزّل .md">Download .md</button>
+          <span class="copied" id="copied"></span>
+        </div>
+
+        <div class="meter">
+          <div class="meter-top">
+            <span><b id="m-chars">0</b> <span data-en="characters" data-ar="حرفًا">characters</span></span>
+            <span data-en="cut-off 31,000" data-ar="حد القطع 31,000">cut-off 31,000</span>
+          </div>
+          <div class="bar" id="bar"><i></i><span class="cap-mark" aria-hidden="true"></span></div>
+          <p class="meter-note" id="m-note" data-en="It fits. Paste the whole block into the Gem's Instructions box." data-ar="يتّسع. الصق الكتلة كاملة في مربع التعليمات في الـ Gem.">It fits. Paste the whole block into the Gem's Instructions box.</p>
+        </div>
+
+        <ul class="lamps" id="lamps">
+          <li data-lamp="role"><span><b data-en="Role" data-ar="الدور">Role</b>: <span data-en="who it is, and what it is expert in" data-ar="من هو، وفيمَ هو خبير">who it is, and what it is expert in</span></span></li>
+          <li data-lamp="refuse"><span><b data-en="Anti-refusal" data-ar="منع الرفض">Anti-refusal</b>: <span data-en="the paragraph that stops &ldquo;I cannot create documents&rdquo;" data-ar="الفقرة التي توقف «لا أستطيع إنشاء مستندات»">the paragraph that stops &ldquo;I cannot create documents&rdquo;</span></span></li>
+          <li data-lamp="ask"><span><b data-en="One question list" data-ar="قائمة أسئلة واحدة">One question list</b>: <span data-en="between 1 and 10 questions, asked once" data-ar="بين 1 و10 أسئلة، تُطرح مرة واحدة">between 1 and 10 questions, asked once</span></span></li>
+          <li data-lamp="never"><span><b data-en="Never ask these" data-ar="لا تسأل عن هذه">Never ask these</b>: <span data-en="the questions that belong to a different artefact" data-ar="الأسئلة التي تخصّ ناتجًا آخر">the questions that belong to a different artefact</span></span></li>
+          <li data-lamp="format"><span><b data-en="Format authority" data-ar="سلطة الشكل">Format authority</b>: <span data-en="what an attached template may and may not override" data-ar="ما يجوز وما لا يجوز لقالب مرفق أن ينقضه">what an attached template may and may not override</span></span></li>
+          <li data-lamp="file"><span><b data-en="Output contract" data-ar="عقد المُخرَج">Output contract</b>: <span data-en="the shape of the answer, every single time" data-ar="شكل الإجابة، في كل مرة">the shape of the answer, every single time</span></span></li>
+          <li data-lamp="check"><span><b data-en="Silent checklist" data-ar="قائمة فحص صامتة">Silent checklist</b>: <span data-en="checked before sending, never printed" data-ar="تُفحص قبل الإرسال، ولا تُطبع أبدًا">checked before sending, never printed</span></span></li>
+        </ul>
+
+        <pre class="out" id="out"></pre>
+
+        <p class="note" data-en-html="<b>After you paste:</b> scroll to the bottom of the Instructions box and check the last line arrived. A paste that was cut off looks completely normal from the top." data-ar-html="<b>بعد اللصق:</b> انزل إلى أسفل مربع التعليمات وتحقّق من وصول السطر الأخير. اللصق المقطوع يبدو طبيعيًا تمامًا من أعلى."><b>After you paste:</b> scroll to the bottom of the Instructions box and check the last line arrived. A paste that was cut off looks completely normal from the top.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------------- language ---------------- */
+var LANGKEY='edulixa-l3-lang';
+function currentLang(){try{return localStorage.getItem(LANGKEY)==='ar'?'ar':'en'}catch(e){return 'en'}}
+function translate(root,isAr){
+  var s=root||document;
+  s.querySelectorAll('[data-en]').forEach(function(el){
+    if(el.id==='lang')return;
+    var v=isAr?el.getAttribute('data-ar'):el.getAttribute('data-en');
+    if(v!==null)el.textContent=v;
+  });
+  s.querySelectorAll('[data-en-html]').forEach(function(el){
+    var v=isAr?el.getAttribute('data-ar-html'):el.getAttribute('data-en-html');
+    if(v!==null)el.innerHTML=v;
+  });
+  s.querySelectorAll('[data-en-ph]').forEach(function(el){
+    var v=isAr?el.getAttribute('data-ar-ph'):el.getAttribute('data-en-ph');
+    if(v!==null)el.setAttribute('placeholder',v);
+  });
+  s.querySelectorAll('[data-en-label]').forEach(function(el){
+    var v=isAr?el.getAttribute('data-ar-label'):el.getAttribute('data-en-label');
+    if(v!==null)el.setAttribute('aria-label',v);
+  });
+}
+function applyLang(l){
+  var isAr=l==='ar';
+  document.documentElement.setAttribute('lang',isAr?'ar':'en');
+  document.documentElement.setAttribute('dir',isAr?'rtl':'ltr');
+  translate(document,isAr);
+  var t=document.querySelector('title');
+  if(t)document.title=isAr?t.getAttribute('data-ar'):t.getAttribute('data-en');
+  var b=document.getElementById('lang');
+  if(b){b.textContent=isAr?'English':'العربية';b.setAttribute('lang',isAr?'en':'ar');}
+  try{localStorage.setItem(LANGKEY,l)}catch(e){}
+  if(window.parent&&window.parent!==window){
+    try{window.parent.postMessage({edulixaLang:l},'*')}catch(e){}
+  }
+  render();
+}
+window.addEventListener('message',function(e){
+  var d=e.data; if(!d||typeof d!=='object')return;
+  if(d.edulixaLang==='ar'||d.edulixaLang==='en'){
+    var shown=document.documentElement.getAttribute('dir')==='rtl'?'ar':'en';
+    if(d.edulixaLang!==shown)applyLang(d.edulixaLang);
+  }
+});
+document.getElementById('lang').addEventListener('click',function(){
+  applyLang(currentLang()==='ar'?'en':'ar');
+});
+
+/* ---------------- height reporting ----------------
+   Measure from the content, never from the window: documentElement.scrollHeight
+   returns max(content, viewport), so a taller frame reports a taller page and
+   the frame grows for ever. */
+function reportHeight(){
+  if(window.parent===window)return;
+  var bottom=0;
+  [].forEach.call(document.body.children,function(el){
+    var r=el.getBoundingClientRect();
+    var b=r.bottom+window.scrollY;
+    if(b>bottom)bottom=b;
+  });
+  var h=Math.round(bottom+24);
+  try{window.parent.postMessage({edulixaLabHeight:h},'*')}catch(e){}
+}
+var hTimer=null;
+function queueHeight(){clearTimeout(hTimer);hTimer=setTimeout(reportHeight,90)}
+window.addEventListener('load',reportHeight);
+window.addEventListener('resize',queueHeight);
+document.addEventListener('click',queueHeight);
+document.addEventListener('input',queueHeight);
+if(window.ResizeObserver){new ResizeObserver(queueHeight).observe(document.body)}
+
+/* ---------------- repeating lists ---------------- */
+var LISTS={triggers:'l-triggers',questions:'l-questions',never:'l-never',rules:'l-rules',checks:'l-checks'};
+var PH={
+  triggers:{en:'I want to plan my lesson',ar:'أريد تحضير الدرس'},
+  questions:{en:'Subject, grade, and lesson topic.',ar:'المادة والصف وموضوع الدرس.'},
+  never:{en:'The teacher’s own name.',ar:'اسم المعلم نفسه.'},
+  rules:{en:'Every table carries a full border on every cell.',ar:'كل جدول بحدود كاملة على كل خلية.'},
+  checks:{en:'Timings total the stated duration.',ar:'مجموع التوقيتات يساوي المدة المذكورة.'}
+};
+function addRow(key,value){
+  var host=document.getElementById(LISTS[key]);
+  var isAr=currentLang()==='ar';
+  var row=document.createElement('div');
+  row.className='row';
+  var n=document.createElement('span'); n.className='n';
+  var inp=document.createElement('input'); inp.type='text';
+  inp.setAttribute('data-en-ph',PH[key].en); inp.setAttribute('data-ar-ph',PH[key].ar);
+  inp.placeholder=isAr?PH[key].ar:PH[key].en;
+  if(value)inp.value=value;
+  inp.addEventListener('input',render);
+  var x=document.createElement('button'); x.type='button'; x.className='x'; x.textContent='×';
+  x.setAttribute('data-en-label','Remove this line'); x.setAttribute('data-ar-label','احذف هذا السطر');
+  x.setAttribute('aria-label',isAr?'احذف هذا السطر':'Remove this line');
+  x.addEventListener('click',function(){row.remove();renumber(key);render()});
+  row.appendChild(n); row.appendChild(inp); row.appendChild(x);
+  host.appendChild(row);
+  renumber(key);
+  return inp;
+}
+function renumber(key){
+  var host=document.getElementById(LISTS[key]);
+  [].forEach.call(host.children,function(r,i){r.querySelector('.n').textContent=(i+1)+'.'});
+}
+function readList(key){
+  var host=document.getElementById(LISTS[key]),out=[];
+  [].forEach.call(host.querySelectorAll('input'),function(i){
+    var v=(i.value||'').trim(); if(v)out.push(v);
+  });
+  return out;
+}
+function setList(key,arr){
+  var host=document.getElementById(LISTS[key]);
+  host.innerHTML='';
+  (arr&&arr.length?arr:['']).forEach(function(v){addRow(key,v)});
+}
+document.querySelectorAll('[data-add]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var k=b.getAttribute('data-add');
+    var inp=addRow(k,''); inp.focus(); render();
+  });
+});
+
+/* ---------------- presets ---------------- */
+var PRESETS={
+  blank:{
+    name:'',job:'',org:'Monglish International Academy / Edulixa',expert:'',artefact:'',
+    delivery:'html',
+    triggers:[''],questions:[''],never:[''],rules:[''],checks:[''],
+    frameworks:["Bloom's Taxonomy","the DOK ladder (Recall→Apply→Analyse→Create)","three-tier differentiation (Support · Core · Extension)"],
+    lang:'mirror',
+    tone:'Direct, professional, evidence-based. Short sentences. No praise, no filler.',
+    colours:['#22303C','#123A5E','#DCEAF5','#EDF1F5']
+  },
+  lesson:{
+    name:'Lesson Plan Architect · Edulixa',
+    job:'the Lesson Plan Architect',
+    org:'Monglish International Academy / Edulixa',
+    expert:'a certified teacher for ANY subject, an instructional designer working to Bloom and DOK, a specialist in differentiation and assessment, and a front-end developer',
+    artefact:'a lesson plan',
+    delivery:'html',
+    triggers:['I want to plan my lesson','أريد تحضير الدرس','prepare my lesson'],
+    questions:[
+      'Your name, and your school’s name.',
+      'Subject, grade, and lesson topic. [skip if I can see it]',
+      'Lesson duration in minutes. [default 45]',
+      'Language: English · Arabic · Bilingual. [default English]',
+      'Delivery: face-to-face · online · blended. [default face-to-face]',
+      'Class size and profile, and any learner needs. [default mixed ability, 24]',
+      'What did they learn in the last lesson?',
+      'A school template I should follow? Attach it and I will match it exactly.',
+      'Curriculum and any objective codes to cite. [default none]',
+      'Homework preference, and the link if you have one.'
+    ],
+    never:['Anything the attachments have already answered.','More than ten numbered questions, ever.'],
+    rules:[
+      'Full borders on every table cell, and the print rules.',
+      'Differentiation in every row — inside the procedures cell if there is no column.',
+      'The DOK climb, reaching DOK 4 in the closing stage.',
+      'Reflection and Next Steps stay empty — the lesson has not happened.',
+      'The teacher safeguard paragraph, printed word for word.'
+    ],
+    checks:[
+      'Timings total the stated duration exactly.',
+      'Objectives appear once, are measurable, and reach Create.',
+      'Textbook questions copied verbatim with their original numbers.',
+      'A different cooperative structure in every row.',
+      'Delivered as one fenced html code block, not a document.'
+    ],
+    frameworks:["Bloom's Taxonomy","the DOK ladder (Recall→Apply→Analyse→Create)","three-tier differentiation (Support · Core · Extension)"],
+    lang:'mirror',
+    tone:'Direct, professional, evidence-based. Short sentences. No praise, no filler, no "Certainly!".',
+    colours:['#2F3A45','#EFC4A2','#FCE7D6','#F5F3EF']
+  },
+  worksheet:{
+    name:'Worksheet Architect · Edulixa',
+    job:'the Worksheet Architect',
+    org:'Monglish International Academy / Edulixa',
+    expert:'a certified teacher for ANY subject and ANY stage, an assessment designer working to Bloom and DOK, and a front-end developer',
+    artefact:'a worksheet',
+    delivery:'html',
+    triggers:['Make me a worksheet','أريد ورقة عمل','I need an exercise on…'],
+    questions:[
+      'Subject, stage / grade, and the exact topic. [skip if I can see it]',
+      'How many sections, how many questions, and which question types? [default 4 sections, 15 questions]',
+      'Total marks, and how long learners get. [default 20 marks, 30 minutes]',
+      'Language: English · Arabic · Bilingual. [default English]',
+      'Curriculum / framework and any codes to cite. [default none]',
+      'Class profile — mixed ability? any learner needs? [default mixed ability]',
+      'Attach the material the questions must come from — or say "no material".',
+      'Anything I must copy exactly — wording, numbering, a school template.',
+      'School name for the header. [default Monglish International Academy]'
+    ],
+    never:[
+      'The teacher’s own name — the Name line belongs to the student.',
+      'Homework, classwork or quiz. It is a worksheet.',
+      'Anything already visible in an attachment.'
+    ],
+    rules:[
+      'The section count and question count match what the teacher asked for, exactly.',
+      'Section marks total the mark in the ID box.',
+      'DOK climbs from Section A to the last section.',
+      'The answer key lives inside #key, hidden on load, and can never reach the student print.',
+      'Every question has somewhere to write the answer.'
+    ],
+    checks:[
+      'Count the sections and the questions against the teacher’s answer.',
+      'The Mark cell shows a bold total and no dotted rule.',
+      'Every option is a real list item with a visible letter.',
+      'Support scaffolds present, and one Extension section.',
+      'Answer key complete, inside #key, hidden on load.'
+    ],
+    frameworks:["Bloom's Taxonomy","the DOK ladder (Recall→Apply→Analyse→Create)","three-tier differentiation (Support · Core · Extension)"],
+    lang:'mirror',
+    tone:'Direct, professional. Short sentences. No praise, no filler, no "Certainly!".',
+    colours:['#22303C','#123A5E','#DCEAF5','#EDF1F5']
+  }
+};
+function loadPreset(k){
+  var p=PRESETS[k];
+  document.getElementById('f-name').value=p.name;
+  document.getElementById('f-job').value=p.job;
+  document.getElementById('f-org').value=p.org;
+  document.getElementById('f-expert').value=p.expert;
+  document.getElementById('f-artefact').value=p.artefact;
+  document.getElementById('f-delivery').value=p.delivery;
+  document.getElementById('f-lang').value=p.lang;
+  document.getElementById('f-tone').value=p.tone;
+  setList('triggers',p.triggers); setList('questions',p.questions);
+  setList('never',p.never); setList('rules',p.rules); setList('checks',p.checks);
+  document.querySelectorAll('#f-frameworks input').forEach(function(c){
+    c.checked=p.frameworks.indexOf(c.value)>-1;
+  });
+  ['c-ink','c-main','c-soft','c-wash'].forEach(function(id,i){
+    document.getElementById(id).value=p.colours[i];
+  });
+  document.querySelectorAll('.preset').forEach(function(b){
+    b.setAttribute('aria-pressed',String(b.getAttribute('data-preset')===k));
+  });
+  translate(document,currentLang()==='ar');
+  render();
+}
+document.querySelectorAll('.preset').forEach(function(b){
+  b.addEventListener('click',function(){loadPreset(b.getAttribute('data-preset'))});
+});
+
+/* ---------------- the generator ---------------- */
+function val(id){return (document.getElementById(id).value||'').trim()}
+function frameworks(){
+  var out=[];
+  document.querySelectorAll('#f-frameworks input:checked').forEach(function(c){out.push(c.value)});
+  return out;
+}
+function langLine(){
+  var v=val('f-lang');
+  if(v==='en')return 'Reply in English, whatever language the teacher writes in.';
+  if(v==='bi')return 'Reply bilingually. Never put English and Arabic on one line — stack them:\n`<span class="bi"><span class="en">English</span><span class="ar">العربية</span></span>`.';
+  return 'Reply in the language the teacher writes in. Arabic in → Arabic out.';
+}
+function deliveryBlock(artefact){
+  var v=val('f-delivery');
+  if(v==='html'){
+    return 'Output the finished page as **ONE fenced ```html code block in the chat**. Do NOT put it in a\n'+
+    'document/Canvas panel — that turns the code into ordinary text and the buttons stop working.\n'+
+    'Then at most 3 lines: save it as a `.html` file and open it in any browser · what the buttons do ·\n'+
+    'one line of assumptions.\n'+
+    'If the output is cut off mid-file, say exactly: *"The file was cut off. Type **continue** and I\n'+
+    'will resume from where it stopped."* On "continue", emit ONLY the remainder from the exact\n'+
+    'character — no preamble, no repetition.';
+  }
+  if(v==='table'){
+    return 'Deliver '+artefact+' as a table in the chat, with a header row and a full border on every cell.\n'+
+    'No preamble above it and no summary below it. If it is cut off, say: *"The table was cut off. Type\n'+
+    '**continue** and I will resume from the row where it stopped."*';
+  }
+  return 'Deliver '+artefact+' as formatted text in the chat — headings, short paragraphs, no preamble and\n'+
+  'no sign-off. If it is cut off, say: *"That was cut off. Type **continue** and I will resume from\n'+
+  'where it stopped."*';
+}
+function fileBlock(){
+  if(val('f-delivery')!=='html')return '';
+  var ink=val('c-ink'),main=val('c-main'),soft=val('c-soft'),wash=val('c-wash');
+  return '\n# THE FILE\n'+
+  'One self-contained HTML file. No external script, no webfont, no image. `<title>` becomes the PDF\n'+
+  'filename. Structure: a `.bar` control strip (title, ✏️ Enable Editing, 💾 Save, ⬇ Download PDF and a\n'+
+  'one-line `.hint`) then one `<div class="card">` holding the whole document.\n'+
+  'Every table needs a `<colgroup>` and a full border on every `td` and `th`.\n'+
+  '**PDF = `window.print()`. Never html2pdf** — it photographs the page: no selectable text, table\n'+
+  'headings never repeat, files 20× bigger, and it garbles Arabic.\n'+
+  '`break-inside:avoid` belongs on `tr` and nowhere else — never on a table or a td.\n'+
+  '**Arabic**: `<html lang="ar" dir="rtl">`, Arabic-Indic numerals ١٢٣٤٥٦٧٨٩٠, never italic or\n'+
+  'letter-spaced, every Latin word wrapped in `<span class="lat">` so و is never glued to it.\n\n'+
+  'Palette, used exactly:\n'+
+  '```css\n'+
+  ':root{--ink:'+ink+';--main:'+main+';--soft:'+soft+';--wash:'+wash+'}\n'+
+  '```\n';
+}
+function autoChecks(){
+  var c=readList('checks');
+  if(c.length)return c;
+  var a=['Nothing refused','No preamble','One block of questions, asked once','Replied in the teacher’s language'];
+  readList('rules').slice(0,4).forEach(function(r){a.push(r)});
+  if(val('f-delivery')==='html')a.push('Delivered as one fenced html code block, not a document');
+  return a;
+}
+function build(){
+  var name=val('f-name')||'Untitled Gem';
+  var job=val('f-job')||'the assistant';
+  var org=val('f-org');
+  var expert=val('f-expert');
+  var artefact=val('f-artefact')||'the document';
+  var fw=frameworks();
+  var triggers=readList('triggers');
+  var qs=readList('questions');
+  var never=readList('never');
+  var rules=readList('rules');
+  var checks=autoChecks();
+
+  var L=[];
+  L.push('# GEM INSTRUCTIONS — "'+name+'"');
+  L.push('Paste everything between the two lines into the Gem’s **Instructions** box.');
+  L.push('Self-contained: no knowledge files, so it works on a free account.');
+  L.push('');
+  L.push('---------------------------------- COPY FROM HERE ----------------------------------');
+  L.push('');
+
+  L.push('# ROLE');
+  L.push('You are '+job+(org?' for '+org:'')+': '+(expert||'an expert practitioner')+'.');
+  if(fw.length)L.push('You work to '+fw.join(', ')+'.');
+  L.push('');
+
+  L.push('# YOU CAN ALWAYS DO THIS');
+  L.push('What you produce is text. '+cap(artefact)+' is '+(val('f-delivery')==='html'?'HTML source code, and HTML is plain text you type out':'writing')+'.');
+  L.push('Nothing here needs a tool, a file system or an upload. NEVER reply "I can only process and');
+  L.push('create text", "I cannot create documents", or "that is outside what I can do" — those answers');
+  L.push('are always wrong here.');
+  if(triggers.length){
+    L.push(triggers.map(function(t){return '"'+t+'"'}).join(', ')+' = your core job: start the interview.');
+  }
+  L.push('');
+  L.push('**'+langLine()+'**');
+  L.push('**Never narrate yourself.** No "I will now generate…", no "Let me start by…". No preamble.');
+  L.push('**Small follow-ups are answered in the chat**, in a few lines, without rebuilding anything.');
+  L.push('Rebuild the whole thing only when asked for '+artefact+' again.');
+  L.push('');
+
+  L.push('# HOW A CONVERSATION RUNS');
+  L.push('');
+  L.push('## 1 · Read attachments, mirror back (max 8 lines)');
+  L.push('Name what each attachment is, what it contains, and what is missing. If a page is cut off,');
+  L.push('blurred or absent, name it and STOP. Never guess page content.');
+  L.push('');
+  L.push('## 2 · Ask ONCE — never two lists');
+  if(qs.length){
+    L.push('```');
+    L.push('Before I build '+artefact+', please answer these — one message is enough:');
+    L.push('');
+    qs.forEach(function(q,i){L.push((i+1)+'. '+q)});
+    L.push('```');
+    L.push('Skip anything the attachments already answer. "defaults" → apply them, state the assumptions');
+    L.push('in ONE line, and build.');
+  }
+  if(never.length){
+    L.push('');
+    L.push('### Never ask these');
+    never.forEach(function(n){L.push('* '+n)});
+  }
+  L.push('');
+  L.push('## 3 · Build and deliver');
+  L.push(deliveryBlock(artefact));
+  L.push('');
+
+  L.push('# THE TEACHER’S ANSWERS OUTRANK EVERYTHING');
+  L.push('What the teacher asked for is a contract. If they name a number, you produce exactly that');
+  L.push('number. If they attach a template, its headings, order and wording win.');
+  if(rules.length){
+    L.push('');
+    L.push('**Never overridden, whatever is attached:**');
+    rules.forEach(function(r){L.push('* '+r)});
+  }
+  L.push('');
+
+  L.push('# SOURCE CONTROL — absolute');
+  L.push('Use only the supplied source. Copy anything printed on it word for word with its original');
+  L.push('numbering. Never renumber, split, simplify or paraphrase it. Never invent an extra item, a');
+  L.push('quotation, data or a reference. If a needed page is missing, stop and ask.');
+
+  var fb=fileBlock();
+  if(fb)L.push(fb);
+
+  L.push('# CHECK SILENTLY BEFORE SENDING');
+  L.push(checks.join(' · ')+'.');
+  L.push('Fix every failure, then send. Do not print this checklist.');
+  L.push('');
+
+  L.push('# HOW YOU WRITE');
+  L.push(val('f-tone')||'Direct and professional. Short sentences.');
+  L.push('You are addressing a busy experienced teacher. If something is not sound practice, say so in');
+  L.push('one sentence and explain why, then do the best available version. And never say you are');
+  L.push('unable to do this — producing '+artefact+' is the whole purpose of this Gem, and it is writing.');
+  L.push('');
+  L.push('----------------------------------- COPY TO HERE -----------------------------------');
+
+  return L.join('\n');
+}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+
+/* ---------------- render ---------------- */
+var CAPCHARS=31000;
+function render(){
+  var text=build();
+  document.getElementById('out').textContent=text;
+
+  var n=text.length;
+  document.getElementById('m-chars').textContent=n.toLocaleString('en-US');
+  var bar=document.getElementById('bar'),fill=bar.querySelector('i');
+  var pct=Math.min(100,(n/42000)*100);
+  fill.style.width=pct+'%';
+  bar.classList.remove('is-amber','is-red');
+  var note=document.getElementById('m-note'); note.classList.remove('is-red');
+  var isAr=currentLang()==='ar';
+  if(n>CAPCHARS){
+    bar.classList.add('is-red'); note.classList.add('is-red');
+    var lost=n-CAPCHARS;
+    note.textContent=isAr
+      ?('أطول من اللازم بـ '+lost.toLocaleString('en-US')+' حرفًا. سيصل اللصق إلى الحرف 31,000 ثم يتوقف بصمت — احذف قواعد أو اختصر الأسئلة.')
+      :('Too long by '+lost.toLocaleString('en-US')+' characters. The paste will reach character 31,000 and stop silently — cut rules or shorten the questions.');
+  }else if(n>25000){
+    bar.classList.add('is-amber');
+    note.textContent=isAr
+      ?'قريب من الحد. أضف قاعدة أو اثنتين فقط قبل أن تقيس مرة أخرى.'
+      :'Close to the cut-off. Add only a rule or two more before you measure again.';
+  }else{
+    note.textContent=isAr
+      ?'يتّسع. الصق الكتلة كاملة في مربع التعليمات في الـ Gem.'
+      :'It fits. Paste the whole block into the Gem’s Instructions box.';
+  }
+
+  var q=readList('questions').length;
+  var qc=document.getElementById('q-count');
+  qc.textContent=q+' / 10';
+  qc.classList.toggle('is-over',q>10);
+
+  var on={
+    role:!!(val('f-job')&&val('f-expert')),
+    refuse:!!val('f-artefact'),
+    ask:q>0&&q<=10,
+    never:readList('never').length>0,
+    format:readList('rules').length>0,
+    file:!!val('f-artefact')&&!!val('f-delivery'),
+    check:autoChecks().length>3
+  };
+  document.querySelectorAll('#lamps li').forEach(function(li){
+    li.classList.toggle('on',!!on[li.getAttribute('data-lamp')]);
+  });
+  queueHeight();
+}
+document.querySelectorAll('input,select,textarea').forEach(function(el){
+  el.addEventListener('input',render); el.addEventListener('change',render);
+});
+
+/* ---------------- copy / download ---------------- */
+function copyText(text,done){
+  var legacy=function(){
+    var ta=document.createElement('textarea');
+    ta.value=text; ta.setAttribute('readonly','');
+    ta.style.cssText='position:fixed;top:-1000px;left:0;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    try{document.execCommand('copy')}catch(e){}
+    document.body.removeChild(ta); done();
+  };
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(done,legacy)}
+  else legacy();
+}
+document.getElementById('copy').addEventListener('click',function(){
+  copyText(build(),function(){
+    var c=document.getElementById('copied');
+    c.textContent=currentLang()==='ar'?'✓ تم النسخ':'✓ Copied';
+    setTimeout(function(){c.textContent=''},2400);
+  });
+});
+document.getElementById('dl').addEventListener('click',function(){
+  var name=(val('f-name')||'gem-instructions').replace(/[^\w\-]+/g,'_');
+  var b=new Blob([build()],{type:'text/markdown;charset=utf-8'});
+  var u=URL.createObjectURL(b),a=document.createElement('a');
+  a.href=u; a.download=name+'.md';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){URL.revokeObjectURL(u)},2000);
+});
+
+/* ---------------- start ---------------- */
+loadPreset('lesson');
+applyLang(currentLang());
+if(window.parent&&window.parent!==window){
+  try{window.parent.postMessage({edulixaLangAsk:true},'*')}catch(e){}
+}
+})();
+</script>
+</body>
+</html>
