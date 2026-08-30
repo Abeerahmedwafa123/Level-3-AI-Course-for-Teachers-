@@ -150,7 +150,7 @@ Build the complete game described below. Output only the final, valid HTML docum
 GAME BOARD
 1. Create a responsive Snakes and Ladders board with exactly 20 numbered squares in a five-column serpentine path.
 2. Use amazing, child-friendly colours with strong contrast and a polished 3D board frame.
-3. Include three visible ladders and three visible snakes. Ladders move a token upward. Landing on any snake head plays a defeat sound, shows a large crying emoji, and returns that player to the starting dock.
+3. Include exactly three visible snakes and three visible ladders. Render every snake as a large 🐍 emoji and every ladder as a large 🪜 emoji, positioned clearly across the correct board squares. Do not draw them with CSS rectangles, polygons, pseudo-elements, SVG paths or abstract green/yellow shapes. Ladders move a token upward. Landing on any 🐍 snake head plays a defeat sound, shows a large crying emoji, and returns that player to the starting dock.
 4. Place all player tokens in a neat starting dock directly below the board. Never cram tokens inside square 1.
 5. A normal board victory requires reaching square 20 exactly. If a roll passes 20, the token stays where it is.
 
@@ -198,6 +198,7 @@ FORMAT AND QUALITY CHECK
 - Return one complete standalone .html file only.
 - It must run by double-clicking the file without internet.
 - It must contain no external URLs or missing assets.
+- Confirm the board visibly contains exactly three 🐍 snake emojis and three 🪜 ladder emojis, with no abstract green or yellow replacement shapes.
 - Test all modes, name saving, dice values, exact finish, ladders, snakes, question import, answer checking, trophy counts, five-trophy victory, restart, settings, sound and keyboard operation.
 - Do not provide explanations before or after the HTML.</textarea></div>
 </div></section>
