@@ -161,7 +161,7 @@ html.is-framed pre.out{max-height:430px}
   <button class="btn sm app-lang" type="button" id="lang" lang="ar">العربية</button>
 
   <h1 data-en="Gem Instruction Builder" data-ar="أداة كتابة تعليمات الـ Gem">Gem Instruction Builder</h1>
-  <p class="lede" data-en="Answer the fields on the left. The complete instruction block appears on the right, ready to paste into a Gem — with a live count against the 31,000-character cut-off." data-ar="أجب عن الحقول على اليسار. تظهر كتلة التعليمات الكاملة على اليمين، جاهزة للصقها في الـ Gem — مع عدّاد حيّ مقابل حدّ القطع عند 31,000 حرف.">Answer the fields on the left. The complete instruction block appears on the right, ready to paste into a Gem — with a live count against the 31,000-character cut-off.</p>
+  <p class="lede" data-en="Answer the fields on the left. The complete instruction block appears on the right, ready to paste into a Gem, with a live count against the safe budget of 28,000 characters." data-ar="أجب عن الحقول على اليسار. تظهر كتلة التعليمات الكاملة على اليمين، جاهزة للصقها في الـ Gem، مع عدّاد حيّ مقابل حدّ الأمان البالغ 28,000 حرف.">Answer the fields on the left. The complete instruction block appears on the right, ready to paste into a Gem — with a live count against the 31,000-character cut-off.</p>
 
   <div class="presets" role="group" data-en-label="Start from" data-ar-label="ابدأ من">
     <button class="preset" type="button" data-preset="lesson" aria-pressed="false" data-en="Start from the Lesson Plan Architect" data-ar="ابدأ من Lesson Plan Architect">Start from the Lesson Plan Architect</button>
@@ -313,7 +313,7 @@ html.is-framed pre.out{max-height:430px}
         <div class="meter">
           <div class="meter-top">
             <span><b id="m-chars">0</b> <span data-en="characters" data-ar="حرفًا">characters</span></span>
-            <span data-en="cut-off 31,000" data-ar="حد القطع 31,000">cut-off 31,000</span>
+            <span data-en="aim under 28,000 · cut-off 31,000" data-ar="استهدف أقل من 28,000 · حد القطع 31,000">aim under 28,000 · cut-off 31,000</span>
           </div>
           <div class="bar" id="bar"><i></i><span class="cap-mark" aria-hidden="true"></span></div>
           <p class="meter-note" id="m-note" data-en="It fits. Paste the whole block into the Gem's Instructions box." data-ar="يتّسع. الصق الكتلة كاملة في مربع التعليمات في الـ Gem.">It fits. Paste the whole block into the Gem's Instructions box.</p>
@@ -751,7 +751,7 @@ function build(){
 function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
 
 /* ---------------- render ---------------- */
-var CAPCHARS=31000;
+var CAPCHARS=31000, BUDGET=28000;
 function render(){
   var text=build();
   document.getElementById('out').textContent=text;
@@ -770,15 +770,15 @@ function render(){
     note.textContent=isAr
       ?('أطول من اللازم بـ '+lost.toLocaleString('en-US')+' حرفًا. سيصل اللصق إلى الحرف 31,000 ثم يتوقف بصمت — احذف قواعد أو اختصر الأسئلة.')
       :('Too long by '+lost.toLocaleString('en-US')+' characters. The paste will reach character 31,000 and stop silently — cut rules or shorten the questions.');
-  }else if(n>25000){
+  }else if(n>BUDGET){
     bar.classList.add('is-amber');
     note.textContent=isAr
-      ?'قريب من الحد. أضف قاعدة أو اثنتين فقط قبل أن تقيس مرة أخرى.'
-      :'Close to the cut-off. Add only a rule or two more before you measure again.';
+      ?'يصل كاملًا، لكنه تجاوز حدّ الأمان 28,000 حرف. احذف قاعدة أو اثنتين.'
+      :'It arrives, but it is past the safe budget of 28,000. Cut a rule or two.';
   }else{
     note.textContent=isAr
-      ?'يتّسع. الصق الكتلة كاملة في مربع التعليمات في الـ Gem.'
-      :'It fits. Paste the whole block into the Gem’s Instructions box.';
+      ?'يتّسع داخل حدّ الأمان. الصق الكتلة كاملة في مربع التعليمات في الـ Gem.'
+      :'It fits inside the safe budget. Paste the whole block into the Gem’s Instructions box.';
   }
 
   var q=readList('questions').length;

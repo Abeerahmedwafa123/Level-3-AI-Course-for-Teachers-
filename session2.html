@@ -170,22 +170,38 @@
   direction:ltr;text-align:left}
 .chunkbox.is-lost pre{color:oklch(0.700 0.110 31)}
 #cap-lost-wrap[hidden]{display:none}
-.factbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;
+.factbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;
   padding:0 20px 20px}
 .fact{border:1px solid var(--line);border-radius:var(--r);background:var(--bg);padding:13px 15px}
 .fact b{display:block;font-family:var(--mono);font-size:21px;color:var(--accent-text);
   font-weight:700;line-height:1.15}
 .fact span{display:block;margin:5px 0 0;font-size:13.5px;color:var(--muted);line-height:1.45}
 
-/* the free / paid knowledge panel, shown at once */
-.tiers{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;padding:20px}
-.tiers > *{min-width:0}
-@media (max-width:760px){.tiers{grid-template-columns:minmax(0,1fr)}}
-.tier{border:1px solid var(--line);border-radius:var(--r-md);background:#131A18;padding:15px}
-.tier > h4{margin:0 0 11px;font-size:13.5px;font-weight:800;color:#CBD8D1;font-family:var(--sans)}
-.tier.is-you{border-color:var(--accent)}
-.tier .youchip{display:inline-block;margin-inline-start:8px;padding:2px 9px;border-radius:var(--r-pill);
-  background:var(--accent);color:#fff;font-size:11.5px;font-weight:800;vertical-align:2px}
+/* ---------- the free vs paid comparison table ---------- */
+.cmp-wrap{padding:20px;overflow-x:auto}
+table.cmp{width:100%;border-collapse:collapse;border:1px solid var(--line);min-width:720px}
+table.cmp th,table.cmp td{border:1px solid var(--line);padding:13px 15px;text-align:start;
+  vertical-align:top;font-size:15px;line-height:1.5;color:var(--ink-2)}
+table.cmp thead th{background:var(--surface-2);color:var(--ink);font-size:14.5px;font-weight:800}
+table.cmp thead th.is-you{background:var(--brand);color:#fff}
+table.cmp tbody th{background:var(--bg);color:var(--ink);font-weight:700;font-size:15px}
+table.cmp td.same{color:var(--signal);font-weight:650}
+table.cmp td.means{background:var(--bg);font-size:14.5px}
+table.cmp tbody tr:nth-child(even) td{background:var(--bg-2)}
+table.cmp tbody tr:nth-child(even) th{background:var(--bg-2)}
+table.cmp tbody tr:nth-child(even) td.means{background:var(--surface)}
+table.cmp .yes{color:var(--signal);font-weight:700}
+table.cmp .no{color:var(--accent-text);font-weight:700}
+.cmp-key{display:flex;flex-wrap:wrap;gap:16px;padding:0 20px 6px;font-size:14px;color:var(--muted)}
+.cmp-key b{color:var(--signal);font-weight:700}
+.rulebox{margin:22px 0 0;border:1px solid var(--brand-lift);border-radius:var(--r-md);
+  background:var(--bg-2);padding:18px 20px}
+.rulebox h4{margin:0 0 8px;font-size:16px;font-weight:800;color:var(--brand-lift)}
+.block .rulebox p{margin:0;font-size:16px;line-height:1.65}
+.block .rulebox p b{color:var(--ink)}
+.block .srcline{margin:0;padding:0 20px 20px;font-size:13.5px;line-height:1.6;color:var(--muted)}
+.block .srcline a{color:var(--brand-lift)}
+
 
 /* the Canvas / code block pair */
 .canvasdemo{border:1px solid var(--line);border-radius:var(--r);background:#FBFAF8;
@@ -674,7 +690,7 @@
               </div>
               <div class="nb" data-pick-note="g5" hidden>
                 <b data-en="On a free account there is no + button here." data-ar="في الحساب المجاني لا يوجد زر + هنا.">On a free account there is no + button here.</b>
-                <p data-en="Knowledge files are a paid feature. Every Gem in this session is written to be self-contained for exactly that reason: your teachers are on free accounts." data-ar="ملفات المعرفة ميزة مدفوعة. وكل Gem في هذه المحاضرة مكتوب ليكون مكتفيًا بذاته لهذا السبب بالضبط — معلموك على حسابات مجانية.">Knowledge files are a paid feature. Every Gem in this session is written to be self-contained for exactly that reason: your teachers are on free accounts.</p>
+                <p data-en="Attaching documents is the one thing on this screen a free account does not get. The instruction box itself is the same size on every plan, which is why every Gem in this session is written to need no attached files at all." data-ar="إرفاق المستندات هو الشيء الوحيد في هذه الشاشة الذي لا يحصل عليه الحساب المجاني. أما مربع التعليمات نفسه فحجمه واحد في كل الخطط، ولهذا كُتب كل Gem في هذه المحاضرة بحيث لا يحتاج أي ملف مرفق.">Attaching documents is the one thing on this screen a free account does not get. The instruction box itself is the same size on every plan, which is why every Gem in this session is written to need no attached files at all.</p>
               </div>
               <div class="nb" data-pick-note="g6" hidden>
                 <b data-en="Test it before you save, with the real sentence." data-ar="اختبره قبل الحفظ، بالجملة الحقيقية.">Test it before you save, with the real sentence.</b>
@@ -691,9 +707,9 @@
         <!-- ==================== 4 · THREE LIMITS ==================== -->
         <div class="block" id="limits">
           <h2 class="display" data-en="Three limits to measure before you design" data-ar="ثلاثة حدود تقيسها قبل التصميم">Three limits to measure before you design</h2>
-          <p class="lead" data-en="None of these is written in Google's documentation. All three were found by testing, and all three broke a Gem that was correct in every other way." data-ar="لا شيء من هذه مذكور في توثيق Google. الثلاثة اكتُشفت بالاختبار، وكلها عطّلت Gem كان سليمًا من كل وجه آخر.">None of these is written in Google's documentation. All three were found by testing, and all three broke a Gem that was correct in every other way.</p>
+          <p class="lead" data-en="Settle three things before you design a Gem: how long the instructions may be, what a paid plan would actually change, and where the answer is allowed to land. Each one broke a Gem that was correct in every other way." data-ar="احسم ثلاثة أمور قبل أن تصمم Gem: كم يمكن أن تطول التعليمات، وما الذي تغيّره الخطة المدفوعة فعلًا، وأين يُسمح للإجابة أن تصل. كل واحد منها عطّل Gem كان سليمًا من كل وجه آخر.">Settle three things before you design a Gem: how long the instructions may be, what a paid plan would actually change, and where the answer is allowed to land. Each one broke a Gem that was correct in every other way.</p>
 
-          <h3 data-en="Limit 1 · the paste stops at 31,000 characters" data-ar="الحد 1 · اللصق يتوقف عند 31,000 حرف">Limit 1 · the paste stops at 31,000 characters</h3>
+          <h3 data-en="Limit 1 · the instruction box stops at about 31,000 characters" data-ar="الحد 1 · مربع التعليمات يتوقف عند نحو 31,000 حرف">Limit 1 · the instruction box stops at about 31,000 characters</h3>
 
           <div class="ex">
             <div class="ex-head">
@@ -731,34 +747,99 @@
             </div>
 
             <div class="factbar" data-quote>
-              <div class="fact"><b>42,338</b><span data-en="characters in the first version of the Lesson Plan Gem" data-ar="حرفًا في النسخة الأولى من Gem خطة الدرس">characters in the first version of the Lesson Plan Gem</span></div>
-              <div class="fact"><b>31,395</b><span data-en="where the paste actually stopped, 74% of the way through" data-ar="حيث توقّف اللصق فعلًا — عند 74% من الطريق">where the paste actually stopped, 74% of the way through</span></div>
-              <div class="fact"><b>“…Do not reformat”</b><span data-en="the last words that arrived. The style sheet, the script and the whole checklist never did." data-ar="آخر كلمات وصلت. أما ورقة الأنماط والسكربت وقائمة الفحص كلها فلم تصل أبدًا.">the last words that arrived. The style sheet, the script and the whole checklist never did.</span></div>
-              <div class="fact"><b>15,911</b><span data-en="characters in the rebuilt version. Same rules, no rationale, no examples." data-ar="حرفًا في النسخة المعاد بناؤها. القواعد نفسها، بلا تبريرات وبلا أمثلة.">characters in the rebuilt version. Same rules, no rationale, no examples.</span></div>
+              <div class="fact"><b>42,338</b><span data-en="characters we tried to paste into the box" data-ar="حرفًا حاولنا لصقها في المربع">characters we tried to paste into the box</span></div>
+              <div class="fact"><b>31,395</b><span data-en="characters that actually arrived. The rest was dropped in silence." data-ar="حرفًا وصلت فعلًا. أما البقية فسقطت في صمت.">characters that actually arrived. The rest was dropped in silence.</span></div>
+              <div class="fact"><b>“…Do not reformat”</b><span data-en="the last words that made it. The style sheet, the script and the checklist never did." data-ar="آخر كلمات وصلت. أما ورقة الأنماط والسكربت وقائمة الفحص فلم تصل أبدًا.">the last words that made it. The style sheet, the script and the checklist never did.</span></div>
             </div>
 
             <p class="cap" style="padding:0 20px 20px" data-en-html="<b>There is no error message.</b> The Gem simply behaves oddly, because it is following three-quarters of a rulebook. Measure before you paste, and scroll to the bottom after." data-ar-html="<b>لا توجد رسالة خطأ.</b> يتصرّف الـ Gem بغرابة فحسب، لأنه يتّبع ثلاثة أرباع دليل قواعد — فقِس قبل اللصق، وانزل إلى الأسفل بعده."><b>There is no error message.</b> The Gem simply behaves oddly, because it is following three-quarters of a rulebook. Measure before you paste, and scroll to the bottom after.</p>
           </div>
 
-          <h3 data-en="Limit 2 · a free account has no knowledge files" data-ar="الحد 2 · الحساب المجاني بلا ملفات معرفة">Limit 2 · a free account has no knowledge files</h3>
+          <div class="rulebox">
+            <h4 data-en="The rule to teach: write to 28,000, not to 31,000." data-ar="القاعدة التي تعلّمها: اكتب حتى 28,000، لا حتى 31,000.">The rule to teach: write to 28,000, not to 31,000.</h4>
+            <p data-en-html="Google publishes no limit at all, so 31,000 is a figure we measured, not one we were promised, and it can shift a little between browsers and between ways of pasting. Stopping at <b>28,000</b> leaves you the margin. Our Lesson Plan Gem is 16,584 characters and our Worksheet Gem is 27,717, so both are safe on any account." data-ar-html="لا تنشر Google أي حدّ على الإطلاق، فرقم 31,000 قِسناه نحن ولم يُوعَد لنا به، وقد يتغيّر قليلًا بين متصفح وآخر وبين طريقة لصق وأخرى. والتوقّف عند <b>28,000</b> يترك لك هامش الأمان. ‏Gem خطة الدرس عندنا 16,584 حرفًا، و‏Gem ورقة العمل 27,717، فكلاهما آمن على أي حساب.">Google publishes no limit at all, so 31,000 is a figure we measured, not one we were promised. Stopping at 28,000 leaves you the margin.</p>
+          </div>
 
+          <h3 data-en="Limit 2 · what paying actually changes, line by line" data-ar="الحد 2 · ما الذي يغيّره الاشتراك فعلًا، سطرًا بسطر">Limit 2 · what paying actually changes, line by line</h3>
+          <p class="lead" data-en="Teachers assume a paid plan writes better lesson plans. It does not. Here is every line that changes, and every line that does not." data-ar="يظن المعلمون أن الخطة المدفوعة تكتب خطط دروس أفضل. وهذا غير صحيح. وهذه كل السطور التي تتغيّر، وكل السطور التي لا تتغيّر.">Teachers assume a paid plan writes better lesson plans. It does not. Here is every line that changes, and every line that does not.</p>
+
+          <div class="wide">
           <div class="ex">
             <div class="ex-head">
-              <b data-en="The same panel, on both plans" data-ar="اللوحة نفسها، في الخطتين">The same panel, on both plans</b>
-              <span data-en="side by side, because the difference is one missing button" data-ar="جنبًا إلى جنب، لأن الفرق زر واحد مفقود">side by side, because the difference is one missing button</span>
+              <b data-en="Free account versus a paid subscription" data-ar="الحساب المجاني مقابل الاشتراك المدفوع">Free account versus a paid subscription</b>
+              <span data-en="the green rows are the ones where paying changes nothing" data-ar="الصفوف الخضراء هي التي لا يغيّر فيها الاشتراك شيئًا">the green rows are the ones where paying changes nothing</span>
             </div>
-            <div class="tiers">
-              <div class="tier is-you">
-                <h4><span data-en="Free account" data-ar="حساب مجاني">Free account</span><span class="youchip" data-en="your teachers" data-ar="معلموك">your teachers</span></h4>
-                <button class="hot is-locked" type="button" disabled><span class="ht" data-en="Knowledge" data-ar="ملفات المعرفة">Knowledge</span><span class="hs" data-en="no + button anywhere in this panel" data-ar="لا يوجد زر + في أي مكان في هذه اللوحة">no + button anywhere in this panel</span></button>
-                <p class="gemui-prev" style="margin-top:10px" data-en="So every rule has to be in the Instructions box, and the whole design has to fit under 31,000 characters." data-ar="لذا يجب أن تكون كل قاعدة داخل مربع التعليمات، وأن يتّسع التصميم كله تحت 31,000 حرف.">So every rule has to be in the Instructions box, and the whole design has to fit under 31,000 characters.</p>
-              </div>
-              <div class="tier">
-                <h4><span data-en="Paid account" data-ar="حساب مدفوع">Paid account</span></h4>
-                <button class="hot" type="button" disabled><span class="ht" data-en="+ Add files" data-ar="+ إضافة ملفات">+ Add files</span><span class="hs" data-en="reference documents the Gem can read" data-ar="مستندات مرجعية يستطيع الـ Gem قراءتها">reference documents the Gem can read</span></button>
-                <p class="gemui-prev" style="margin-top:10px" data-en="Useful, but never design a Gem that depends on it, because the teacher you are training probably cannot use it." data-ar="مفيد، لكن لا تصمم Gem يعتمد عليه أبدًا — فالمعلم الذي تدربه غالبًا لا يستطيع استخدامه.">Useful, but never design a Gem that depends on it, because the teacher you are training probably cannot use it.</p>
-              </div>
+
+            <div class="cmp-wrap">
+              <table class="cmp">
+                <colgroup><col style="width:20%"><col style="width:22%"><col style="width:24%"><col style="width:34%"></colgroup>
+                <thead>
+                  <tr>
+                    <th data-en="What you are comparing" data-ar="ما الذي تقارنه">What you are comparing</th>
+                    <th class="is-you" data-en="Free account" data-ar="حساب مجاني">Free account</th>
+                    <th data-en="Google AI Plus · Pro · Ultra" data-ar="‏Google AI Plus · Pro · Ultra">Google AI Plus · Pro · Ultra</th>
+                    <th data-en="What it means for your Gem" data-ar="ماذا يعني هذا لـ Gem الخاص بك">What it means for your Gem</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th data-en="Can you build Gems at all?" data-ar="هل يمكنك بناء Gems أصلًا؟">Can you build Gems at all?</th>
+                    <td class="same"><span class="yes" data-en="Yes" data-ar="نعم">Yes</span></td>
+                    <td class="same"><span class="yes" data-en="Yes, the same" data-ar="نعم، الشيء نفسه">Yes, the same</span></td>
+                    <td class="means" data-en="Nothing to buy before you start. Every teacher in the room can do this today." data-ar="لا شيء تشتريه قبل أن تبدأ. كل معلم في القاعة يستطيع فعل هذا اليوم.">Nothing to buy before you start. Every teacher in the room can do this today.</td>
+                  </tr>
+                  <tr>
+                    <th data-en="How long the instructions can be" data-ar="كم يمكن أن تطول التعليمات">How long the instructions can be</th>
+                    <td class="same" data-en="About 31,000 characters" data-ar="نحو 31,000 حرف">About 31,000 characters</td>
+                    <td class="same" data-en="About 31,000 characters. The same." data-ar="نحو 31,000 حرف. الشيء نفسه.">About 31,000 characters. The same.</td>
+                    <td class="means" data-en="Paying does not buy a longer instruction block. A 42,000-character Gem is cut off on Ultra exactly as it is on a free account." data-ar="الاشتراك لا يشتري كتلة تعليمات أطول. و‏Gem من 42,000 حرف يُقطع في Ultra تمامًا كما يُقطع في الحساب المجاني.">Paying does not buy a longer instruction block. A 42,000-character Gem is cut off on Ultra exactly as it is on a free account.</td>
+                  </tr>
+                  <tr>
+                    <th data-en="Which model answers you" data-ar="أي نموذج يجيبك">Which model answers you</th>
+                    <td class="same" data-en="Gemini 3 Flash-Lite, Flash and Pro" data-ar="‏Gemini 3 Flash-Lite و Flash و Pro">Gemini 3 Flash-Lite, Flash and Pro</td>
+                    <td class="same" data-en="The same three models" data-ar="النماذج الثلاثة نفسها">The same three models</td>
+                    <td class="means" data-en="Your Gem is not cleverer on a paid plan. The quality comes from your instructions, not from the subscription." data-ar="الـ Gem عندك ليس أذكى في الخطة المدفوعة. فالجودة تأتي من تعليماتك، لا من الاشتراك.">Your Gem is not cleverer on a paid plan. The quality comes from your instructions, not from the subscription.</td>
+                  </tr>
+                  <tr>
+                    <th data-en="How much one conversation can hold" data-ar="كم تتّسع المحادثة الواحدة">How much one conversation can hold</th>
+                    <td data-en="About 50 pages of text" data-ar="نحو 50 صفحة من النص">About 50 pages of text</td>
+                    <td data-en="About 200 pages on Plus, and far more on Pro and Ultra" data-ar="نحو 200 صفحة في Plus، وأكثر من ذلك بكثير في Pro و Ultra">About 200 pages on Plus, and far more on Pro and Ultra</td>
+                    <td class="means" data-en="This is the real difference. Your instructions, the textbook page you attach and the file it writes all share that space, which is why a long plan is cut off sooner on a free account." data-ar="هذا هو الفرق الحقيقي. فتعليماتك، وصفحة الكتاب التي ترفقها، والملف الذي يكتبه، كلها تتقاسم هذه المساحة، ولهذا تُقطع الخطة الطويلة أسرع في الحساب المجاني.">This is the real difference. Your instructions, the textbook page you attach and the file it writes all share that space, which is why a long plan is cut off sooner on a free account.</td>
+                  </tr>
+                  <tr>
+                    <th data-en="How many messages before you wait" data-ar="كم رسالة قبل أن تنتظر">How many messages before you wait</th>
+                    <td data-en="A standard allowance, refreshing every 5 hours" data-ar="حصة قياسية، تتجدّد كل 5 ساعات">A standard allowance, refreshing every 5 hours</td>
+                    <td data-en="Twice that on Plus, four times on Pro, more on Ultra" data-ar="ضعفها في Plus، وأربعة أضعافها في Pro، وأكثر في Ultra">Twice that on Plus, four times on Pro, more on Ultra</td>
+                    <td class="means" data-en="On a free account, plan the building session. Testing a Gem takes many messages, and you can run out in the middle of a workshop." data-ar="في الحساب المجاني، خطّط لجلسة البناء. فاختبار الـ Gem يستهلك رسائل كثيرة، وقد تنفد منك في منتصف الورشة.">On a free account, plan the building session. Testing a Gem takes many messages, and you can run out in the middle of a workshop.</td>
+                  </tr>
+                  <tr>
+                    <th data-en="Attaching documents to the Gem" data-ar="إرفاق مستندات بالـ Gem">Attaching documents to the Gem</th>
+                    <td><span class="no" data-en="No + button on the account we tested" data-ar="لا يوجد زر + في الحساب الذي اختبرناه">No + button on the account we tested</span></td>
+                    <td><span class="yes" data-en="Available" data-ar="متاح">Available</span></td>
+                    <td class="means" data-en="Write the Gem so it never needs an attached file. Both of ours are self-contained for exactly this reason." data-ar="اكتب الـ Gem بحيث لا يحتاج ملفًا مرفقًا أبدًا. و‏Gem عندنا كلاهما مكتفٍ بذاته لهذا السبب بالضبط.">Write the Gem so it never needs an attached file. Both of ours are self-contained for exactly this reason.</td>
+                  </tr>
+                  <tr>
+                    <th data-en="Long video and audio uploads" data-ar="رفع فيديو وصوت طويل">Long video and audio uploads</th>
+                    <td data-en="5 minutes of video, 10 minutes of audio" data-ar="‏5 دقائق فيديو، و10 دقائق صوت">5 minutes of video, 10 minutes of audio</td>
+                    <td data-en="Up to an hour of video, up to three hours of audio" data-ar="حتى ساعة فيديو، وحتى ثلاث ساعات صوت">Up to an hour of video, up to three hours of audio</td>
+                    <td class="means" data-en="Nothing to do with a lesson-plan or worksheet Gem. It matters only if you feed it recordings." data-ar="لا علاقة له بـ Gem لخطة درس أو ورقة عمل. ولا يهمّ إلا إن كنت تغذّيه بتسجيلات.">Nothing to do with a lesson-plan or worksheet Gem. It matters only if you feed it recordings.</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+
+            <div class="cmp-key">
+              <span data-en-html="<b>Green</b> = paying changes nothing at all in that row." data-ar-html="<b>الأخضر</b> = الاشتراك لا يغيّر شيئًا البتة في ذلك الصف."><b>Green</b> = paying changes nothing at all in that row.</span>
+              <span data-en="Plain text = paying does change it, and the last column tells you whether that matters to you." data-ar="النص العادي = الاشتراك يغيّره فعلًا، والعمود الأخير يخبرك هل يهمّك ذلك.">Plain text = paying does change it, and the last column tells you whether that matters to you.</span>
+            </div>
+
+            <p class="srcline" data-en-html="Checked in August 2026 against <a href='https://support.google.com/gemini/answer/16275805' target='_blank' rel='noopener'>Gemini Apps limits and upgrades</a>, <a href='https://support.google.com/gemini/answer/15235603' target='_blank' rel='noopener'>Tips for creating custom Gems</a> and <a href='https://9to5google.com/2026/07/04/gemini-app-free-plus-pro-features/' target='_blank' rel='noopener'>9to5Google on free versus paid</a>. Google documents no character limit for the instruction box, so the 31,000 figure is ours, measured. Plans change: check your own account before you train." data-ar-html="فُحص في أغسطس 2026 مقابل <a href='https://support.google.com/gemini/answer/16275805' target='_blank' rel='noopener'>حدود وترقيات تطبيقات Gemini</a>، و<a href='https://support.google.com/gemini/answer/15235603' target='_blank' rel='noopener'>نصائح إنشاء Gems مخصصة</a>، و<a href='https://9to5google.com/2026/07/04/gemini-app-free-plus-pro-features/' target='_blank' rel='noopener'>مقال 9to5Google عن المجاني مقابل المدفوع</a>. لا توثّق Google أي حدّ لعدد حروف مربع التعليمات، فرقم 31,000 من قياسنا نحن. والخطط تتغيّر: افحص حسابك قبل التدريب.">Checked in August 2026 against Google's own limits pages and 9to5Google on free versus paid. Google documents no character limit for the instruction box, so the 31,000 figure is ours, measured.</p>
+          </div>
+          </div>
+
+          <div class="rulebox">
+            <h4 data-en="So what do you tell a teacher who asks whether to pay?" data-ar="فماذا تقول لمعلم يسألك: هل أشترك؟">So what do you tell a teacher who asks whether to pay?</h4>
+            <p data-en-html="<b>Build it free first.</b> The Gem, the instruction box and the models are identical. Pay only when you hit one of two walls: you keep running out of messages while testing, or your lessons are long enough that the answer keeps getting cut off. Neither wall is reached by writing a good instruction block." data-ar-html="<b>ابنِه مجانًا أولًا.</b> فالـ Gem ومربع التعليمات والنماذج متطابقة. ولا تشترك إلا حين تصطدم بأحد جدارين: نفاد الرسائل باستمرار أثناء الاختبار، أو أن دروسك طويلة إلى حدّ يجعل الإجابة تُقطع دائمًا. ولا يُبلَغ أيٌّ من الجدارين بكتابة كتلة تعليمات جيدة."><b>Build it free first.</b> The Gem, the instruction box and the models are identical. Pay only when you hit one of two walls.</p>
           </div>
 
           <h3 data-en="Limit 3 · Canvas turns your file into a document" data-ar="الحد 3 · الـ Canvas يحوّل ملفك إلى مستند">Limit 3 · Canvas turns your file into a document</h3>

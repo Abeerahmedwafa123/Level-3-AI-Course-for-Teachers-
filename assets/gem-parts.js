@@ -100,8 +100,11 @@
     run.addEventListener('click', play);
   }
 
-  /* ---------- 4. The 31,000-character meter ---------- */
-  var CAP = 31000;
+  /* ---------- 4. The character meter ----------
+     CAP is where the paste is measured to stop; BUDGET is where we tell a
+     teacher to stop, so there is margin for the browser and the paste method.
+     Neither figure changes with the account's plan. */
+  var CAP = 31000, BUDGET = 28000;
   function wireMeter() {
     var box = document.getElementById('cap-box');
     if (!box) return;
@@ -135,17 +138,17 @@
         kept.textContent = t.slice(Math.max(0, CAP - 220), CAP);
         lost.textContent = t.slice(CAP, CAP + 320);
         lostWrap.hidden = false;
-      } else if (n > 25000) {
+      } else if (n > BUDGET) {
         bar.classList.add('is-amber');
         verdict.classList.add('is-amber');
         verdict.textContent = isAr()
-          ? 'يتّسع، لكنه قريب من الحد. باقٍ ' + (CAP - n).toLocaleString('en-US') + ' حرفًا فقط.'
-          : 'It fits, but it is close. Only ' + (CAP - n).toLocaleString('en-US') + ' characters left.';
+          ? 'يصل كاملًا، لكنه تجاوز حدّ الأمان 28,000. اختصره قبل أن تلصقه.'
+          : 'It arrives, but it is past the safe budget of 28,000. Shorten it before you paste.';
         lostWrap.hidden = true;
       } else {
         verdict.textContent = isAr()
-          ? 'يتّسع كاملًا. باقٍ ' + (CAP - n).toLocaleString('en-US') + ' حرفًا.'
-          : 'The whole block arrives. ' + (CAP - n).toLocaleString('en-US') + ' characters to spare.';
+          ? 'يصل كاملًا، وداخل حدّ الأمان. باقٍ ' + (BUDGET - n).toLocaleString('en-US') + ' حرفًا.'
+          : 'The whole block arrives, inside the safe budget. ' + (BUDGET - n).toLocaleString('en-US') + ' characters to spare.';
         lostWrap.hidden = true;
       }
     }

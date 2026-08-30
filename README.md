@@ -40,7 +40,8 @@ Nine steps. The centre of it is that a Gem is not a smarter model — it is the 
 - The same request sent to a plain chat and to a Gem, both answers on screen at once
 - A real working instruction block taken apart into its seven jobs, each one pressable
 - The Gemini Gem screen, with a note on every control and where it goes wrong
-- **The three platform limits, measured rather than described:** the Instructions box silently cuts off near **31,000 characters**, a free account has **no knowledge files**, and Canvas turns a runnable file into a document
+- **The three limits, measured rather than described:** the Instructions box silently cuts off near **31,000 characters**, a full free-versus-paid comparison table, and Canvas turning a runnable file into a document
+- **What a paid subscription actually changes** — a seven-row comparison table. The instruction box, the models and Gems themselves are **identical on free and paid**; what changes is how much one conversation holds, how many messages you get, and whether you can attach documents. The rule to teach: **write to 28,000 characters, not 31,000**
 - A live character meter: paste a block in, and it shows you the exact text that would never reach the Gem
 - **The Gem Instruction Builder** — fields in, a complete paste-ready block out, with seven lamps for the seven parts
 - Both finished Gems in full: **Lesson Plan Architect** and **Worksheet Architect**, with a live preview of what each produces
