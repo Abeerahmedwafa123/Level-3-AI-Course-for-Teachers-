@@ -150,7 +150,13 @@ Build the complete game described below. Output only the final, valid HTML docum
 GAME BOARD
 1. Create a responsive Snakes and Ladders board with exactly 20 numbered squares in a five-column serpentine path.
 2. Use amazing, child-friendly colours with strong contrast and a polished 3D board frame.
-3. Include exactly three visible snakes and three visible ladders. Render every snake as a large 🐍 emoji and every ladder as a large 🪜 emoji, positioned clearly across the correct board squares. Do not draw them with CSS rectangles, polygons, pseudo-elements, SVG paths or abstract green/yellow shapes. Ladders move a token upward. Landing on any 🐍 snake head plays a defeat sound, shows a large crying emoji, and returns that player to the starting dock.
+3. Include exactly three visible snakes and three visible ladders. Render every snake with the 🐍 emoji and every ladder with the 🪜 emoji. Do not draw them with CSS rectangles, polygons, pseudo-elements, SVG paths or abstract green/yellow shapes.
+   MANDATORY UNCLUTTERED ROUTE PLAN:
+   - Ladders must connect 2→9, 7→14 and 12→19. Use one slim 🪜 emoji for each route, centred between the two square centres and aligned vertically or at a gentle angle. A ladder may be stretched along its long axis, but its width must never exceed 32% of one square. Keep at least 14px of clear space from every number and question icon.
+   - Snakes must connect 13→8 (short), 16→6 (medium) and 20→1 (long). Use one 🐍 emoji for each route. Make the short, medium and long snakes visibly different using restrained font sizes and long-axis scaling: approximately 48%, 62% and 78% of one square width, with scaleY values near 1.0, 1.35 and 1.7. Give them different gentle rotations and place the long snake in the left-edge corridor, the medium snake in the right-edge corridor and the short snake in the centre corridor.
+   - Put snakes and ladders in a dedicated absolute board-art overlay with pointer-events:none. Measure square centres with getBoundingClientRect(), position each item at the midpoint of its two endpoint squares, and recalculate on resize. Board art sits above square backgrounds but below square numbers, question icons and player tokens.
+   - Routes must never cross or overlap one another. No snake or ladder may cover a square number, question button, token or starting dock. Do not make any emoji wider than one square or use the oversized overlapping layout.
+   Ladders move a token upward. Landing on any 🐍 snake head plays a defeat sound, shows a large crying emoji, and returns that player to the starting dock.
 4. Place all player tokens in a neat starting dock directly below the board. Never cram tokens inside square 1.
 5. A normal board victory requires reaching square 20 exactly. If a roll passes 20, the token stays where it is.
 
@@ -198,7 +204,7 @@ FORMAT AND QUALITY CHECK
 - Return one complete standalone .html file only.
 - It must run by double-clicking the file without internet.
 - It must contain no external URLs or missing assets.
-- Confirm the board visibly contains exactly three 🐍 snake emojis and three 🪜 ladder emojis, with no abstract green or yellow replacement shapes.
+- Confirm the board visibly contains exactly three 🐍 snake emojis and three slim 🪜 ladder emojis, with no abstract replacement shapes. Confirm the three snakes have clearly different short, medium and long sizes, all six routes are separated, and no artwork covers any number, question icon or token.
 - Test all modes, name saving, dice values, exact finish, ladders, snakes, question import, answer checking, trophy counts, five-trophy victory, restart, settings, sound and keyboard operation.
 - Do not provide explanations before or after the HTML.</textarea></div>
 </div></section>
