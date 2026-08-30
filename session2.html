@@ -121,8 +121,6 @@
 .hot .ht{font-size:13.5px;font-weight:650}
 .hot .hs{display:block;margin:5px 0 0 30px;font-size:12.5px;color:#8FA79B;font-weight:400}
 [dir=rtl] .hot .hs{margin:5px 30px 0 0}
-.hot.is-locked{opacity:.62}
-.hot.is-locked .ht:after{content:" 🔒"}
 .hot.is-big{min-height:120px}
 .hot.is-save{background:var(--brand);color:#fff;width:auto;min-width:120px;
   display:inline-flex;align-items:center;justify-content:center;gap:9px}
@@ -191,7 +189,6 @@ table.cmp tbody tr:nth-child(even) td{background:var(--bg-2)}
 table.cmp tbody tr:nth-child(even) th{background:var(--bg-2)}
 table.cmp tbody tr:nth-child(even) td.means{background:var(--surface)}
 table.cmp .yes{color:var(--signal);font-weight:700}
-table.cmp .no{color:var(--accent-text);font-weight:700}
 .cmp-key{display:flex;flex-wrap:wrap;gap:16px;padding:0 20px 6px;font-size:14px;color:var(--muted)}
 .cmp-key b{color:var(--signal);font-weight:700}
 .rulebox{margin:22px 0 0;border:1px solid var(--brand-lift);border-radius:var(--r-md);
@@ -652,7 +649,7 @@ table.cmp .no{color:var(--accent-text);font-weight:700}
 
                   <div>
                     <p class="gemui-label" data-en="Knowledge" data-ar="ملفات المعرفة">Knowledge</p>
-                    <button class="hot is-locked" type="button" data-pick="g5" data-pick-of="gem" data-pick-press><span class="hn">5</span><span class="ht" data-en="Add files" data-ar="إضافة ملفات">Add files</span><span class="hs" data-en="no + button on a free account, which is why our Gems carry no knowledge files" data-ar="لا يوجد زر + في الحساب المجاني — لهذا لا تحمل الـ Gems عندنا ملفات معرفة">no + button on a free account, which is why our Gems carry no knowledge files</span></button>
+                    <button class="hot" type="button" data-pick="g5" data-pick-of="gem" data-pick-press><span class="hn">5</span><span class="ht" data-en="+ Add files" data-ar="+ إضافة ملفات">+ Add files</span><span class="hs" data-en="reference documents the Gem can read. Our Gems use none, and that is deliberate." data-ar="مستندات مرجعية يستطيع الـ Gem قراءتها. و‏Gems عندنا لا تستخدم أيًّا منها، وهذا مقصود.">reference documents the Gem can read. Our Gems use none, and that is deliberate.</span></button>
                   </div>
 
                   <div>
@@ -689,8 +686,8 @@ table.cmp .no{color:var(--accent-text);font-weight:700}
                 <p class="stops" data-en="This is where the 31,000-character limit bites." data-ar="هنا تحديدًا يعضّ حدّ الـ 31,000 حرف.">This is where the 31,000-character limit bites.</p>
               </div>
               <div class="nb" data-pick-note="g5" hidden>
-                <b data-en="On a free account there is no + button here." data-ar="في الحساب المجاني لا يوجد زر + هنا.">On a free account there is no + button here.</b>
-                <p data-en="Attaching documents is the one thing on this screen a free account does not get. The instruction box itself is the same size on every plan, which is why every Gem in this session is written to need no attached files at all." data-ar="إرفاق المستندات هو الشيء الوحيد في هذه الشاشة الذي لا يحصل عليه الحساب المجاني. أما مربع التعليمات نفسه فحجمه واحد في كل الخطط، ولهذا كُتب كل Gem في هذه المحاضرة بحيث لا يحتاج أي ملف مرفق.">Attaching documents is the one thing on this screen a free account does not get. The instruction box itself is the same size on every plan, which is why every Gem in this session is written to need no attached files at all.</p>
+                <b data-en="You have this, and our Gems still do not use it." data-ar="هذا متاح لديك، ومع ذلك لا تستخدمه الـ Gems عندنا.">You have this, and our Gems still do not use it.</b>
+                <p data-en="This button was missing on our free account and later appeared, and Google does not document which plans have it. A Gem that depends on an attached file may work for you and fail for the teacher beside you, so both Gems in this session carry everything they need in the instruction box." data-ar="كان هذا الزر غائبًا عن حسابنا المجاني ثم ظهر لاحقًا، ولا توثّق Google أي الخطط تملكه. فـ Gem يعتمد على ملف مرفق قد يعمل عندك ويفشل عند المعلم الجالس بجوارك، ولذلك يحمل كلا الـ Gems في هذه المحاضرة كل ما يحتاجه داخل مربع التعليمات.">This button was missing on our free account and later appeared, and Google does not document which plans have it. A Gem that depends on an attached file may work for you and fail for the teacher beside you, so both Gems in this session carry everything they need in the instruction box.</p>
               </div>
               <div class="nb" data-pick-note="g6" hidden>
                 <b data-en="Test it before you save, with the real sentence." data-ar="اختبره قبل الحفظ، بالجملة الحقيقية.">Test it before you save, with the real sentence.</b>
@@ -814,9 +811,9 @@ table.cmp .no{color:var(--accent-text);font-weight:700}
                   </tr>
                   <tr>
                     <th data-en="Attaching documents to the Gem" data-ar="إرفاق مستندات بالـ Gem">Attaching documents to the Gem</th>
-                    <td><span class="no" data-en="No + button on the account we tested" data-ar="لا يوجد زر + في الحساب الذي اختبرناه">No + button on the account we tested</span></td>
-                    <td><span class="yes" data-en="Available" data-ar="متاح">Available</span></td>
-                    <td class="means" data-en="Write the Gem so it never needs an attached file. Both of ours are self-contained for exactly this reason." data-ar="اكتب الـ Gem بحيث لا يحتاج ملفًا مرفقًا أبدًا. و‏Gem عندنا كلاهما مكتفٍ بذاته لهذا السبب بالضبط.">Write the Gem so it never needs an attached file. Both of ours are self-contained for exactly this reason.</td>
+                    <td class="same"><span class="yes" data-en="Available" data-ar="متاح">Available</span></td>
+                    <td class="same"><span class="yes" data-en="Available, the same" data-ar="متاح، الشيء نفسه">Available, the same</span></td>
+                    <td class="means" data-en="The + button was missing on our free account and then appeared. Google does not say which plans get it, so still write the Gem to need no attached file: that works for every teacher, on every plan." data-ar="كان زر + غائبًا عن حسابنا المجاني ثم ظهر. ولا تقول Google أي الخطط تحصل عليه، فاكتب الـ Gem بحيث لا يحتاج ملفًا مرفقًا: هذا يعمل لكل معلم، وعلى كل خطة.">The + button was missing on our free account and then appeared. Google does not say which plans get it, so still write the Gem to need no attached file: that works for every teacher, on every plan.</td>
                   </tr>
                   <tr>
                     <th data-en="Long video and audio uploads" data-ar="رفع فيديو وصوت طويل">Long video and audio uploads</th>
