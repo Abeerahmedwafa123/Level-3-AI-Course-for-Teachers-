@@ -265,6 +265,21 @@ html[dir="rtl"] .tag{letter-spacing:0;font-size:13px;text-transform:none}
   .dec .chg{grid-column:2;justify-self:start}
 }
 
+/* ---------- the basics, so every Change button has somewhere to land ---------- */
+.basics{display:grid;gap:16px;margin:14px 0 4px}
+.pickrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.pick{cursor:pointer;min-height:38px;padding:8px 14px;border-radius:var(--r-pill);
+  background:transparent;border:1px solid var(--hair);color:var(--ink-2);font-size:14px;
+  font-weight:600;transition:all var(--t-fast)}
+.pick:hover{border-color:var(--mint);color:var(--ink)}
+.pick.is-on{border-color:var(--mint);background:rgba(95,214,192,.12);color:var(--ink)}
+
+/* the ring that says: this is the thing you pressed Change on */
+.jumped{outline:3px solid rgba(61,232,203,.75);outline-offset:8px;border-radius:var(--r-core);
+  animation:jumpfade 2.4s var(--out) 1 forwards}
+@keyframes jumpfade{0%,64%{outline-color:rgba(61,232,203,.75)}100%{outline-color:rgba(61,232,203,0)}}
+@media (prefers-reduced-motion:reduce){.jumped{animation:none}}
+
 /* ---------- option cards, rendered as the thing itself ---------- */
 .opts{display:grid;gap:12px;margin:14px 0 0}
 .opts.g2{grid-template-columns:repeat(auto-fit,minmax(215px,1fr))}
@@ -717,11 +732,11 @@ html[dir="rtl"] .bubble{border-radius:16px 16px 4px 16px}
   background:linear-gradient(90deg,color-mix(in oklab,var(--s-bg) 78%,transparent) 8%,transparent 62%)}
 .s-hd .s-hdcap{position:absolute;inset-block-end:10px;inset-inline-start:12px;
   padding:5px 11px;border-radius:99px;font-size:10.5px;font-weight:800;
-  background:var(--s-shout);color:var(--s-bg)}
+  background:var(--s-shout);color:var(--s-onshout)}
 .s-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px 22px}
 .s-stat{padding:12px;border-radius:10px;background:var(--s-soft);
   border:1px solid color-mix(in oklab,var(--s-ink) 12%,transparent)}
-.s-stat b{display:block;font-size:20px;line-height:1.1;color:var(--s-shout)}
+.s-stat b{display:block;font-size:20px;line-height:1.1;color:var(--s-shout-ink)}
 .s-stat span{font-size:11px;color:color-mix(in oklab,var(--s-ink) 74%,transparent)}
 .s-quote{display:flex;gap:12px;align-items:center;margin:0 16px 22px;padding:14px;
   border-radius:12px;background:var(--s-soft);
@@ -729,7 +744,7 @@ html[dir="rtl"] .bubble{border-radius:16px 16px 4px 16px}
 .s-quote img{width:46px;height:46px;border-radius:99px;object-fit:cover;flex:0 0 auto;
   background:color-mix(in oklab,var(--s-ink) 10%,transparent)}
 .s-quote p{margin:0 0 4px;font-size:12px;line-height:1.55;font-style:italic}
-.s-quote cite{font-size:11px;font-style:normal;font-weight:700;color:var(--s-shout)}
+.s-quote cite{font-size:11px;font-style:normal;font-weight:700;color:var(--s-shout-ink)}
 .s-art{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:4/3;
   display:grid;place-items:end start;padding:8px}
 .s-art:before{content:"";position:absolute;inset:0;
@@ -748,13 +763,13 @@ html[dir="rtl"] .bubble{border-radius:16px 16px 4px 16px}
 .s-social a,.s-social span.ic{display:grid;place-items:center;width:26px;height:26px;
   border-radius:8px;background:color-mix(in oklab,var(--s-ink) 12%,transparent);
   color:var(--s-ink);opacity:.85}
-.s-social .on{background:var(--s-shout);color:var(--s-bg);opacity:1}
+.s-social .on{background:var(--s-shout);color:var(--s-onshout);opacity:1}
 .s-social svg{width:14px;height:14px}
 .s-foot{align-items:center}
 .s-conts{display:flex;gap:10px;margin:12px 0 0}
 .s-conts span.ic{display:grid;place-items:center;width:38px;height:38px;border-radius:11px;
   background:var(--s-soft);color:var(--s-ink)}
-.s-conts span.ic.on{background:var(--s-shout);color:var(--s-bg)}
+.s-conts span.ic.on{background:var(--s-shout);color:var(--s-onshout)}
 .s-conts svg{width:18px;height:18px}
 
 /* ============ the pictures that must travel with the prompt ============ */
@@ -915,6 +930,23 @@ html[dir="rtl"] .waytag{letter-spacing:0;text-transform:none;font-size:12.5px}
               <div class="fld">
                 <label for="tagline" data-en="One line under the name" data-ar="سطر واحد تحت الاسم">One line under the name</label>
                 <input id="tagline" type="text" data-en-ph="English that children enjoy" data-ar-ph="إنجليزية يحبها الأطفال" placeholder="English that children enjoy">
+              </div>
+            </div>
+
+            <div class="basics" id="basics">
+              <div class="fld" id="fld-kind">
+                <label data-en="Kind of site" data-ar="نوع الموقع">Kind of site</label>
+                <div class="pickrow" id="kindpick"></div>
+              </div>
+              <div class="two">
+                <div class="fld" id="fld-who">
+                  <label for="whofld" data-en="Who it is for" data-ar="لمن هو">Who it is for</label>
+                  <input id="whofld" type="text" data-en-ph="parents deciding for their child" data-ar-ph="أولياء أمور يقررون لأبنائهم" placeholder="parents deciding for their child">
+                </div>
+                <div class="fld" id="fld-goal">
+                  <label for="goalfld" data-en="The one action" data-ar="الفعل الوحيد">The one action</label>
+                  <input id="goalfld" type="text" data-en-ph="book a free trial" data-ar-ph="حجز حصة تجريبية مجانية" placeholder="book a free trial">
+                </div>
               </div>
             </div>
 
@@ -1195,8 +1227,8 @@ html[dir="rtl"] .waytag{letter-spacing:0;text-transform:none;font-size:12.5px}
               <div class="way">
                 <span class="waytag is-cool" data-en="Take it further" data-ar="خطوة أبعد">Take it further</span>
                 <h3 data-en="Copy the build order" data-ar="انسخ أمر البناء">Copy the build order</h3>
-                <p data-en="Paste the text above into Claude, Gemini or ChatGPT when you want to change something you cannot change here. Attach the pictures listed below."
-                   data-ar="الصق النص أعلاه في Claude أو Gemini أو ChatGPT حين تريد تغيير شيء لا يمكنك تغييره هنا. وأرفق الصور المذكورة بالأسفل.">Paste the text above into Claude, Gemini or ChatGPT when you want to change something you cannot change here. Attach the pictures listed below.</p>
+                <p data-en="Paste the text above into Claude, Gemini or ChatGPT when you want to change something you cannot change here. It carries your whole design system — the exact colour codes, the CSS of the nav bar, cards, button and gallery you chose, and the movement — so what it builds looks like what you see here. Attach the pictures listed below."
+                   data-ar="الصق النص أعلاه في Claude أو Gemini أو ChatGPT حين تريد تغيير شيء لا يمكنك تغييره هنا. وهو يحمل نظام تصميمك كاملًا: أكواد ألوانك بالضبط، وأنماط شريط التنقل والبطاقات والزر والمعرض التي اخترتها، والحركة — حتى يخرج ما يبنيه مشبهًا لما تراه هنا. وأرفق الصور المذكورة بالأسفل.">Paste the text above into Claude, Gemini or ChatGPT when you want to change something you cannot change here. It carries your whole design system — the exact colour codes, the CSS of the nav bar, cards, button and gallery you chose, and the movement — so what it builds looks like what you see here. Attach the pictures listed below.</p>
                 <div class="actions">
                   <button class="btn btn-line" type="button" id="copyBtn">
                     <span data-en="Copy it all" data-ar="انسخ الكل">Copy it all</span>
@@ -1795,6 +1827,39 @@ function fixInk(bgHex, inkHex){
   return out;
 }
 function pal(){ var p=null; PALETTES.forEach(function(x){ if(x.id===S.pal) p=x; }); return p||PALETTES[6]; }
+function mixHex(a,b,t){ var A=rgb(a),B=rgb(b);
+  return '#' + A.map(function(v,i){ return hex(v + (B[i]-v)*t); }).join(''); }
+/* The label colour for text sitting ON a filled accent: whichever candidate holds up
+   against every background it has to cross. The raw accent with --bg on top fails
+   4.5:1 on all six light palettes, so this is computed, never assumed. */
+function onInk(list, q, inkHex){
+  q = q || pal(); inkHex = inkHex || inkNow();
+  var cands = ['#FFFFFF','#0B0F14', q.bg, inkHex], best = cands[0], score = -1;
+  cands.forEach(function(c){
+    var m = 99; list.forEach(function(b){ var r = ratio(c,b); if(r < m) m = r; });
+    if(m > score){ score = m; best = c; }
+  });
+  return { ink: best, r: score };
+}
+/* The accent as TEXT on the page background gets a darkened twin; fills keep the
+   vivid original, so nothing looks washed out. */
+function shoutInk(q){ q = q || pal(); return fixInk(q.bg, q.shout); }
+/* Emitted as real hex, not color-mix, so what is measured is what renders. */
+function eyebrowBg(q){ q = q || pal(); return mixHex(q.bg, q.shout, 0.16); }
+function eyebrowInk(q){ q = q || pal(); return fixInk(eyebrowBg(q), q.shout); }
+/* The gradient button: pull its dark end towards the accent only as far as one
+   label colour can still clear 4.5:1 at both ends. */
+function gradPair(q, inkHex){
+  q = q || pal();
+  var t, a, g;
+  for(t = 0; t <= 1.0001; t += 0.1){
+    a = mixHex(q.main, q.shout, t);
+    g = onInk([a, q.shout], q, inkHex);
+    if(g.r >= 4.5) return { a:a, ink:g.ink, r:g.r };
+  }
+  g = onInk([q.shout], q, inkHex);
+  return { a:q.shout, ink:g.ink, r:g.r };
+}
 function inkNow(){ return S.inkFix || pal().ink; }
 
 /* =====================================================================
@@ -1939,8 +2004,11 @@ function applyPalette(id){
   site.style.setProperty('--s-bg', p.bg);
   site.style.setProperty('--s-main', p.main);
   site.style.setProperty('--s-shout', p.shout);
-  site.style.setProperty('--s-ink', id === S.pal ? inkNow() : p.ink);
+  var hvInk = (id === S.pal ? inkNow() : p.ink);
+  site.style.setProperty('--s-ink', hvInk);
   site.style.setProperty('--s-soft', p.soft);
+  site.style.setProperty('--s-shout-ink', shoutInk(p));
+  site.style.setProperty('--s-onshout', onInk([p.shout], p, hvInk).ink);
 }
 function paintHeaderOnly(){
   var hd = $('#site .s-hd'); if(!hd) { paint(); return; }
@@ -2007,9 +2075,22 @@ function decRow(icon, label, value, why, go){
   return '<div class="dec">'
     + '<span class="dec-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+ICONS[icon]+'</svg></span>'
     + '<span><b>'+esc(label)+': '+esc(value)+'</b><span class="why">'+esc(why)+'</span></span>'
-    + '<button class="chg" type="button" data-go="'+go+'">'+esc(L('Change','غيّر'))+'</button></div>';
+    + '<button class="chg" type="button" data-jump="'+go+'">'+esc(L('Change','غيّر'))+'</button></div>';
 }
 function nameOf(list,id){ var o=null; list.forEach(function(x){ if(x.id===id) o=x; }); return o?L(o.en,o.ar):id; }
+
+function drawKinds(){
+  var box = $('#kindpick'); if(!box) return;
+  box.innerHTML = KINDS.map(function(K){
+    return '<button class="pick'+(K.id===S.kind?' is-on':'')+'" type="button" data-kind="'+K.id+'"'
+      + ' aria-pressed="'+(K.id===S.kind?'true':'false')+'">'+esc(L(K.en,K.ar))+'</button>';
+  }).join('');
+}
+function syncBasics(){
+  var w = $('#whofld'), g = $('#goalfld');
+  if(w) w.value = L(S.audienceEn,S.audienceAr) || '';
+  if(g) g.value = L(S.goalEn,S.goalAr) || '';
+}
 
 function drawDecisions(){
   var p = pal();
@@ -2020,21 +2101,21 @@ function drawDecisions(){
 
   $('#decs').innerHTML =
       decRow('kind', L('Kind of site','نوع الموقع'), L(S.kindEn,S.kindAr),
-             L('Taken from the words in your sentence.','مأخوذ من الكلمات في جملتك.'), 1)
+             L('Taken from the words in your sentence.','مأخوذ من الكلمات في جملتك.'), '2|#fld-kind')
     + decRow('who',  L('Who it is for','لمن هو'), L(S.audienceEn,S.audienceAr),
-             L('Everything else is written for this person.','كل شيء آخر مكتوب لهذا الشخص.'), 1)
+             L('Everything else is written for this person.','كل شيء آخر مكتوب لهذا الشخص.'), '2|#fld-who')
     + decRow('goal', L('The one action','الفعل الوحيد'), L(S.goalEn,S.goalAr),
-             L('One page, one job. The button says exactly this.','صفحة واحدة، مهمة واحدة. الزر يقول هذا بالضبط.'), 4)
+             L('One page, one job. The button says exactly this.','صفحة واحدة، مهمة واحدة. الزر يقول هذا بالضبط.'), '2|#fld-goal')
     + decRow('col',  L('Colour palette','لوحة الألوان'), L(p.en,p.ar),
-             L(WHY[S.pal][0],WHY[S.pal][1]), 3)
+             L(WHY[S.pal][0],WHY[S.pal][1]), '3|#palettes')
     + decRow('pan',  L('Visual style','النمط البصري'), nameOf(PANELS,S.pan),
-             L(WHY[S.pan][0],WHY[S.pan][1]), 3)
+             L(WHY[S.pan][0],WHY[S.pan][1]), '3|#panels')
     + decRow('nav',  L('Navigation bar','شريط التنقل'), nameOf(NAVS,S.nav),
-             L(WHY[S.nav][0],WHY[S.nav][1]), 3)
+             L(WHY[S.nav][0],WHY[S.nav][1]), '3|#navs')
     + decRow('btn',  L('Buttons','الأزرار'), nameOf(BTNS,S.btn),
-             L(WHYB[S.btn][0],WHYB[S.btn][1]), 3)
+             L(WHYB[S.btn][0],WHYB[S.btn][1]), '3|#btns')
     + decRow('gal',  L('Photo gallery','معرض الصور'), nameOf(GALS,S.gal),
-             L(WHYG[S.gal][0],WHYG[S.gal][1]), 3);
+             L(WHYG[S.gal][0],WHYG[S.gal][1]), '3|#gals');
 
   $('#pagechips').innerHTML = [
     L('Home','الرئيسية'), L('About','من نحن'),
@@ -2045,6 +2126,22 @@ function drawDecisions(){
 /* =====================================================================
    8. filling the empty words, so nothing ever says Lorem ipsum
    ===================================================================== */
+/* The tagline used to be the first sentence of the home paragraph, so the line under
+   the site name and the opening of the page said the same thing twice — and About,
+   whose h1 is the tagline, repeated it a third time. */
+function taglineFrom(c){
+  var para = pick(c.heroP) || '';
+  var bits = para.split('.').map(function(s){ return s.trim(); })
+                 .filter(function(s){ return s.length > 8; });
+  if(bits.length > 1) return bits[bits.length - 1] + '.';
+  var mission = (pick(c.mission) || '').split('.')[0].trim();
+  if(mission.length > 92){
+    var cut = mission.indexOf('\u060c');                 /* Arabic comma */
+    if(cut < 12) cut = mission.indexOf(',');
+    if(cut > 11) mission = mission.slice(0, cut);
+  }
+  return mission ? mission + '.' : (bits[0] || para) + '.';
+}
 function fallback(){
   var c = C();
   return {
@@ -2063,7 +2160,7 @@ function fallback(){
     phone:  S.phone || '+20 100 000 0000',
     city:   S.city  || L('Alexandria, Egypt','الإسكندرية، مصر'),
     name:   S.name  || L('Your name here','اسمك هنا'),
-    tagline:S.tagline || pick(c.heroP).split('.')[0] + '.'
+    tagline:S.tagline || taglineFrom(c)
   };
 }
 
@@ -2181,6 +2278,8 @@ function paint(){
   site.style.setProperty('--s-shout', p.shout);
   site.style.setProperty('--s-ink', inkNow());
   site.style.setProperty('--s-soft', p.soft);
+  site.style.setProperty('--s-shout-ink', shoutInk());
+  site.style.setProperty('--s-onshout', onInk([p.shout]).ink);
   site.setAttribute('data-nv', S.nav);
   site.setAttribute('data-pn', S.pan);
   site.setAttribute('data-bt', S.btn);
@@ -2288,8 +2387,66 @@ function meter(){
 /* =====================================================================
    12. the build order
    ===================================================================== */
+/* The prompt must build the same site the Download button builds, so the CSS it
+   quotes is lifted out of the very stylesheet that gets written — never retyped. */
+function pickCss(needles, family, chosen){   /* needles null = keep everything */
+  var lines = siteCss().split('\n'), out = [], keep = false;
+  var fams = ['[data-nv=','[data-pn=','[data-bt=','[data-gl='];
+  var mine = family + chosen + ']';
+  for(var i=0;i<lines.length;i++){
+    var ln = lines[i];
+    if(/^\s/.test(ln)){ if(keep) out[out.length-1] += '\n' + ln; continue; }
+    keep = false;
+    var other = false, f, n;
+    for(f=0; f<fams.length; f++){
+      if(ln.indexOf(fams[f]) > -1 && ln.indexOf(mine) === -1) other = true;
+    }
+    if(other) continue;
+    if(!needles){ keep = true; }
+    else for(n=0; n<needles.length; n++){ if(ln.indexOf(needles[n]) > -1){ keep = true; break; } }
+    if(keep) out.push(ln);
+  }
+  return out.join('\n');
+}
+var CSSBITS = {
+  nav:  ['.bar{','.brand{','.brand img','nav.menu','[data-nv='],
+  pan:  ['.grid{','.card{','.card:hover','.card p','[data-pn='],
+  btn:  ['.cta','[data-bt='],
+  gal:  ['.gal','.art','[data-gl=']
+};
+/* The whole stylesheet, with only the variants she did not choose removed. Four
+   quoted components left ten more (.hero, .hd, .stats, .quote, .lines, .social,
+   the footer, the type scale) to be re-invented by whoever read the prompt. */
+function wholeCss(){
+  var lines = siteCss().split('\n'), out = [], keep = false;
+  var fams = [['[data-nv=', S.nav], ['[data-pn=', S.pan], ['[data-bt=', S.btn], ['[data-gl=', S.gal]];
+  for(var i=0;i<lines.length;i++){
+    var ln = lines[i], f, mine = true;
+    for(f=0; f<fams.length; f++){
+      if(ln.indexOf(fams[f][0]) > -1 && ln.indexOf(fams[f][0] + fams[f][1] + ']') === -1) mine = false;
+    }
+    if(/^\s/.test(ln)){ if(keep && mine) out[out.length-1] += '\n' + ln; continue; }
+    keep = mine;
+    if(keep) out.push(ln);
+  }
+  return out.join('\n');
+}
+function lookCss(){
+  return {
+    all: wholeCss(),
+    nav: pickCss(CSSBITS.nav, '[data-nv=', S.nav),
+    pan: pickCss(CSSBITS.pan, '[data-pn=', S.pan),
+    btn: pickCss(CSSBITS.btn, '[data-bt=', S.btn),
+    gal: pickCss(CSSBITS.gal, '[data-gl=', S.gal)
+  };
+}
+
 function buildPrompt(){
+  if(!S.kind) think();
   var p = pal(), F = fallback(), ink = inkNow(), r = ratio(p.bg, ink);
+  var PH = function(real){ return real ? '' : (AR
+    ? '   [عنصر نائب — قل لي أن أستبدله، ولا تتعامل معه كحقيقة]'
+    : '   [PLACEHOLDER — tell me to replace it, do not present it as a fact]'); };
   var lines = [];
   var A = function(s){ lines.push(s); };
 
@@ -2302,12 +2459,15 @@ function buildPrompt(){
     A('Kind of site: ' + S.kindEn);
     A('Written for: ' + S.audienceEn);
     A('The one action I want from a visitor: ' + S.goalEn);
-    A('Site name: ' + F.name);
-    A('One line under the name: ' + F.tagline);
+    A('Site name: ' + F.name + PH(S.name));
+    A('One line under the name: ' + F.tagline + PH(S.tagline));
     A('');
     A('=== 2. PAGES (exactly four) ===');
     A('1. Home  2. About  3. Services and Courses (both on ONE page)  4. Contact');
-    A('Same navigation bar on all four. The current page is highlighted.');
+    A('All four live in the SAME file as <div class="page" id="home|about|services|contact">, only one carries .on at a time.');
+    A('The menu switches them with history.pushState, listens for popstate, scrolls to the top and moves focus to that page\'s h1. No page reload, no separate files.');
+    A('I will often open this file straight from my disk, so wrap the pushState call in try/catch and fall back to setting location.hash. The menu must never stop working because of it.');
+    A('Same navigation bar on all four. The current page link is highlighted and carries aria-current="page".');
     A('');
     A('=== 3. COLOUR (use these exact codes) ===');
     A('Background   ' + p.bg);
@@ -2321,7 +2481,7 @@ function buildPrompt(){
     A('Header style: ' + nameOfEn(HEADERS, S.header));
     A('Subject: ' + nameOfEn(SUBJECTS, S.subject));
     if(S.header === '3d')
-      A('Use a bright 3D illustrated scene about this subject: glossy clay Pixar-style objects and one or two stylised child or adult figurines, luminous colour, never dark or gloomy. Leave the left third clear for the headline.');
+      A('The header picture is a bright 3D illustrated scene: glossy clay figures in luminous colour, never dark. Place it as the .hd banner on Home, About and Services, and keep the headline clear of its busy side. If it is attached, use it as it is and generate nothing.');
     if(S.header === 'photo')
       A('Use a real photograph of teachers and learners of this subject: warm, daylight, diverse, genuinely smiling, wide 16:9, left third clear for the headline. Never a stock photo of a handshake.');
     if(S.header === 'pattern')
@@ -2329,27 +2489,163 @@ function buildPrompt(){
     if(S.header === 'mine')
       A('Use my own picture, the first gallery link below, as the header. Crop it to 16:9 and keep the left third readable.');
     A('');
-    A('=== 4. LOOK ===');
-    A('Navigation bar: ' + nameOfEn(NAVS,S.nav) + ' — ' + WHY[S.nav][0]);
-    A('Panels / cards: ' + nameOfEn(PANELS,S.pan) + ' — ' + WHY[S.pan][0]);
-    A('Buttons: ' + nameOfEn(BTNS,S.btn) + ' — ' + WHYB[S.btn][0]);
-    A('Photo gallery: ' + nameOfEn(GALS,S.gal) + ' — ' + WHYG[S.gal][0]);
+    var K = lookCss();
+    A('=== 4. THE LOOK — this is a specification, not a suggestion ===');
+    A('Build the design system below exactly as written. Do not substitute your own colours, fonts, corner radii, shadows or effects, and do not add Bootstrap, Tailwind, a CDN, an icon library or a web font. Plain CSS in one <style>.');
+    A('');
+    A('4a. Tokens. Put these in :root and use var() everywhere — no loose hex codes in the body of the CSS:');
+    A(':root{--bg:' + p.bg + ';--main:' + p.main + ';--shout:' + p.shout + ';--ink:' + ink + ';--soft:' + p.soft + ';');
+    A('  --shout-ink:' + shoutInk() + ';--onshout:' + onInk([p.shout]).ink + ';');
+    A('  --eyebrow-bg:' + eyebrowBg() + ';--eyebrow-ink:' + eyebrowInk() + ';');
+    if(S.btn === 'grad') A('  --grad-a:' + gradPair().a + ';--ongrad:' + gradPair().ink + ';');
+    A('  --sp:clamp(20px,5vw,64px);--r:14px;--pill:999px;');
+    A('  --spring:cubic-bezier(0.32,0.72,0,1);--out:cubic-bezier(0.22,1,0.36,1)}');
+    A('The last four are worked out, not decorative, and they are what keeps the site readable:');
+    A('  --shout-ink  the accent used as TEXT — menu link, stat numbers, contact links. It measures '
+      + ratio(p.bg, shoutInk()).toFixed(2) + ':1 on the background. Never set text in raw --shout.');
+    A('  --eyebrow-bg --eyebrow-ink  the little pill above the headline. Its tinted background lowers the contrast, so it carries its own measured pair ('
+      + ratio(eyebrowBg(), eyebrowInk()).toFixed(2) + ':1). Written as real hex, not color-mix, so what you measure is what renders.');
+    A('  --onshout    the label ON a filled accent — the button, the skip link, the social icons that carry a link: '
+      + onInk([p.shout]).r.toFixed(2) + ':1. Never use --bg for it.');
+    if(S.btn === 'grad')
+      A('  --grad-a --ongrad  the gradient button\'s dark end and its label, worked out together so both ends clear 4.5:1.');
+    A('');
+    A('4b. Put these four attributes on <body> — the CSS in 4d is written against them:');
+    A('<body data-nv="' + S.nav + '" data-pn="' + S.pan + '" data-bt="' + S.btn + '" data-gl="' + S.gal + '">');
+    A(L('(One or two of these may have no matching selector below, because that choice is the base style. Set all four anyway — they are how the other variants get swapped in later.)',
+        '(قد لا يكون لواحد أو اثنين منها محدِّد مطابق بالأسفل لأن ذلك الاختيار هو النمط الأساسي. ضع الأربعة على أي حال، فهي طريقة استبدال الأنماط الأخرى لاحقًا.)'));
+    A('');
+    A('4c. What the stylesheet in 4d is doing, so you keep its intent when you extend it:');
+    A('  One content column, .wrap, 1120px wide with --sp padding. Every section breathes at clamp(34px,6vw,72px) — the whitespace is part of the design, do not compress it.');
+    A('  A real type scale: h1 clamp(32px,6vw,60px), h2 clamp(24px,3.6vw,36px), h3 19px, body 17px/1.65, paragraphs capped at 62ch. Arabic gets its own font stack and looser lines.');
+    A('  The accent appears as a fill (the button) or as --shout-ink text, never as raw --shout text, and never a third colour.');
+    A('');
+    A('4d. THE STYLESHEET. This is the whole thing, with my four choices already in it —');
+    A('    navigation ' + nameOfEn(NAVS,S.nav) + ', cards ' + nameOfEn(PANELS,S.pan)
+      + ', button ' + nameOfEn(BTNS,S.btn) + ', gallery ' + nameOfEn(GALS,S.gal) + '.');
+    A('    Paste it as it is, keep every value, and add to it only what you need. Nothing here is a suggestion.');
+    A('');
+    A(wholeCss());
+    if(S.gal === 'enlarge')
+      A('/* plus: tapping a picture opens it large over a dimmed backdrop, Esc and a click outside close it, focus returns to the picture. Written by hand, no library. */');
+    A('');
+    A('4e. Movement — transform and opacity only, never anything that moves the layout:');
+    A('  - A living background, first thing inside <body>:');
+    A('    <div class="sky" aria-hidden="true"><i></i><i></i></div>');
+    A('    .sky{position:fixed;inset:-20%;z-index:0;pointer-events:none;filter:blur(80px);opacity:.5}');
+    A('    First blob: 46vw square at left:2%; top:2%, radial-gradient(circle,var(--shout),transparent 68%), drifting translate3d(14vw,10vh,0) scale(1.2) over 32s.');
+    A('    Second blob: 38vw square at right:0; top:26%, radial-gradient(circle,var(--main),transparent 68%), drifting translate3d(-12vw,14vh,0) scale(.85) over 44s.');
+    A('    Both ease-in-out infinite alternate. main{position:relative;z-index:2} so the text sits above it.');
+    A('  - Nothing appears statically. Give every block class="rise":');
+    A('    html.js .rise{opacity:0;transform:translateY(22px);filter:blur(5px)}');
+    A('    html.js .rise.in{opacity:1;transform:none;filter:blur(0);');
+    A('      transition:opacity 780ms var(--out),transform 780ms var(--out),filter 780ms var(--out)}');
+    A('    with 70ms / 140ms / 210ms transition-delay on the 2nd, 3rd and 4th .rise inside the same parent, so a row of cards arrives one after another.');
+    A('    An IntersectionObserver (rootMargin 0px 0px -8% 0px, threshold .08) adds .in and unobserves.');
+    A('    IMPORTANT: the hidden state is gated behind html.js, which the script itself adds, and a 2.5s');
+    A('    setTimeout reveals anything the observer never reached — so a JS failure can never ship a blank page.');
+    A('  - The button: a white light sweeps across it on hover (800ms), the round knob nudges 3px, scale(.978)');
+    A('    while pressed, and a 42% accent shadow blooms under it.');
+    A('  - Cards lift translateY(-4px) on hover. Social icons lift and scale 1.05.');
+    A('  - An empty gallery slot is NEVER a grey box: draw three radial gradients from the palette, a caption');
+    A('    pill on top, and a slow shine sweep on hover.');
+    A('  - End the stylesheet with:');
+    A('    @media (prefers-reduced-motion:reduce){');
+    A('      *{animation:none !important;transition:none !important;scroll-behavior:auto !important}');
+    A('      html.js .rise{opacity:1;transform:none;filter:none}');
+    A('      .sky{display:none}');
+    A('    }');
+    A('');
+    A('4f. The finish I expect:');
+    A('  - One accent colour. As a fill: the button, the linked social icons, the skip link. As --shout-ink text: the current page link, the stat numbers, the name under the testimonial, the Contact links. Nowhere else, and never a third colour.');
+    A('  - Real hierarchy on every screen: eyebrow, headline, one lead paragraph, then the one action.');
+    A('  - Every interactive thing has a hover state, a min-height of 44px, and :focus-visible{outline:3px solid var(--shout);outline-offset:3px}.');
+    A('  - A .skip link to #main as the first focusable element.');
+    A('  - Restrained: no emoji, no clip art, no shadow on text, no more than two type sizes inside one card, and no third colour.');
+    A('  - It must still look composed at 360px wide: hero to one column, stats to one column, gallery to two'
+      + (S.pan === 'bento' ? ', the bento to one' : '') + ', quote centred, menu full width. Breakpoint 820px.');
     A('');
     A('=== 5. THE WORDS (use these, do not invent new ones) ===');
+    A('Anything marked [PLACEHOLDER] is not real. Keep it in place so the layout is right, and list those lines back to me at the end as the first things to replace. Never write it as though it were a fact about me.');
     A('Home headline: ' + F.heroH);
     A('Home paragraph: ' + F.heroP);
     A('Button words: ' + F.ctaTxt);
     A('Mission: ' + F.mission);
     A('Vision: ' + F.vision);
-    A('Services and courses:');
-    F.serv.forEach(function(s,i){ A('  ' + (i+1) + '. ' + s); });
-    A('Contact email: ' + F.email);
+    A('Services and courses — the name, then the sentence under it:');
+    F.serv.forEach(function(s,i){ A('  ' + (i+1) + '. ' + s + '  —  ' + (F.servD[i] || '')); });
+    A('Heading above those three: ' + F.offer);
+    A('The three numbers in the stats row:');
+    F.stats.forEach(function(x){ A('  ' + x[0] + '   ' + x[1]); });
+    A('The testimonial: \u201c' + F.quote[0] + '\u201d  \u2014 ' + F.quote[1]);
+    A('The six gallery captions, in order:');
+    F.gal.forEach(function(g,i){ A('  ' + (i+1) + '. ' + g); });
+    A('The lead line on Services: Everything on one page, so nobody has to hunt for it.');
+    A('The Contact headline: Talk to a person, today.');
+    A('The lead line on Contact: Write, call, or send a message. Whichever is easiest for you.');
+    A('The words on the Contact button: Message on WhatsApp');
+    A('Contact email: ' + F.email + PH(S.email));
     A('Where else people find me:');
     SOCIALS.forEach(function(x){
       A('  ' + x.en + ': ' + (S.so[x.id] || 'not on this one — show the icon greyed out, do not link it'));
     });
-    A('Contact phone / WhatsApp: ' + F.phone);
-    A('City: ' + F.city);
+    A('Contact phone / WhatsApp: ' + F.phone + PH(S.phone));
+    A('City: ' + F.city + PH(S.city));
+    A('');
+    A('=== 5b. THE PAGE OUTLINE — build exactly these blocks, in this order ===');
+    A('Every numbered block is one <section class="wrap">. The section itself does NOT carry .rise — its pieces do: the banner, the eyebrow, the h1, the lead, the button, the portrait, each card, each stat, the quote, the gallery. That is what makes the 70/140/210ms stagger land on a row of cards instead of on whole sections.');
+    A('This list is the whole site. Do not add a pricing table, an FAQ, a newsletter box, a blog, a team grid or a cookie banner.');
+    A('');
+    A('HOME');
+    A('  1. The .hd header picture, then .hero in two columns — left: the eyebrow (the "Written for" line), h1 (Home headline), p.lead (Home paragraph), the button; right: .shot, a square picture of the character.');
+    A('  2. .stats — the three numbers above their labels.');
+    A('  3. h2 (the heading above the three) then .grid with the three service cards: h3 name, one sentence under it.');
+    A('  4. .quote — the testimonial, with the attached character picture beside it as a round 84px portrait, alt="".');
+    A('  5. h2 \u201cA look inside\u201d then .gal with the six gallery slots and their captions.');
+    A('     A slot with no photograph is <div class="art" role="img" aria-label="CAPTION" style="--c1:..;--c2:..;--c3:.."><span>CAPTION</span></div>.');
+    A('     .art:before reads those three variables, so they must be set inline on every tile or the gallery comes out as six identical flat boxes.');
+    A('     Rotate the palette three ways per tile — accent, main, ink — in this order:');
+    A('       1: ' + p.shout + ' / ' + p.main + ' / ' + ink);
+    A('       2: ' + p.main + ' / ' + ink + ' / ' + p.shout);
+    A('       3: ' + ink + ' / ' + p.shout + ' / ' + p.main);
+    A('       4: ' + p.shout + ' / ' + ink + ' / ' + p.main);
+    A('       5: ' + p.main + ' / ' + p.shout + ' / ' + ink);
+    A('       6: ' + ink + ' / ' + p.main + ' / ' + p.shout);
+    A('');
+    A('ABOUT');
+    A('  1. The .hd header picture, then .hero — eyebrow \u201cAbout\u201d, h1 is the line under the name, p.lead is the mission, the button, and the same .shot on the right.');
+    A('  2. .grid with two cards: Mission and Vision.');
+    A('  3. .stats again.');
+    A('  4. .quote.');
+    A('');
+    A('SERVICES AND COURSES');
+    A('  1. The .hd header picture, eyebrow \u201cServices and Courses\u201d, h1 is the heading above the three, one lead line, then .grid with the same three cards.');
+    A('  2. .stats.');
+    A('  3. h2 \u201cInside the course\u201d then .gal.');
+    A('  4. The button on its own.');
+    A('');
+    A('CONTACT');
+    A('  1. Eyebrow \u201cContact\u201d, h1 \u201cTalk to a person, today.\u201d, one lead line, then .lines — email, phone, city, each on its own row at least 48px tall, email and phone as real links marked dir="ltr". No labels in front of them: the address is the row.');
+    A('  2. The button, pointing at WhatsApp.');
+    A('  3. The four social icons, with no heading above them.');
+    A('  4. .quote.');
+    A('');
+    A('FOOTER, the same on all four: the year and the site name, the city, then the social icons pushed to the end.');
+    A('');
+    A('=== 5c. THE SKELETON — everything above sits inside this, exactly ===');
+    A('<body data-nv=... data-pn=... data-bt=... data-gl=...>');
+    A('  <a class="skip" href="#main">Skip to the content</a>');
+    A('  <div class="sky" aria-hidden="true"><i></i><i></i></div>');
+    A('  <header class="top"><div class="bar">');
+    A('    <a class="brand" href="#home"><span>SITE NAME</span></a>');
+    A('    <nav class="menu" aria-label="Pages"> four <a data-p="home|about|services|contact"> links </nav>');
+    A('  </div></header>');
+    A('  <main id="main">  the four <div class="page" id="..."> blocks, only the first with class="page on"  </main>');
+    A('  <footer><div class="wrap foot"> year and site name, city, then the social icons </div></footer>');
+    A('The header and the footer are written ONCE, outside the four pages, and never repeat inside them.');
+    A('Inside every .cta, after the words, put <span class="knob"> holding a 16px inline arrow svg: viewBox 0 0 24 24, fill none, stroke currentColor, stroke-width 1.8, path "M5 12h13M13 6l6 6-6 6", aria-hidden. In Arabic it is mirrored with scaleX(-1).');
+    A('Give each page h1 tabindex="-1" so the focus move on navigation works.');
+    A('The .hd header picture sits inside the first section.wrap of its page, above the .hero — a rounded bordered banner inside the content column, not a full-bleed band.');
     A('');
     A('=== 6. PICTURES ===');
     A('Logo: ' + (S.logo || 'none — write the site name in text instead'));
@@ -2358,13 +2654,14 @@ function buildPrompt(){
     A('Gallery pictures:');
     if(S.pics.length) S.pics.forEach(function(u,i){ A('  ' + (i+1) + '. ' + u); });
     else A('  none yet — use plain coloured blocks of the right shape, never a grey box with a cross');
-    A('Every picture needs alt text that says what is in it.');
+    A('Alt text, so you do not have to invent it: the banner is \u201cThe top picture of \u2019 + the site name; each gallery tile takes its own caption from the list in section 5; the character picture takes the site name. Decorative shapes get alt="" or aria-hidden.');
+    A('The <title> is: site name, an em dash, then the line under the name. The <meta name="description"> is the first 155 characters of the Home paragraph. Add og:title, og:description and <meta name="theme-color" content="' + p.bg + '">.');
     A('');
     var need = attachList();
     if(need.length){
       A('FILES ATTACHED TO THIS MESSAGE — use these exact images, do not generate replacements:');
       need.forEach(function(m){ A('  ' + (m.name || fileName(m.src)) + '  =  ' + m.what + '. ' + m.why); });
-      A('If no file was attached, say so and stop rather than inventing a picture.');
+      A('If a file is missing, do not invent, generate or substitute a picture. Say which one is missing, put a plain block in the palette colours in its place at exactly the right shape, keep the file name in the src so it appears the moment I add it, and carry on and finish the rest of the site.');
     } else {
       A('No files are attached. Every picture above is a web address you can load directly.');
     }
@@ -2377,7 +2674,7 @@ function buildPrompt(){
     A('- Every button and link is at least 44px tall so a finger can hit it.');
     A('- Real <title> and <meta name="description"> written for search, not "Untitled".');
     A('- Semantic HTML: header, nav, main, section, footer. One h1 per page.');
-    A('- The contact form does not need a server: make the button open mailto: and a WhatsApp link.');
+    A('- Contact needs no server. The email and the phone are real links inside .lines — mailto: and https://wa.me/ — and the .cta below them points at WhatsApp. No form, no backend.');
     A('- No fake filler text anywhere. If a line is empty, write a sensible real sentence instead.');
     A('- Respect prefers-reduced-motion.');
     A('');
@@ -2392,12 +2689,15 @@ function buildPrompt(){
     A('نوع الموقع: ' + S.kindAr);
     A('مكتوب لـ: ' + S.audienceAr);
     A('الفعل الوحيد الذي أريده من الزائر: ' + S.goalAr);
-    A('اسم الموقع: ' + F.name);
-    A('سطر واحد تحت الاسم: ' + F.tagline);
+    A('اسم الموقع: ' + F.name + PH(S.name));
+    A('سطر واحد تحت الاسم: ' + F.tagline + PH(S.tagline));
     A('');
     A('=== ٢. الصفحات (أربع بالضبط) ===');
     A('١. الرئيسية  ٢. من نحن  ٣. الخدمات والدورات (كلاهما في صفحة واحدة)  ٤. اتصل بنا');
-    A('شريط التنقل نفسه في الصفحات الأربع، والصفحة الحالية مميزة.');
+    A('الصفحات الأربع في الملف نفسه على هيئة <div class="page" id="home|about|services|contact">، وواحدة فقط تحمل الصنف .on.');
+    A('القائمة تبدّلها بـ history.pushState وتستمع لـ popstate، ثم تصعد لأعلى الصفحة وتنقل التركيز إلى عنوان h1 الخاص بها. بلا إعادة تحميل وبلا ملفات منفصلة.');
+    A('سأفتح هذا الملف كثيرًا من القرص مباشرة، فضع استدعاء pushState داخل try/catch واجعل البديل تعيين location.hash. لا يجوز أن تتوقف القائمة عن العمل بسببه.');
+    A('شريط التنقل نفسه في الصفحات الأربع، ورابط الصفحة الحالية مميز ويحمل aria-current="page".');
     A('');
     A('=== ٣. الألوان (استخدم هذه الأكواد بالضبط) ===');
     A('الخلفية   ' + p.bg);
@@ -2411,7 +2711,7 @@ function buildPrompt(){
     A('نمط الرأس: ' + nameOfAr(HEADERS, S.header));
     A('المادة: ' + nameOfAr(SUBJECTS, S.subject));
     if(S.header === '3d')
-      A('استخدم مشهدًا ثلاثي الأبعاد ساطعًا عن هذه المادة: أشياء بأسلوب الطين اللامع وشخصية أو شخصيتين مصممتين، بألوان متوهجة لا داكنة أبدًا. واترك الثلث الأيمن خاليًا للعنوان.');
+      A('صورة الرأس مشهد ثلاثي الأبعاد ساطع: أشكال من الطين اللامع بألوان متوهجة لا داكنة. ضعها لافتة ‎.hd‎ في الرئيسية ومن نحن والخدمات، وأبقِ العنوان بعيدًا عن جانبها المزدحم. وإن كانت مرفقة فاستخدمها كما هي ولا تولّد شيئًا.');
     if(S.header === 'photo')
       A('استخدم صورة فوتوغرافية حقيقية لمعلمين ومتعلمين لهذه المادة: دافئة، بضوء النهار، متنوعة، بابتسامات حقيقية، بنسبة ١٦:٩، والثلث الأيمن خالٍ للعنوان.');
     if(S.header === 'pattern')
@@ -2419,27 +2719,162 @@ function buildPrompt(){
     if(S.header === 'mine')
       A('استخدم صورتي أنا، أول رابط في المعرض بالأسفل، كرأس للصفحة، بقصّها إلى ١٦:٩.');
     A('');
-    A('=== ٤. الشكل ===');
-    A('شريط التنقل: ' + nameOfAr(NAVS,S.nav) + ' — ' + WHY[S.nav][1]);
-    A('الألواح والبطاقات: ' + nameOfAr(PANELS,S.pan) + ' — ' + WHY[S.pan][1]);
-    A('الأزرار: ' + nameOfAr(BTNS,S.btn) + ' — ' + WHYB[S.btn][1]);
-    A('معرض الصور: ' + nameOfAr(GALS,S.gal) + ' — ' + WHYG[S.gal][1]);
+    var Ka = lookCss();
+    A('=== ٤. الشكل — هذه مواصفة لا اقتراح ===');
+    A('ابنِ نظام التصميم التالي كما هو مكتوب بالضبط. لا تستبدل ألوانك أو خطوطك أو زوايا مختلفة أو ظلالًا أو مؤثرات من عندك، ولا تضف Bootstrap أو Tailwind أو CDN أو مكتبة أيقونات أو خط ويب. CSS عادي داخل وسم <style> واحد.');
+    A('');
+    A('٤أ. المتغيرات. ضعها في ‎:root‎ واستخدم ‎var()‎ في كل مكان، ولا تكتب أكواد ألوان سائبة داخل الأنماط:');
+    A(':root{--bg:' + p.bg + ';--main:' + p.main + ';--shout:' + p.shout + ';--ink:' + ink + ';--soft:' + p.soft + ';');
+    A('  --shout-ink:' + shoutInk() + ';--onshout:' + onInk([p.shout]).ink + ';');
+    A('  --eyebrow-bg:' + eyebrowBg() + ';--eyebrow-ink:' + eyebrowInk() + ';');
+    if(S.btn === 'grad') A('  --grad-a:' + gradPair().a + ';--ongrad:' + gradPair().ink + ';');
+    A('  --sp:clamp(20px,5vw,64px);--r:14px;--pill:999px;');
+    A('  --spring:cubic-bezier(0.32,0.72,0,1);--out:cubic-bezier(0.22,1,0.36,1)}');
+    A('الأربعة الأخيرة محسوبة لا زخرفية، وهي ما يبقي الموقع مقروءًا:');
+    A('  ‎--shout-ink‎  اللون البارز حين يكون نصًا: رابط القائمة والأرقام وروابط الاتصال. يقيس '
+      + ratio(p.bg, shoutInk()).toFixed(2) + ':١ على الخلفية. لا تكتب نصًا بلون ‎--shout‎ الخام أبدًا.');
+    A('  ‎--eyebrow-bg‎ و‎--eyebrow-ink‎  الكبسولة الصغيرة فوق العنوان. خلفيتها الملوّنة تخفض التباين، فلها زوج مقيس خاص بها ('
+      + ratio(eyebrowBg(), eyebrowInk()).toFixed(2) + ':١)، ومكتوب بألوان صريحة لا بـ color-mix حتى يطابق المقيسُ المعروضَ.');
+    A('  ‎--onshout‎    لون الكلمة فوق تعبئة بارزة: الزر ورابط التخطي وأيقونات التواصل التي لها رابط. يقيس '
+      + onInk([p.shout]).r.toFixed(2) + ':١. ولا تستخدم ‎--bg‎ لها.');
+    if(S.btn === 'grad')
+      A('  ‎--grad-a‎ و‎--ongrad‎  الطرف الداكن لزر التدرج ولون كلمته، محسوبان معًا حتى يجتاز طرفا التدرج ٤٫٥:١.');
+    A('');
+    A('٤ب. ضع هذه السمات الأربع على وسم <body>، فالأنماط في ٤د مكتوبة عليها:');
+    A('<body data-nv="' + S.nav + '" data-pn="' + S.pan + '" data-bt="' + S.btn + '" data-gl="' + S.gal + '">');
+    A(L('(One or two of these may have no matching selector below, because that choice is the base style. Set all four anyway — they are how the other variants get swapped in later.)',
+        '(قد لا يكون لواحد أو اثنين منها محدِّد مطابق بالأسفل لأن ذلك الاختيار هو النمط الأساسي. ضع الأربعة على أي حال، فهي طريقة استبدال الأنماط الأخرى لاحقًا.)'));
+    A('');
+    A('٤ج. ما تفعله ورقة الأنماط في ٤د، حتى تحفظ نيّتها حين تزيد عليها:');
+    A('  عمود محتوى واحد ‎.wrap‎ بعرض 1120px وحشو ‎--sp‎. وكل قسم يتنفس بمقدار clamp(34px,6vw,72px) — الفراغ جزء من التصميم فلا تضغطه.');
+    A('  سُلّم خطوط حقيقي: h1 بمقدار clamp(32px,6vw,60px)، وh2 بمقدار clamp(24px,3.6vw,36px)، وh3 بمقدار 19px، والنص 17px/1.65، والفقرات بحد 62ch. وللعربية خطوطها وأسطرها الأوسع.');
+    A('  اللون البارز يظهر تعبئةً (الزر) أو نصًا بلون ‎--shout-ink‎، ولا يظهر نصًا بلون ‎--shout‎ الخام أبدًا، ولا لون ثالث.');
+    A('');
+    A('٤د. ورقة الأنماط. هذه هي كاملةً وفيها اختياراتي الأربعة بالفعل —');
+    A('    التنقل ' + nameOfAr(NAVS,S.nav) + '، والبطاقات ' + nameOfAr(PANELS,S.pan)
+      + '، والزر ' + nameOfAr(BTNS,S.btn) + '، والمعرض ' + nameOfAr(GALS,S.gal) + '.');
+    A('    الصقها كما هي، واحتفظ بكل قيمة، ولا تزد عليها إلا ما تحتاجه. ولا شيء هنا اقتراح.');
+    A('');
+    A(Ka.all);
+    if(S.gal === 'enlarge')
+      A('/* وزيادة: الضغط على صورة يفتحها كبيرة فوق خلفية معتمة، ويغلقها زر Esc أو نقرة بالخارج، ثم يعود التركيز إلى الصورة نفسها. اكتبها بيدك بلا مكتبة. */');
+    A('');
+    A('٤هـ. الحركة — بـ transform وopacity فقط، ولا شيء يحرّك التخطيط:');
+    A('  - سماء حية، أول شيء داخل <body>:');
+    A('    <div class="sky" aria-hidden="true"><i></i><i></i></div>');
+    A('    .sky{position:fixed;inset:-20%;z-index:0;pointer-events:none;filter:blur(80px);opacity:.5}');
+    A('    الكتلة الأولى: مربع 46vw عند left:2% وtop:2% بتعبئة radial-gradient(circle,var(--shout),transparent 68%)، تنجرف translate3d(14vw,10vh,0) scale(1.2) خلال ٣٢ ثانية.');
+    A('    الكتلة الثانية: مربع 38vw عند right:0 وtop:26% بتعبئة radial-gradient(circle,var(--main),transparent 68%)، تنجرف translate3d(-12vw,14vh,0) scale(.85) خلال ٤٤ ثانية.');
+    A('    كلتاهما ease-in-out infinite alternate، و main{position:relative;z-index:2} حتى يعلو النص فوقها.');
+    A('  - لا شيء يظهر ساكنًا. أعطِ كل كتلة الصنف class="rise":');
+    A('    html.js .rise{opacity:0;transform:translateY(22px);filter:blur(5px)}');
+    A('    html.js .rise.in{opacity:1;transform:none;filter:blur(0);');
+    A('      transition:opacity 780ms var(--out),transform 780ms var(--out),filter 780ms var(--out)}');
+    A('    مع تأخير ٧٠ و١٤٠ و٢١٠ مللي ثانية للعنصر ‎.rise‎ الثاني والثالث والرابع داخل الأب نفسه، حتى تصل صفوف البطاقات واحدة تلو الأخرى.');
+    A('    و IntersectionObserver (rootMargin 0px 0px -8% 0px، threshold .08) يضيف .in ثم يتوقف عن المراقبة.');
+    A('    مهم: حالة الإخفاء معلّقة على الصنف html.js الذي يضيفه السكربت بنفسه، ومؤقت ٢٫٥ ثانية يُظهر كل ما لم');
+    A('    يصل إليه المراقب — حتى لا يخرج الموقع أبيض إن تعطّل الجافاسكربت.');
+    A('  - الزر: ضوء يمرّ عليه عند المرور (٨٠٠ مللي ثانية)، والقرص الدائري ينزاح ٣px، و scale(.978) أثناء الضغط،');
+    A('    وظل بلون بارز بنسبة ٤٢٪ يتفتّح تحته.');
+    A('  - البطاقات ترتفع translateY(-4px) عند المرور، وأيقونات التواصل ترتفع وتكبر 1.05.');
+    A('  - الخانة الفارغة في المعرض ليست مربعًا رماديًا أبدًا: ارسم ثلاثة تدرجات شعاعية من اللوحة، وكبسولة تسمية فوقها، ولمعة بطيئة عند المرور.');
+    A('  - اختم ورقة الأنماط بـ:');
+    A('    @media (prefers-reduced-motion:reduce){');
+    A('      *{animation:none !important;transition:none !important;scroll-behavior:auto !important}');
+    A('      html.js .rise{opacity:1;transform:none;filter:none}');
+    A('      .sky{display:none}');
+    A('    }');
+    A('');
+    A('٤و. مستوى الإتقان المطلوب:');
+    A('  - لون بارز واحد. تعبئةً: الزر وأيقونات التواصل الموصولة ورابط التخطي. ونصًا بلون ‎--shout-ink‎: رابط الصفحة الحالية والأرقام واسم صاحب الرأي وروابط الاتصال. ولا شيء غير ذلك، ولا لون ثالث أبدًا.');
+    A('  - تدرّج بصري حقيقي في كل شاشة: سطر صغير، ثم عنوان، ثم فقرة واحدة، ثم الفعل الوحيد.');
+    A('  - كل عنصر تفاعلي له حالة مرور، وارتفاع لا يقل عن ٤٤px، و :focus-visible{outline:3px solid var(--shout);outline-offset:3px}.');
+    A('  - رابط .skip إلى ‎#main‎ يكون أول عنصر قابل للتركيز.');
+    A('  - انضباط: بلا إيموجي، بلا صور مقصوصة جاهزة، بلا ظل على النص، وبلا أكثر من مقاسي خط داخل البطاقة الواحدة، وبلا لون ثالث.');
+    A('  - ويبقى متماسكًا على عرض ٣٦٠px: البطل عمود واحد، والأرقام عمود واحد، والمعرض عمودان'
+      + (S.pan === 'bento' ? '، والبنتو عمود' : '') + '، والاقتباس في المنتصف، والقائمة بعرض كامل. نقطة الكسر ٨٢٠px.');
     A('');
     A('=== ٥. الكلمات (استخدمها ولا تخترع غيرها) ===');
+    A('كل ما عليه [عنصر نائب] ليس حقيقيًا. أبقِه مكانه ليستقيم التخطيط، ثم اذكر تلك السطور في نهاية ردك بوصفها أول ما يجب استبداله. ولا تكتبه أبدًا كأنه حقيقة عني.');
     A('عنوان الرئيسية: ' + F.heroH);
     A('فقرة الرئيسية: ' + F.heroP);
     A('كلمات الزر: ' + F.ctaTxt);
     A('الرسالة: ' + F.mission);
     A('الرؤية: ' + F.vision);
-    A('الخدمات والدورات:');
-    F.serv.forEach(function(s,i){ A('  ' + (i+1) + '. ' + s); });
-    A('البريد: ' + F.email);
+    A('الخدمات والدورات — الاسم ثم الجملة تحته:');
+    F.serv.forEach(function(s,i){ A('  ' + (i+1) + '. ' + s + '  —  ' + (F.servD[i] || '')); });
+    A('العنوان فوق الثلاثة: ' + F.offer);
+    A('الأرقام الثلاثة في صف الأرقام:');
+    F.stats.forEach(function(x){ A('  ' + x[0] + '   ' + x[1]); });
+    A('رأي العميل: \u201c' + F.quote[0] + '\u201d  \u2014 ' + F.quote[1]);
+    A('تسميات الصور الست بالترتيب:');
+    F.gal.forEach(function(g,i){ A('  ' + (i+1) + '. ' + g); });
+    A('السطر التمهيدي في الخدمات: كل شيء في صفحة واحدة، فلا يضطر أحد إلى البحث عنه.');
+    A('عنوان صفحة الاتصال: تحدث مع إنسان، اليوم.');
+    A('السطر التمهيدي في الاتصال: اكتب أو اتصل أو أرسل رسالة، أيّها كان أسهل لك.');
+    A('كلمات زر الاتصال: راسلنا على واتساب');
+    A('البريد: ' + F.email + PH(S.email));
     A('أين يجدني الناس أيضًا:');
     SOCIALS.forEach(function(x){
       A('  ' + x.ar + ': ' + (S.so[x.id] || 'لا يوجد — اعرض الأيقونة رمادية بلا رابط'));
     });
-    A('الهاتف أو الواتساب: ' + F.phone);
-    A('المدينة: ' + F.city);
+    A('الهاتف أو الواتساب: ' + F.phone + PH(S.phone));
+    A('المدينة: ' + F.city + PH(S.city));
+    A('');
+    A('=== ٥ب. هيكل الصفحات — ابنِ هذه الكتل بالضبط وبهذا الترتيب ===');
+    A('كل كتلة مرقّمة هي <section class="wrap"> واحدة. والقسم نفسه لا يحمل ‎.rise‎، بل تحمله أجزاؤه: اللافتة والسطر الصغير وh1 والسطر التمهيدي والزر والصورة وكل بطاقة وكل رقم والاقتباس والمعرض. بهذا يقع التتابع ٧٠/١٤٠/٢١٠ على صف البطاقات لا على أقسام كاملة.');
+    A('هذه القائمة هي الموقع كله. لا تضف جدول أسعار ولا أسئلة شائعة ولا صندوق نشرة بريدية ولا مدونة ولا شبكة فريق ولا شريط كوكيز.');
+    A('');
+    A('الرئيسية');
+    A('  ١. صورة الرأس ‎.hd‎، ثم ‎.hero‎ في عمودين — الأول: السطر الصغير (سطر «مكتوب لـ») وh1 (عنوان الرئيسية) وp.lead (فقرة الرئيسية) والزر؛ والثاني: ‎.shot‎ وهي صورة مربعة للشخصية.');
+    A('  ٢. ‎.stats‎ — الأرقام الثلاثة فوق تسمياتها.');
+    A('  ٣. h2 (العنوان فوق الثلاثة) ثم ‎.grid‎ ببطاقات الخدمات الثلاث: h3 للاسم وجملة واحدة تحته.');
+    A('  ٤. ‎.quote‎ — رأي العميل ومعه صورة الشخصية المرفقة بجواره في دائرة بقطر 84px وalt فارغ.');
+    A('  ٥. h2 «نظرة من الداخل» ثم ‎.gal‎ بخانات الصور الست وتسمياتها.');
+    A('     الخانة بلا صورة هي <div class="art" role="img" aria-label="التسمية" style="--c1:..;--c2:..;--c3:.."><span>التسمية</span></div>.');
+    A('     القاعدة ‎.art:before‎ تقرأ هذه المتغيرات الثلاثة، فيجب ضبطها داخل كل خانة وإلا خرج المعرض ست كتل مسطحة متطابقة.');
+    A('     دوّر ألوان اللوحة ثلاثًا في كل خانة — البارز ثم الأساسي ثم النص — بهذا الترتيب:');
+    A('       ١: ' + p.shout + ' / ' + p.main + ' / ' + ink);
+    A('       ٢: ' + p.main + ' / ' + ink + ' / ' + p.shout);
+    A('       ٣: ' + ink + ' / ' + p.shout + ' / ' + p.main);
+    A('       ٤: ' + p.shout + ' / ' + ink + ' / ' + p.main);
+    A('       ٥: ' + p.main + ' / ' + p.shout + ' / ' + ink);
+    A('       ٦: ' + ink + ' / ' + p.main + ' / ' + p.shout);
+    A('');
+    A('من نحن');
+    A('  ١. صورة الرأس ‎.hd‎، ثم ‎.hero‎ — السطر الصغير «من نحن»، وh1 هو السطر الذي تحت الاسم، وp.lead هي الرسالة، والزر، ومعها ‎.shot‎ نفسها.');
+    A('  ٢. ‎.grid‎ ببطاقتين: الرسالة والرؤية.');
+    A('  ٣. ‎.stats‎ مرة أخرى.');
+    A('  ٤. ‎.quote‎.');
+    A('');
+    A('الخدمات والدورات');
+    A('  ١. صورة الرأس ‎.hd‎، والسطر الصغير «الخدمات والدورات»، وh1 هو العنوان فوق الثلاثة، وسطر تمهيدي واحد، ثم ‎.grid‎ بالبطاقات الثلاث نفسها.');
+    A('  ٢. ‎.stats‎.');
+    A('  ٣. h2 «داخل الدورة» ثم ‎.gal‎.');
+    A('  ٤. الزر وحده.');
+    A('');
+    A('اتصل بنا');
+    A('  ١. السطر الصغير «اتصل بنا»، وh1 «تحدث مع إنسان، اليوم.»، وسطر تمهيدي واحد، ثم ‎.lines‎ — البريد والهاتف والمدينة، كل واحد في صف لا يقل ارتفاعه عن ٤٨px، والبريد والهاتف روابط حقيقية عليها dir="ltr".');
+    A('  ٢. الزر، ووجهته واتساب.');
+    A('  ٣. أيقونات التواصل الأربع.');
+    A('  ٤. ‎.quote‎.');
+    A('');
+    A('التذييل، نفسه في الصفحات الأربع: السنة واسم الموقع، ثم المدينة، ثم أيقونات التواصل في آخر السطر.');
+    A('');
+    A('=== ٥ج. الهيكل — كل ما سبق يجلس داخل هذا بالضبط ===');
+    A('<body data-nv=... data-pn=... data-bt=... data-gl=...>');
+    A('  <a class="skip" href="#main">تخطَّ إلى المحتوى</a>');
+    A('  <div class="sky" aria-hidden="true"><i></i><i></i></div>');
+    A('  <header class="top"><div class="bar">');
+    A('    <a class="brand" href="#home"><span>اسم الموقع</span></a>');
+    A('    <nav class="menu" aria-label="الصفحات"> أربعة روابط <a data-p="home|about|services|contact"> </nav>');
+    A('  </div></header>');
+    A('  <main id="main">  كتل <div class="page" id="..."> الأربع، والأولى وحدها class="page on"  </main>');
+    A('  <footer><div class="wrap foot"> السنة واسم الموقع، ثم المدينة، ثم أيقونات التواصل </div></footer>');
+    A('الرأس والتذييل يُكتبان مرة واحدة خارج الصفحات الأربع، ولا يتكرران بداخلها.');
+    A('وداخل كل ‎.cta‎ وبعد الكلمات ضع <span class="knob"> يحمل سهمًا svg بحجم 16px: viewBox 0 0 24 24 وfill none وstroke currentColor وstroke-width 1.8 والمسار "M5 12h13M13 6l6 6-6 6" وaria-hidden. وفي العربية يُعكس بـ scaleX(-1).');
+    A('وأعطِ عنوان h1 في كل صفحة السمة tabindex="-1" حتى يعمل نقل التركيز عند التنقل.');
+    A('وصورة الرأس ‎.hd‎ تجلس داخل أول section.wrap في صفحتها، فوق ‎.hero‎ — لافتة مستديرة محاطة بإطار داخل عمود المحتوى، لا شريطًا ممتدًا بعرض الشاشة.');
     A('');
     A('=== ٦. الصور ===');
     A('الشعار: ' + (S.logo || 'لا يوجد — اكتب اسم الموقع نصًا بدلًا منه'));
@@ -2448,13 +2883,14 @@ function buildPrompt(){
     A('صور المعرض:');
     if(S.pics.length) S.pics.forEach(function(u,i){ A('  ' + (i+1) + '. ' + u); });
     else A('  لا توجد بعد — استخدم كتلًا ملونة بالشكل الصحيح، ولا تضع مربعًا رماديًا عليه علامة');
-    A('كل صورة تحتاج نصًا بديلًا يقول ما بداخلها.');
+    A('النص البديل حتى لا تخترعه: اللافتة نصها «الصورة العلوية لـ» ثم اسم الموقع؛ وكل خانة معرض تأخذ تسميتها من قائمة القسم ٥؛ وصورة الشخصية تأخذ اسم الموقع. والأشكال الزخرفية alt="" أو aria-hidden.');
+    A('و<title> هو: اسم الموقع ثم شرطة ثم السطر الذي تحت الاسم. و<meta name="description"> هو أول ١٥٥ حرفًا من فقرة الرئيسية. وأضف og:title وog:description و<meta name="theme-color" content="' + p.bg + '">.');
     A('');
     var needAr = attachList();
     if(needAr.length){
       A('ملفات مرفقة بهذه الرسالة — استخدم هذه الصور بعينها ولا تولّد بدائل:');
       needAr.forEach(function(m){ A('  ' + (m.name || fileName(m.src)) + '  =  ' + m.what + '. ' + m.why); });
-      A('إن لم يُرفق ملف فقل ذلك وتوقف بدلًا من اختراع صورة.');
+      A('إن نقص ملف فلا تخترع صورة ولا تولّدها ولا تضع بديلًا عنها. قل أي ملف ينقص، وضع مكانه كتلة بألوان اللوحة بالمقاس نفسه بالضبط، وأبقِ اسم الملف في src حتى تظهر الصورة فور إضافتي لها، ثم أكمل باقي الموقع.');
     } else {
       A('لا توجد ملفات مرفقة. كل صورة أعلاه عنوان ويب يمكنك تحميله مباشرة.');
     }
@@ -2467,7 +2903,7 @@ function buildPrompt(){
     A('- كل زر ورابط ارتفاعه ٤٤ بكسل على الأقل ليسهل ضغطه بالإصبع.');
     A('- عنوان title ووصف description حقيقيان مكتوبان للبحث.');
     A('- HTML دلالي: header وnav وmain وsection وfooter، وعنوان h1 واحد لكل صفحة.');
-    A('- نموذج التواصل لا يحتاج خادمًا: اجعل الزر يفتح mailto ورابط واتساب.');
+    A('- التواصل لا يحتاج خادمًا. البريد والهاتف روابط حقيقية داخل ‎.lines‎ — mailto وhttps://wa.me/ — والزر ‎.cta‎ تحتهما وجهته واتساب. بلا نموذج وبلا خادم.');
     A('- لا نص حشو في أي مكان. إن كان الحقل فارغًا فاكتب جملة حقيقية معقولة.');
     A('- احترم prefers-reduced-motion.');
     A('');
@@ -2565,6 +3001,9 @@ function siteCss(){
 "*{box-sizing:border-box}",
 "html{scroll-behavior:smooth}",
 ":root{--bg:"+p.bg+";--main:"+p.main+";--shout:"+p.shout+";--ink:"+ink+";--soft:"+p.soft+";",
+"  --shout-ink:"+shoutInk()+";--onshout:"+onInk([p.shout]).ink+";",
+"  --eyebrow-bg:"+eyebrowBg()+";--eyebrow-ink:"+eyebrowInk()+";",
+(S.btn === 'grad' ? "  --grad-a:"+gradPair().a+";--ongrad:"+gradPair().ink+";" : ""),
 "  --sp:clamp(20px,5vw,64px);--r:14px;--pill:999px;",
 "  --spring:cubic-bezier(0.32,0.72,0,1);--out:cubic-bezier(0.22,1,0.36,1)}",
 "body{margin:0;background:var(--bg);color:var(--ink);line-height:1.65;font-size:17px;",
@@ -2576,7 +3015,7 @@ function siteCss(){
 ":focus-visible{outline:3px solid var(--shout);outline-offset:3px;border-radius:8px}",
 "h1[tabindex]:focus,h1[tabindex]:focus-visible{outline:none}",
 ".skip{position:absolute;inset-inline-start:-9999px;top:8px;z-index:99;padding:12px 18px;",
-"  border-radius:var(--pill);background:var(--shout);color:var(--bg);font-weight:800}",
+"  border-radius:var(--pill);background:var(--shout);color:var(--onshout);font-weight:800}",
 ".skip:focus{inset-inline-start:12px}",
 ".wrap{max-width:1120px;margin-inline:auto;padding-inline:var(--sp)}",
 
@@ -2603,7 +3042,7 @@ function siteCss(){
 "  border-radius:var(--pill);text-decoration:none;font-weight:600;font-size:15px;",
 "  opacity:.8;transition:all 220ms var(--spring)}",
 "nav.menu a:hover{opacity:1;background:color-mix(in oklab,var(--ink) 10%,transparent)}",
-"nav.menu a.on{opacity:1;color:var(--shout);font-weight:800;",
+"nav.menu a.on{opacity:1;color:var(--shout-ink);font-weight:800;",
 "  background:color-mix(in oklab,var(--shout) 14%,transparent)}",
 "[data-nv=pill] .bar{margin:18px var(--sp) 0;border-radius:var(--pill);",
 "  background:color-mix(in oklab,var(--ink) 8%,transparent);",
@@ -2623,7 +3062,7 @@ function siteCss(){
 
 /* the one button that asks for the action */
 ".cta{display:inline-flex;align-items:center;gap:12px;min-height:52px;padding:14px 26px;",
-"  border-radius:12px;background:var(--shout);color:var(--bg);font-weight:800;font-size:17px;",
+"  border-radius:12px;background:var(--shout);color:var(--onshout);font-weight:800;font-size:17px;",
 "  text-decoration:none;position:relative;overflow:hidden;border:0;cursor:pointer;",
 "  transition:transform 220ms var(--spring),box-shadow 420ms var(--out)}",
 ".cta:hover{box-shadow:0 16px 40px color-mix(in oklab,var(--shout) 42%,transparent)}",
@@ -2638,13 +3077,13 @@ function siteCss(){
 ".cta:hover .knob{transform:translate(3px,-1px) scale(1.06)}",
 "html[dir=rtl] .cta:hover .knob{transform:translate(-3px,-1px) scale(1.06)}",
 "html[dir=rtl] .cta .knob svg{transform:scaleX(-1)}",
-"[data-bt=outline] .cta{background:transparent;color:var(--shout);",
+"[data-bt=outline] .cta{background:transparent;color:var(--shout-ink);",
 "  border:2px solid var(--shout)}",
 "[data-bt=ghost] .cta{background:transparent;color:var(--ink);text-decoration:underline;",
 "  text-underline-offset:6px;padding-inline:0}",
 "[data-bt=pill] .cta{border-radius:var(--pill)}",
-"[data-bt=grad] .cta{border-radius:var(--pill);color:#fff;",
-"  background:linear-gradient(100deg,var(--main),var(--shout))}",
+"[data-bt=grad] .cta{border-radius:var(--pill);color:var(--ongrad);",
+"  background:linear-gradient(100deg,var(--grad-a),var(--shout))}",
 "[data-bt=icon] .cta{background:color-mix(in oklab,var(--ink) 10%,transparent);color:var(--ink);",
 "  border:1px solid color-mix(in oklab,var(--ink) 26%,transparent)}",
 
@@ -2661,7 +3100,7 @@ function siteCss(){
 ".lead{font-size:clamp(17px,2vw,20px)}",
 ".eyebrow{display:inline-block;margin:0 0 14px;padding:6px 14px;border-radius:var(--pill);",
 "  font-size:11.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;",
-"  background:color-mix(in oklab,var(--shout) 16%,transparent);color:var(--shout)}",
+"  background:var(--eyebrow-bg);color:var(--eyebrow-ink)}",
 "html[dir=rtl] .eyebrow{letter-spacing:0;text-transform:none;font-size:13px}",
 ".hd{position:relative;border-radius:20px;overflow:hidden;margin-block:6px 30px;",
 "  border:1px solid color-mix(in oklab,var(--ink) 12%,transparent)}",
@@ -2701,14 +3140,14 @@ function siteCss(){
 ".stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}",
 ".stat{padding:20px;border-radius:var(--r);background:var(--soft);",
 "  border:1px solid color-mix(in oklab,var(--ink) 12%,transparent)}",
-".stat b{display:block;font-size:clamp(26px,4vw,40px);line-height:1.05;color:var(--shout)}",
+".stat b{display:block;font-size:clamp(26px,4vw,40px);line-height:1.05;color:var(--shout-ink)}",
 ".stat span{font-size:14px;opacity:.8}",
 ".quote{display:flex;gap:20px;align-items:center;padding:24px;border-radius:20px;",
 "  background:var(--soft);border:1px solid color-mix(in oklab,var(--ink) 12%,transparent)}",
 ".quote img{width:84px;height:84px;border-radius:var(--pill);object-fit:cover;flex:0 0 auto;",
 "  background:color-mix(in oklab,var(--ink) 10%,transparent)}",
 ".quote p{margin:0 0 6px;font-size:18px;font-style:italic}",
-".quote cite{font-style:normal;font-weight:800;color:var(--shout);font-size:14.5px}",
+".quote cite{font-style:normal;font-weight:800;color:var(--shout-ink);font-size:14.5px}",
 ".gal{display:grid;gap:12px;grid-template-columns:repeat(3,1fr)}",
 ".gal img,.gal .art{border-radius:var(--r);width:100%;aspect-ratio:4/3;object-fit:cover;",
 "  display:block;overflow:hidden;position:relative;border:0}",
@@ -2733,14 +3172,14 @@ function siteCss(){
 ".lines{display:grid;gap:8px;margin:0 0 22px;font-size:18px}",
 ".lines>span{display:flex;align-items:center;min-height:48px}",
 ".lines a{display:inline-flex;align-items:center;min-height:48px;padding-inline:2px;",
-"  text-decoration:none;font-weight:700;color:var(--shout);",
+"  text-decoration:none;font-weight:700;color:var(--shout-ink);",
 "  border-bottom:2px solid color-mix(in oklab,var(--shout) 45%,transparent)}",
 ".lines a:hover{border-bottom-color:var(--shout)}",
 ".social{display:flex;gap:12px;flex-wrap:wrap}",
 ".social a,.social span{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;",
 "  background:var(--soft);border:1px solid color-mix(in oklab,var(--ink) 14%,transparent);",
 "  color:var(--ink);text-decoration:none;transition:all 260ms var(--spring)}",
-".social a{background:var(--shout);color:var(--bg);border-color:transparent}",
+".social a{background:var(--shout);color:var(--onshout);border-color:transparent}",
 ".social a:hover{transform:translateY(-3px) scale(1.05)}",
 ".social span{opacity:.45}",
 ".social svg{width:22px;height:22px}",
@@ -2815,6 +3254,7 @@ function waHref(F){
 }
 
 function buildSite(){
+  if(!S.kind) think();
   var p = pal(), F = fallback(), lang = AR ? 'ar' : 'en', dir = AR ? 'rtl' : 'ltr';
   var alt = L('The top picture of ','الصورة العلوية لـ') + F.name;
   var logo = S.logo ? '<img src="'+esc(S.logo)+'" alt="">' : '';
@@ -3023,8 +3463,8 @@ function mongiStart(){
 /* =====================================================================
    13. moving between steps
    ===================================================================== */
-function go(n){
-  if(n === 2 && !S.kind) think();
+function go(n, keepScroll){
+  if(n > 1 && !S.kind) think();
   S.step = n;
   $$('.screen').forEach(function(s,i){ s.classList.toggle('is-live', i === n-1); });
   $$('.stepbtn').forEach(function(b){
@@ -3032,14 +3472,35 @@ function go(n){
     b.classList.toggle('is-on', k === n);
     b.classList.toggle('is-done', k < n);
   });
-  if(n === 2) drawDecisions();
+  if(n === 2) { drawKinds(); syncBasics(); drawDecisions(); }
   if(n === 3) guard();
   if(n === 4) { syncFields(); drawHeaders(); drawSubjects(); meter(); }
   if(n === 5) { drawPics(); $('#promptbox').value = buildPrompt(); }
   mongiSay(n);
-  window.scrollTo({top:0, behavior:'smooth'});
+  if(!keepScroll) window.scrollTo({top:0, behavior:'smooth'});
   save();
 }
+
+/* Change on a decision row: go to the step, scroll to that very control,
+   ring it for two seconds and put the cursor in it. */
+function jump(spec){
+  var bits = String(spec).split('|');
+  var n = +bits[0], sel = bits[1];
+  go(n, true);
+  setTimeout(function(){
+    var t = sel && document.querySelector(sel); if(!t) { window.scrollTo({top:0,behavior:'smooth'}); return; }
+    try { t.scrollIntoView({block:'center', behavior:'smooth'}); }
+    catch(e){ t.scrollIntoView(); }
+    var old = document.querySelectorAll('.jumped');
+    for(var i=0;i<old.length;i++) old[i].classList.remove('jumped');
+    void t.offsetWidth; t.classList.add('jumped');
+    clearTimeout(jumpTimer);
+    jumpTimer = setTimeout(function(){ t.classList.remove('jumped'); }, 2600);
+    var f = t.querySelector('.opt.is-on, .pick.is-on') || t.querySelector('input, textarea, button');
+    if(f) { try { f.focus({preventScroll:true}); } catch(e){ } }
+  }, 140);
+}
+var jumpTimer = null;
 function syncFields(){
   var F = fallback();
   ['heroH','heroP','ctaTxt','mission','vision'].forEach(function(k){
@@ -3085,7 +3546,7 @@ function setLang(toAr){
   tr(document);
   drawExamples(); drawPalettes(); drawPanels(); drawNavs(); drawBtns(); drawGals();
   drawServ(); drawGallery(); drawHeaders(); drawSubjects();
-  if(S.kind) drawDecisions();
+  if(S.kind) { drawKinds(); syncBasics(); drawDecisions(); }
   guard(); meter(); paint(); mongiSay(S.step || 1);
   if(S.step === 5) { drawPics(); $('#promptbox').value = buildPrompt(); }
   try{ localStorage.setItem(KEY+'_lang', AR?'ar':'en'); }catch(e){}
@@ -3268,10 +3729,37 @@ function init(){
     setTimeout(function(){ URL.revokeObjectURL(u); a.remove(); }, 400);
   }
 
-  /* stepper, Change buttons, pager buttons */
+  /* stepper and pager buttons */
   document.addEventListener('click', function(e){
     var b = e.target.closest('[data-go]'); if(!b) return;
     go(+b.getAttribute('data-go'));
+  });
+
+  /* the Change button on a decision row */
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('[data-jump]'); if(!b) return;
+    jump(b.getAttribute('data-jump'));
+  });
+
+  /* the three basics: kind of site, who it is for, the one action */
+  var kp = $('#kindpick');
+  if(kp) kp.addEventListener('click', function(e){
+    var b = e.target.closest('[data-kind]'); if(!b) return;
+    var id = b.getAttribute('data-kind'), K = null;
+    KINDS.forEach(function(x){ if(x.id === id) K = x; });
+    if(!K) return;
+    S.kind = K.id; S.kindEn = K.en; S.kindAr = K.ar;
+    drawKinds(); drawDecisions(); paint(); meter(); save();
+  });
+  var wf = $('#whofld');
+  if(wf) wf.addEventListener('input', function(){
+    S.audienceEn = wf.value; S.audienceAr = wf.value;
+    drawDecisions(); save();
+  });
+  var gf = $('#goalfld');
+  if(gf) gf.addEventListener('input', function(){
+    S.goalEn = gf.value; S.goalAr = gf.value;
+    drawDecisions(); save();
   });
 
   /* preview controls */
