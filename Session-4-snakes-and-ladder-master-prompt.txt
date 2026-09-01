@@ -1,0 +1,340 @@
+RCTF MASTER PROMPT — EXACT SNAKES AND LADDER LEARNING GAME
+
+R — ROLE
+
+Act as a senior front-end game developer, instructional game designer, accessibility specialist, visual interaction designer, JavaScript state-management engineer, and browser QA tester. Produce production-quality code, not a mock-up, sample, partial implementation, or explanation.
+
+C — CONTEXT
+
+Recreate the exact final edition of a polished educational game named “SNAKES AND LADDER.” It is used by teachers on laptops, classroom screens, tablets, and phones. It must have the same layout, artwork, visual styling, question system, trophy system, dice, movement, snake and ladder logic, CPU mode, local-player mode, sounds, animations, accessibility, and responsive behavior described below.
+
+The deliverable must be ONE standalone HTML file containing its HTML, CSS, JavaScript, images, and generated sounds. It must work when opened by double-clicking the file. Do not use frameworks, packages, build tools, web fonts, APIs, servers, or external JavaScript libraries.
+
+MANDATORY VERIFIED RAW IMAGE ASSETS
+
+Use these exact raw GitHub URLs. Never use a github.com/.../blob/... page as an image source.
+
+1. Main board picture:
+https://raw.githubusercontent.com/cs0028monglish-cmd/pictures-for-my-site-/main/snakes%20and%20Ladder.png
+
+2. Exact title picture:
+https://raw.githubusercontent.com/cs0028monglish-cmd/pictures-for-my-site-/main/title%20for%20snakes%20and%20ladder%20.png
+
+3. Exact side-panel snake/avatar picture:
+https://raw.githubusercontent.com/cs0028monglish-cmd/pictures-for-my-site-/main/snakes%20and%20ladder%203.png
+
+All three URLs are direct image files. The spaces are intentionally URL-encoded as %20. Do not rename, rewrite, shorten, decode, or replace these URLs.
+
+Asset reliability rules:
+
+- Fetch all three raw images during generation.
+- Confirm each response is successful and is an image before building the page.
+- Convert every fetched image to a Base64 data URI and embed it in the final HTML so the standalone page remains fully functional offline.
+- Use the raw URLs above as the authoritative source assets and as development fallbacks.
+- Do not leave GitHub blob links in src attributes.
+- Do not substitute emojis, placeholders, generated artwork, CSS drawings, or different pictures.
+- If an image cannot be fetched, do not silently replace it. Retry the exact raw URL and report the missing asset instead of returning an inaccurate game.
+
+T — TASK
+
+Build the complete game with every requirement below.
+
+1. DOCUMENT AND OUTPUT
+
+- Output one complete valid HTML5 document beginning with <!doctype html>.
+- The document title must be “Snakes and Ladder.”
+- Put all CSS inside one <style> block and all JavaScript inside one <script> block.
+- Embed the three mandatory images as Base64 data URIs in the delivered HTML.
+- Generate sounds with the Web Audio API; do not use audio files.
+- Do not output Markdown, commentary, setup instructions, or explanations with the final code.
+- Suggested filename: snake-learning-game-latest-edition.html
+
+2. OVERALL VISUAL DESIGN
+
+- Use a premium child-friendly 3D game aesthetic.
+- Page background: deep navy and metallic royal-blue gradients with cyan highlights.
+- Add a warm glowing golden halo around the board while retaining the cyan/royal-blue metallic frame.
+- Use rounded panels, layered highlights, inset shadows, reflective edges, and strong readable contrast.
+- Keep the board as the primary visual focus.
+- Prevent horizontal overflow at every viewport width.
+- Use system rounded fonts such as Trebuchet MS and Arial Rounded MT Bold; do not load web fonts.
+
+3. HEADER AND TITLE
+
+- Place the exact title image in the upper-left header using the mandatory title raw asset.
+- Its visual text must read “SNAKES AND LADDER” on one line.
+- Do not recreate the title with ordinary text and do not write “Snake Trail Learning Game.”
+- Desktop title sizing: width min(72vw, 720px), height 120px, object-fit: cover, object-position: left 40%, with a dark-blue drop shadow.
+- Mobile title sizing at 480px and below: width min(64vw, 250px), height 46px.
+- Place a rounded sound on/off button at the far right of the header. It must display “🔊 Sound on” and “🔇 Sound off,” update aria-pressed, and remain keyboard accessible.
+
+4. SETTINGS SCREEN
+
+Show this screen before the game:
+
+Heading: Set up your game
+Subtitle: Choose how to play, save the player names, and add your learning questions.
+
+Play modes:
+
+- “🤖 Versus computer” — one human and one automatic CPU.
+- “👥 Various players” — 2 to 5 local players sharing one device.
+- Use large selectable cards with aria-pressed and a strong active outline.
+- In local mode, show buttons for 2, 3, 4, and 5 players.
+
+Player names:
+
+- Names are optional.
+- Blank entries must become P1, P2, P3, P4, and P5 only.
+- CPU must be named CPU.
+- Limit typed names to 22 characters.
+- Token colors in player order: coral #ff5d66, blue #1878ee, green #18a75b, purple #8a4de1, and orange #ef8b20.
+- Include a green “Save player names” button.
+- Saved names go to localStorage key snakeTrailNames.
+- Show “✓ N names saved” after saving.
+- Any later name edit changes the indicator to “Unsaved changes.”
+
+Question editor:
+
+- Include a collapsible <details> control titled “Add or edit my questions.”
+- Maintain exactly 20 question records, one for every square, using objects shaped like {q:'', a:''}.
+- Initialize missing records as empty; never remove the ability to edit all 20.
+- Store them in localStorage key snakeTrailQuestions.
+- Include two large bulk text areas: “Questions, one per line” and “Answers, one per line.”
+- Remove blank lines and trim each line before pairing.
+- Require equal non-empty line counts.
+- Accept between 1 and 20 matching lines.
+- Assign line 1 to square 1, line 2 to square 2, and so on.
+- Also include a single-square editor with a selector for squares 1–20, a question input, an exact-answer input, “Save this square,” and “Clear this square.”
+- Show accessible success/error status messages.
+
+Place a full-width green button at the bottom labeled “Start the game ▶.”
+
+5. MAIN RESPONSIVE LAYOUT
+
+- Desktop: board column on the left and a 250–330px control column on the right.
+- Use a maximum overall width near 1320px.
+- Use a compact gap that scales responsively.
+- At 850px and below, stack the control panel under the board.
+- Put “← Back to settings” and “↻ Restart game” buttons above the board.
+- Back to settings must preserve saved names and questions.
+- Restart must reset positions, turns, trophies, and earned-square sets without deleting saved settings.
+
+6. BOARD FRAME AND MANDATORY BOARD PICTURE
+
+- Create a rounded metallic-blue/cyan frame with a golden outer glow.
+- Use layered frame colors similar to #40e8ff, #0876ed, #582bc2, and #02a5eb.
+- Add cyan edge rings, dark-blue depth shadows, and gold glows around the frame.
+- Inside it create a 5-column by 4-row board with exactly 20 equal square hit areas.
+- The board picture must be the mandatory main board asset, not a CSS recreation.
+- Place it as an absolute <img> behind the hit areas and tokens.
+- Match the final edition’s image alignment: left 49.5%, top 52.8%, width 120%, height 123%, transform translate(-50%,-50%), object-fit: fill, pointer-events: none, and user-select: none.
+- The board frame must clip the image cleanly within rounded edges.
+- Do not add duplicate snake or ladder emojis over this baked artwork; the board-art overlay must remain hidden.
+
+Serpentine square order must be exactly:
+
+Top row: 20, 19, 18, 17, 16
+Second row: 11, 12, 13, 14, 15
+Third row: 10, 9, 8, 7, 6
+Bottom row: 1, 2, 3, 4, 5
+
+Make the square hit areas transparent enough that the picture remains visible. Preserve the baked number artwork from the board image rather than drawing a second visible number over it.
+
+7. QUESTION-MARK ICONS
+
+- Every square must contain a real <button> for its question.
+- The button’s accessible label must be “Open question for square N.”
+- Visually show only a circular “?” icon; hide any duplicate number inside the button.
+- Default position: top 11%, right 7% of its square.
+- For square 10 only, use right 24% so the icon does not cover the number 10.
+- Never place an icon outside the board.
+- The icon must have a white border, shadow, and column-colored circular background.
+- Use the five repeating icon colors green, blue, purple, coral, and orange.
+- When a saved question exists, change that question icon to green and give it a soft green glow.
+- Keep the same positions on mobile.
+
+8. STARTING DOCK AND PLAYER TOKENS
+
+- Put a separate dark-blue “STARTING DOCK” directly below the board.
+- All tokens begin in the dock at position 0.
+- Create circular glossy tokens with the player number, a white border, 3D shadow, and the player color.
+- Token width must be clamp(24px, 4vw, 42px).
+- Animate each movement step with a short upward hop and sound.
+- A lone token must rest exactly at the geometric center of its square: zero horizontal and vertical center offset.
+- Never position tokens on a square border.
+- When multiple players share a square, arrange them in a compact cluster centered as a group:
+  - 2 players: left and right of center.
+  - 3 players: two above and one below.
+  - 4 players: centered 2×2 cluster.
+  - 5 players: centered four-corner cluster plus one in the middle.
+- Recalculate token positions on resize using each square’s getBoundingClientRect().
+
+9. CONTROL PANEL
+
+- Use a cream panel with cyan border, royal-blue outer ring, rounded corners, and deep shadow.
+- At the top display “CURRENT TURN” and the active player name.
+- Under it display the current status, initially “Click the dice to roll.”
+- Place the exact side-panel snake/avatar asset to the left of the dice.
+- Show the whole avatar using object-fit: cover within a rounded image box.
+- Place three animated question marks above the avatar, not across its face or artwork.
+- Add the player list under the dice. Each row shows a glossy colored dot, player name, and trophy counter such as “🏆 0/5.”
+- Give the active player a strong colored outline.
+
+10. EXACT REALISTIC DICE
+
+- Build a true six-face CSS 3D cube inside a stationary 96×96px button so its clickable area never moves outside the viewport.
+- Cube size: 76×76px, centered inside the button.
+- Use transform-style: preserve-3d and six physical faces translated by 38px.
+- Resting tilt: rotateX(-12deg) rotateY(16deg) so the front, top, and side faces remain visible.
+- Use rounded 15px corners.
+- Match the final theme: metallic royal-blue faces, cyan reflections, gold rims, and glowing recessed golden pips.
+- Face gradient should move from bright cyan/blue toward deep navy, approximately #32dfff → #087cf4 → #0a439f → #061c52.
+- Use a #ffd85b gold border and glowing gold pip gradients.
+- Add blue depth shadow and a faint golden glow.
+- Make pips real circular elements arranged correctly for values 1–6.
+- Clicking the stationary button must randomly generate 1–6 and animate the inner cube through multiple X/Y rotations for one second.
+- Keep the final face slightly tilted after every roll.
+- Disable extra clicks during the roll and movement.
+- After a human roll, show a glowing button labeled “Move N space” or “Move N spaces.”
+- The human clicks it to move.
+- CPU rolls and moves automatically after short readable delays.
+
+11. MOVEMENT AND TURN LOGIC
+
+- Every player starts at position 0.
+- Move one numbered square at a time with approximately 250ms hop plus a short pause per step.
+- A roll that would exceed 20 does not move the token. Show: “[Player] needs an exact roll. The token stays put.”
+- Reaching square 20 exactly immediately wins the game.
+- After an ordinary move and any route resolution, pass to the next player.
+- Keep one active player at a time and prevent duplicate rolls, moves, or overlapping CPU actions.
+
+Ladders must be exactly:
+
+- 2 → 9
+- 7 → 14
+- 12 → 19
+
+Show “Ladder! [Player] climbs to square [destination].” Play an ascending ladder sound and animate the position change.
+
+Snakes must be exactly:
+
+- 11 → 10
+- 13 → 8
+- 15 → 6
+
+These are the snake heads and tails shown in the final board picture. A snake must never return a player to the starting dock. On a snake, show: “Oh no! A snake bites [Player] and slides the token down to square [destination].” Play a descending snake sound, briefly show a large crying emoji, and place the token on the destination square.
+
+12. QUESTIONS, ANSWERS, AND TROPHIES
+
+- Question buttons work only during a human turn and only while movement is not busy.
+- Questions are opened by clicking their icons; do not force a modal merely because a token landed on the square.
+- If a square has no saved question, show: “No question is saved for square N yet. Add it in settings.”
+- Open saved questions in an accessible modal titled “Square N question.”
+- Include the question text, answer input, “Close,” and “Check my answer.”
+- Enter submits the answer; Escape closes the modal.
+- Normalize answers by trimming outer spaces, collapsing repeated spaces, and comparing case-insensitively.
+- Wrong feedback: “Not quite—try again. Check spelling and spacing.”
+- Correct feedback: “Correct! Trophy earned! ✨🏆”
+- Each player has an independent Set of already rewarded squares.
+- The same player cannot earn a second trophy from the same square.
+- If already earned, show: “Correct! You already earned the trophy for this square.”
+- Update trophy counters immediately.
+- When a player reaches 5 trophies, close the modal, move that player to square 20, and immediately declare victory with the reason “collected five trophies!”
+
+13. VICTORY
+
+- A player wins either by reaching square 20 exactly or by collecting five trophies.
+- Display a full-screen blue victory overlay.
+- Show a large golden trophy, “Victory!”, the player name and winning reason, and a “Play again” button.
+- Generate approximately 90 multicolored confetti pieces with CSS animation.
+- Play a victory melody with Web Audio API.
+
+14. SOUND
+
+- Create sounds entirely with oscillators and gain envelopes in the Web Audio API.
+- Include distinct sounds for save, roll, step, blocked move, ladder, snake, wrong answer, correct answer, trophy, and victory.
+- Do not autoplay sound before user interaction.
+- Sound toggle must immediately update its text, accessible label, and aria-pressed state.
+
+15. FOOTER SIGNATURE
+
+Under the right control box, outside the box, display exactly:
+
+Dr.Abir Wafa
+Head of EdTech at Edulixa
+
+- Center the signature.
+- Use bold glowing gold for the name and smaller cream text for the title.
+- Preserve the capitalization and punctuation exactly.
+
+16. ACCESSIBILITY
+
+- Use semantic buttons, sections, aside, footer, and dialog roles.
+- Give the game board an accessible label.
+- Add visible keyboard focus indicators.
+- Provide ARIA labels for the dice, question buttons, avatar, dock, controls, and player scores.
+- Use aria-live regions for status and assertive announcements.
+- Make the modal keyboard accessible.
+- Ensure touch targets remain practical on phones and interactive screens.
+- Do not communicate essential information by color alone.
+- Respect prefers-reduced-motion by disabling or minimizing nonessential animation.
+
+17. RESPONSIVE BEHAVIOR
+
+- Desktop: board left, sticky control panel right.
+- At 850px or less: one-column layout, non-sticky centered control panel under the board.
+- At 480px or less: reduce outer padding, title height, board padding, button type sizes, and dice-stage columns without changing the 5×4 board order.
+- Keep question icons at top 11% and right 7%, with square 10 at right 24%.
+- Keep all tokens centered after every resize.
+- Never create horizontal scrolling.
+
+18. STATE AND SAFETY
+
+- Keep all state in one structured JavaScript state object: mode, player count, saved names, players, active index, rolled value, busy flag, sound flag, questions, open square, and game-over flag.
+- Escape player names before inserting them through innerHTML.
+- Handle invalid/corrupt localStorage values safely.
+- Do not allow movement, questions, or dice actions when busy or game-over.
+- Prevent race conditions between CPU timeouts, modals, restart, and back-to-settings actions.
+
+19. REQUIRED QA TESTS
+
+Before returning the HTML, test all of these:
+
+- Both play modes.
+- 2, 3, 4, and 5 local players.
+- Blank and custom names, saved/unsaved indicators, and localStorage reload.
+- Bulk question import with equal and unequal list lengths.
+- Individual save and clear for all squares.
+- Question icons remain inside every square; square 10 icon does not cover number 10.
+- Answer normalization, retry feedback, and one-trophy-per-player-per-square behavior.
+- Five-trophy victory.
+- Dice produces all values 1–6, visibly remains a 3D cube, and remains clickable after rotating.
+- A single token’s center offset from its square center is exactly 0px on both axes.
+- Multiple tokens form a centered cluster.
+- Exact-finish and overshoot behavior.
+- Ladders: 2→9, 7→14, 12→19.
+- Snakes: 11→10, 13→8, 15→6; no snake returns to the dock.
+- CPU turn automation.
+- Restart and back-to-settings.
+- Sound toggle and Web Audio effects.
+- Desktop, tablet, and mobile layouts.
+- Keyboard navigation, Enter, Escape, focus visibility, and live announcements.
+- No console errors, missing assets, broken controls, duplicate IDs, or horizontal overflow.
+
+F — FORMAT
+
+Return only the finished, production-ready standalone HTML document. The response must begin with <!doctype html> and end with </html>. Do not wrap it in Markdown fences. Do not include an explanation before or after it. Do not omit code for brevity. Do not provide pseudocode. Do not leave TODO comments. Do not change the artwork, title, snake routes, ladder routes, win conditions, colors, footer, dice, token centering, question system, or layout.
+
+FINAL NON-NEGOTIABLE ASSET REMINDER
+
+Board picture:
+https://raw.githubusercontent.com/cs0028monglish-cmd/pictures-for-my-site-/main/snakes%20and%20Ladder.png
+
+Title picture:
+https://raw.githubusercontent.com/cs0028monglish-cmd/pictures-for-my-site-/main/title%20for%20snakes%20and%20ladder%20.png
+
+Side avatar:
+https://raw.githubusercontent.com/cs0028monglish-cmd/pictures-for-my-site-/main/snakes%20and%20ladder%203.png
+
+Fetch these exact raw files and embed them as Base64 data URIs in the one final standalone HTML file.
